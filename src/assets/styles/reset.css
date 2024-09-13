@@ -324,3 +324,23 @@ video {
 [hidden] {
   display: none !important;
 }
+/*
+  Applies antialiasing globally
+*/
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+  Makes html, body and root have the full height
+*/
+
+html,
+body,
+#__react {
+  isolation: isolate;
+  height: 100%;
+  color: hsl(var(--color-foreground));
+}

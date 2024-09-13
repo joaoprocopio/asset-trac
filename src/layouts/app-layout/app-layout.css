@@ -1,9 +1,13 @@
 .app-layout {
+  height: 100%;
+  display: grid;
+  grid-template-rows: var(--spacing-12) 1fr;
+
   .al-header {
-    height: var(--spacing-12);
-    background-color: var(--color-blue-950);
-    color: var(--color-white);
+    background-color: hsl(var(--color-brand));
+    color: hsl(var(--color-white));
     padding: 0 var(--spacing-4);
+    border-bottom: 1px solid hsla(var(--color-divider));
     display: flex;
     align-items: center;
     justify-content: space-between;

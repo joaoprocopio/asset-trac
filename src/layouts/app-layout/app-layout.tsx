@@ -49,10 +49,6 @@ export function AppLayout() {
             ))}
         </div>
       </header>
-
-      <main>
-        <Outlet />
-      </main>
     </div>
   )
 }
