@@ -2,12 +2,15 @@ import "~/styles/sanitize.css"
 
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
+import { RouterProvider } from "react-router-dom"
 
-const rootEl = document.getElementById("__root")!
+import { router } from "~/router"
+
+const rootEl = document.getElementById("__react")!
 const root = createRoot(rootEl)
 
 root.render(
   <StrictMode>
-    <div>hello world!</div>
+    <RouterProvider router={router} />
   </StrictMode>
 )
