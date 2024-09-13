@@ -36,7 +36,8 @@ export function AppLayout() {
                   <Button
                     className="alhm-button"
                     variant={isActive ? "primary" : "secondary"}
-                    size="sm">
+                    size="sm"
+                    fullWidth>
                     <GoldIcon className="alhmb-icon" />
 
                     {company.name}

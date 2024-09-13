@@ -8,6 +8,11 @@
   font-weight: var(--font-weight-semibold);
   cursor: pointer;
 
+  /* Utilities */
+  &.full-width {
+    width: 100%;
+  }
+
   /* Variants */
   &.variant-primary {
     background-color: var(--color-primary);
@@ -36,11 +41,6 @@
   &.size-md {
     height: var(--spacing-9);
     padding: var(--spacing-2) var(--spacing-4);
-  }
-
-  /* Pseudo-classes */
-  &:focus-visible {
-    outline: none;
   }
 
   /* States */
