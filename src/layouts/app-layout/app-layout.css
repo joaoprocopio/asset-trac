@@ -3,16 +3,16 @@
   display: grid;
   grid-template-rows: var(--spacing-14) 1fr;
 
-  .alh-logo {
-    height: var(--spacing-4);
-  }
-
   .al-header {
     padding: 0 var(--spacing-6);
     border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    .alh-logo {
+      height: var(--spacing-4);
+    }
 
     .alh-menu {
       display: grid;
@@ -30,5 +30,10 @@
         }
       }
     }
+  }
+
+  .al-main {
+    background-color: var(--color-muted);
+    padding: 0 var(--spacing-6);
   }
 }

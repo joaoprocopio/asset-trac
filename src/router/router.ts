@@ -13,7 +13,30 @@ export const router = createBrowserRouter(
       },
       children: [
         {
+          path: "",
+          lazy: async () => {
+            const { CompanyEmptyPage: CompanyAssetsPage } = await import(
+              "~/pages/company-empty-page"
+            )
+
+            return { Component: CompanyAssetsPage }
+          },
+        },
+        {
           path: "/:companyId",
+          lazy: async () => {
+            const { CompanyAssetsPage } = await import("~/pages/company-assets-page")
+
+            return { Component: CompanyAssetsPage }
+          },
+        },
+        {
+          path: "*",
+          lazy: async () => {
+            const { CompanyNotFoundPage } = await import("~/pages/company-not-found-page")
+
+            return { Component: CompanyNotFoundPage }
+          },
         },
       ],
     },
