@@ -4,6 +4,8 @@
 
 - Write unit tests with Vitest.
 - Write E2E tests with Playwright.
+- Build not-found page.
+- Build error boundary-page for unhandled errors.
 - Work on documentation.
 - Include a video demonstrating the application opening for each company and selecting a filter.
 - Describe which points of the project you would improve if you had more time.

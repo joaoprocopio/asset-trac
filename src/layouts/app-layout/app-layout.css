@@ -16,7 +16,7 @@
 
     .alh-menu {
       display: grid;
-      grid-template-columns: repeat(3, var(--spacing-24));
+      grid-template-columns: repeat(3, var(--spacing-32));
       column-gap: var(--spacing-4);
 
       .skeleton {

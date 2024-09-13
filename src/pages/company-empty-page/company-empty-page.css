@@ -1,0 +1,14 @@
+.company-empty-page {
+  margin: var(--spacing-8) 0;
+  .cep-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    color: var(--color-muted-foreground);
+
+    .cepc-icon {
+      height: var(--spacing-10);
+      width: var(--spacing-10);
+    }
+  }
+}
