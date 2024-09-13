@@ -1,9 +1,11 @@
+import "./app-layout.css"
+
 import { Outlet } from "react-router-dom"
 
 export function AppLayout() {
   return (
-    <div>
-      <h1>i am the app layout</h1>
+    <div className="app-layout">
+      <header className="al-header">I'm a header</header>
 
       <main>
         <Outlet />
