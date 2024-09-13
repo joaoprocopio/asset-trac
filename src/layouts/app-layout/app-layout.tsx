@@ -2,10 +2,12 @@ import "./app-layout.css"
 
 import { useQuery } from "@tanstack/react-query"
 import { useAtom } from "jotai"
-import { Outlet } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
+import GoldIcon from "~/assets/icons/gold-icon.svg?react"
 import TractianLogo from "~/assets/icons/tractian-logo.svg?react"
 import { CompanyAtoms } from "~/atoms"
+import { Button } from "~/components/button"
 import type { TCompany } from "~/schemas"
 import { CompanyServices } from "~/services"
 
@@ -43,9 +45,16 @@ export function AppLayout() {
           {companies.isLoading && <div>loading...</div>}
           {companies.isSuccess &&
             companies.data.map((company) => (
-              <button key={company.id} onClick={() => handleChangeCompany(company)}>
+              <Button
+                key={company.id}
+                className="alhm-button"
+                size="sm"
+                component={NavLink}
+                to={`/${company.id}`}
+                onClick={() => handleChangeCompany(company)}>
+                <GoldIcon className="alhmb-icon" />
                 {company.name}
-              </button>
+              </Button>
             ))}
         </div>
       </header>

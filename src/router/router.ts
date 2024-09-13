@@ -11,6 +11,11 @@ export const router = createBrowserRouter(
 
         return { Component: AppLayout }
       },
+      children: [
+        {
+          path: "/:companyId",
+        },
+      ],
     },
   ],
   {

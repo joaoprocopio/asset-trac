@@ -28,6 +28,8 @@
   --color-brand: 235, 32%, 13%;
   --color-foreground: 240, 10%, 3.9%;
   --color-divider: 0, 0%, 0%, 0.12; /* hsla */
+  --color-blue-900: 211, 97%, 24%;
+  --color-blue-500: 212, 100%, 56%;
 
   /* Radii */
   --radius: 0.25rem;
@@ -118,6 +120,14 @@
   --font-size-8xl--line-height: 1;
   --font-size-9xl: 8rem;
   --font-size-9xl--line-height: 1;
+
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
 
   /* Letter spacing */
   --letter-spacing-tighter: -0.05em;
