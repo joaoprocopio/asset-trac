@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { CompanyConstants } from "~/constants"
+
 export type TCompany = z.infer<typeof CompanySchema>
 export type TCompanies = z.infer<typeof CompaniesSchema>
 
@@ -30,8 +32,8 @@ export const AssetSchema = z.object({
   gatewayId: z.string().optional(),
   parentId: z.string().nullable(),
   sensorId: z.string().optional(),
-  sensorType: z.string().nullable(),
-  status: z.string(),
+  sensorType: z.nativeEnum(CompanyConstants.AssetSensorType).nullable(),
+  status: z.nativeEnum(CompanyConstants.AssetStatus),
 })
 
 export const AssetsSchema = z.array(AssetSchema)
