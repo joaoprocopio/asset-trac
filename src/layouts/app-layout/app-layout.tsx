@@ -6,7 +6,7 @@ import { NavLink, Outlet } from "react-router-dom"
 
 import GoldIcon from "~/assets/icons/gold-icon.svg?react"
 import TractianLogo from "~/assets/icons/tractian-logo.svg?react"
-import { buttonVariants } from "~/components/button"
+import { Button, buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { CompanyServices } from "~/services"
 
@@ -31,19 +31,17 @@ export function AppLayout() {
           )}
           {companies.isSuccess &&
             companies.data.map((company) => (
-              <NavLink
-                key={company.id}
-                className={({ isActive }) =>
-                  buttonVariants({
-                    size: "sm",
-                    variant: isActive ? "primary" : "secondary",
-                    className: clsx("alhm-button", { active: isActive }),
-                  })
-                }
-                to={company.id}>
-                <GoldIcon className="alhmb-icon" />
+              <NavLink key={company.id} to={company.id}>
+                {({ isActive }) => (
+                  <Button
+                    className="alhm-button"
+                    variant={isActive ? "primary" : "secondary"}
+                    size="sm">
+                    <GoldIcon className="alhmb-icon" />
 
-                {company.name}
+                    {company.name}
+                  </Button>
+                )}
               </NavLink>
             ))}
         </div>
