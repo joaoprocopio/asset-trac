@@ -4,7 +4,7 @@ import type { VariantProps } from "class-variance-authority"
 import { cva } from "class-variance-authority"
 import { ComponentProps } from "react"
 
-type ButtonProps<C extends React.ElementType> = React.PropsWithChildren &
+export type TButtonProps<C extends React.ElementType> = React.PropsWithChildren &
   VariantProps<typeof buttonVariants> &
   ComponentProps<C> & {
     component?: C
@@ -16,25 +16,25 @@ export function Button<C extends React.ElementType = React.ReactHTML["button"]>(
   component,
   className,
   ...forwardedProps
-}: ButtonProps<C>) {
+}: TButtonProps<C>) {
   const Component = component ?? "button"
 
   return <Component className={buttonVariants({ variant, size, className })} {...forwardedProps} />
 }
-Button.displayName = "Button"
 
-const buttonVariants = cva("button", {
+export const buttonVariants = cva("button", {
   variants: {
     variant: {
-      default: "variant-default",
+      primary: "variant-primary",
+      secondary: "variant-secondary",
     },
     size: {
-      default: "size-default",
       sm: "size-sm",
+      md: "size-md",
     },
   },
   defaultVariants: {
-    variant: "default",
-    size: "default",
+    variant: "primary",
+    size: "md",
   },
 })

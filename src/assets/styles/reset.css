@@ -342,5 +342,6 @@ body,
 #__react {
   isolation: isolate;
   height: 100%;
-  color: hsl(var(--color-foreground));
+  background: var(--color-background);
+  color: var(--color-foreground);
 }

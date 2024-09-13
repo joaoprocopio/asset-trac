@@ -1,20 +1,27 @@
 .app-layout {
   height: 100%;
   display: grid;
-  grid-template-rows: var(--spacing-12) 1fr;
+  grid-template-rows: var(--spacing-14) 1fr;
+
+  .alh-logo {
+    height: var(--spacing-4);
+  }
 
   .al-header {
-    background-color: hsl(var(--color-brand));
-    color: hsl(var(--color-white));
-    padding: 0 var(--spacing-4);
-    border-bottom: 1px solid hsla(var(--color-divider));
+    padding: 0 var(--spacing-6);
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     .alh-menu {
-      display: flex;
-      gap: var(--spacing-4);
+      display: grid;
+      grid-template-columns: repeat(3, var(--spacing-24));
+      column-gap: var(--spacing-4);
+
+      .skeleton {
+        height: var(--spacing-8);
+      }
 
       .alhm-button {
         .alhmb-icon {

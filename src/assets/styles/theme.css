@@ -22,14 +22,25 @@
   --breakpoint-2xl: 96rem;
 
   /* Colors */
-  --color-black: 0 0 0%;
-  --color-white: 0 0 100%;
-
-  --color-brand: 235, 32%, 13%;
-  --color-foreground: 240, 10%, 3.9%;
-  --color-divider: 0, 0%, 0%, 0.12; /* hsla */
-  --color-blue-900: 211, 97%, 24%;
-  --color-blue-500: 212, 100%, 56%;
+  --color-background: #ffffff;
+  --color-foreground: #09090a;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #09090a;
+  --color-primary: #17171a;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #17171a;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #767676;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #17171a;
+  --color-destructive: #ff2424;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #e6e6e6;
+  --color-input: #e6e6e6;
+  --color-ring: #a3a3a3;
 
   /* Radii */
   --radius: 0.25rem;
@@ -156,16 +167,24 @@
   /* Animations */
   --animate-spin: spin 1s linear infinite;
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
 
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
   }
 
-  @keyframes pulse {
-    50% {
-      opacity: 0.5;
-    }
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
