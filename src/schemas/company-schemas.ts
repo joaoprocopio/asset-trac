@@ -1,10 +1,37 @@
 import { z } from "zod"
 
+export type TCompany = z.infer<typeof CompanySchema>
+export type TCompanies = z.infer<typeof CompaniesSchema>
+
+export type TLocation = z.infer<typeof LocationSchema>
+export type TLocations = z.infer<typeof LocationsSchema>
+
+export type TAsset = z.infer<typeof AssetSchema>
+export type TAssets = z.infer<typeof AssetsSchema>
+
 export const CompanySchema = z.object({
   id: z.string(),
   name: z.string(),
 })
-export type TCompany = z.infer<typeof CompanySchema>
 
 export const CompaniesSchema = z.array(CompanySchema)
-export type TCompaniesSchema = z.infer<typeof CompaniesSchema>
+
+export const LocationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  parentId: z.string().nullable(),
+})
+export const LocationsSchema = z.array(LocationSchema)
+
+export const AssetSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  locationId: z.string(),
+  gatewayId: z.string().optional(),
+  parentId: z.string().nullable(),
+  sensorId: z.string().optional(),
+  sensorType: z.string().nullable(),
+  status: z.string(),
+})
+
+export const AssetsSchema = z.array(AssetSchema)
