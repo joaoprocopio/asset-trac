@@ -18,7 +18,7 @@ export function CompanyAssetsPage() {
     enabled: typeof companyId === "string",
   })
 
-  // TODO: transformar numa arvore
+  console.log({ locations: locations.data, assets: assets.data })
 
   return <h1>tree view</h1>
 }

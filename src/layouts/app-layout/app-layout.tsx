@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router-dom"
 
 import GoldIcon from "~/assets/icons/gold-icon.svg?react"
 import TractianLogo from "~/assets/icons/tractian-logo.svg?react"
-import { Button, buttonVariants } from "~/components/button"
+import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { CompanyServices } from "~/services"
 
