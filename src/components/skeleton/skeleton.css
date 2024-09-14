@@ -1,6 +1,0 @@
-.skeleton {
-  display: block;
-  background-color: var(--color-muted);
-  animation: var(--animate-pulse);
-  border-radius: var(--radius);
-}

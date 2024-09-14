@@ -1,39 +1,43 @@
-import "./card.css"
+import { cn } from "~/utils/cn"
 
-import clsx from "clsx"
+export interface ICardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ICardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ICardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
+export interface ICardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+export interface ICardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ICardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function Card({ className, ...forwardedProps }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={clsx("card", className)} {...forwardedProps} />
-}
-
-export function CardHeader({ className, ...forwardedProps }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={clsx("card-header", className)} {...forwardedProps} />
-}
-
-export function CardTitle({
-  className,
-  ...forwardedProps
-}: React.HTMLAttributes<HTMLHeadingElement>) {
+export function Card({ className, ...forwardedProps }: ICardProps) {
   return (
-    // eslint-disable-next-line jsx-a11y/heading-has-content
-    <h3 className={clsx("card-title", className)} {...forwardedProps} />
+    <div
+      className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}
+      {...forwardedProps}
+    />
   )
 }
 
-export function CardDescription({
-  className,
-  ...forwardedProps
-}: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={clsx("card-description", className)} {...forwardedProps} />
+export function CardHeader({ className, ...forwardedProps }: ICardHeaderProps) {
+  return <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...forwardedProps} />
 }
 
-export function CardContent({
-  className,
-  ...forwardedProps
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={clsx("card-content", className)} {...forwardedProps} />
+export function CardTitle({ className, ...forwardedProps }: ICardTitleProps) {
+  return (
+    // eslint-disable-next-line jsx-a11y/heading-has-content
+    <h3
+      className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
+      {...forwardedProps}
+    />
+  )
 }
 
-export function CardFooter({ className, ...forwardedProps }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={clsx("card-footer", className)} {...forwardedProps} />
+export function CardDescription({ className, ...forwardedProps }: ICardDescriptionProps) {
+  return <p className={cn("text-sm text-muted-foreground", className)} {...forwardedProps} />
+}
+
+export function CardContent({ className, ...forwardedProps }: ICardContentProps) {
+  return <div className={cn("p-6 pt-0", className)} {...forwardedProps} />
+}
+
+export function CardFooter({ className, ...forwardedProps }: ICardFooterProps) {
+  return <div className={cn("flex items-center p-6 pt-0", className)} {...forwardedProps} />
 }

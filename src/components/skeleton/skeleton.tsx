@@ -1,23 +1,7 @@
-import "./skeleton.css"
+import { cn } from "~/utils/cn"
 
-import type { VariantProps } from "class-variance-authority"
-import { cva } from "class-variance-authority"
+export interface ISkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export type TSkeletonProps = React.PropsWithChildren &
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> &
-  VariantProps<typeof skeletonVariants>
-
-export function Skeleton({ className, variant, ...forwardedProps }: TSkeletonProps) {
-  return <div className={skeletonVariants({ variant, className })} {...forwardedProps} />
+export function Skeleton({ className, ...forwardedProps }: ISkeletonProps) {
+  return <div className={cn("animate-pulse rounded-md bg-muted", className)} {...forwardedProps} />
 }
-
-export const skeletonVariants = cva("skeleton", {
-  variants: {
-    variant: {
-      default: "variant-default",
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
-})
