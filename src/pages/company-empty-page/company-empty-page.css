@@ -1,5 +1,6 @@
 .company-empty-page {
   margin: var(--spacing-8) 0;
+
   .cep-content {
     display: flex;
     align-items: center;
