@@ -21,12 +21,12 @@ export function AppLayout() {
             <TractianLogo className="h-4" />
           </NavLink>
 
-          <div className="flex gap-4">
+          <div className="grid grid-cols-[128px_128px_128px] gap-4">
             {companies.isLoading && (
               <>
-                <Skeleton className="h-8 w-32" />
-                <Skeleton className="h-8 w-32" />
-                <Skeleton className="h-8 w-32" />
+                <Skeleton className="h-8" />
+                <Skeleton className="h-8" />
+                <Skeleton className="h-8" />
               </>
             )}
 
@@ -50,7 +50,7 @@ export function AppLayout() {
         </div>
       </header>
 
-      <main className="bg-muted">
+      <main className="grid bg-muted">
         <div className="container mx-auto px-6 py-8">
           <Outlet />
         </div>
