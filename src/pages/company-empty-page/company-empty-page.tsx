@@ -1,21 +1,15 @@
 import InboxIcon from "~/assets/icons/inbox-icon.svg?react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/card"
-import { Typography } from "~/components/typography/typography"
+import { Card, CardDescription, CardHeader, CardTitle } from "~/components/card"
 
 export function CompanyEmptyPage() {
   return (
-    <Card className="mx-auto max-w-md">
-      <CardHeader>
-        <CardTitle>Be welcome!</CardTitle>
+    <Card>
+      <CardHeader className="text-center">
+        <InboxIcon className="size-14 w-full" />
 
-        <CardDescription>Select any available unit to monitor your assets.</CardDescription>
+        <CardTitle>Unit not found</CardTitle>
+        <CardDescription>Select any available unit to monitor your assets</CardDescription>
       </CardHeader>
-
-      <CardContent className="flex flex-col items-center">
-        <InboxIcon className="size-8 text-muted-foreground" />
-
-        <Typography affects="muted">No selected unit.</Typography>
-      </CardContent>
     </Card>
   )
 }
