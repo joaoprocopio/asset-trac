@@ -1,11 +1,19 @@
 import { cn } from "~/utils/cn"
 
-export interface ISkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface ISkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  as?: React.ElementType
+}
 
-export function Skeleton({ className, ...forwardedProps }: ISkeletonProps) {
+export function Skeleton({ className, as, ...forwardedProps }: ISkeletonProps) {
+  const Comp = as || "div"
+
   return (
-    <div
-      className={cn("animate-pulse rounded-md bg-muted after:content-['']", className)}
+    <Comp
+      className={cn(
+        "animate-pulse rounded-md bg-muted",
+
+        className
+      )}
       {...forwardedProps}
     />
   )

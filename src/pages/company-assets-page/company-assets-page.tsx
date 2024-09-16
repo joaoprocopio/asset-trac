@@ -1,24 +1,43 @@
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
+// import { CompanyServices } from "~/services"
+// import { useQuery } from "@tanstack/react-query"
+import { useAtomValue } from "jotai"
 
-import { CompanyServices } from "~/services"
+import { CompanyAtoms } from "~/atoms"
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
+import { Skeleton } from "~/components/skeleton"
+import { Typography } from "~/components/typography"
 
 export function CompanyAssetsPage() {
-  const { companyId } = useParams()
+  const company = useAtomValue(CompanyAtoms.companyAtom)
 
-  const locations = useQuery({
-    queryFn: () => CompanyServices.getCompanyLocations(companyId as string),
-    queryKey: [CompanyServices.GetCompanyLocationsKey, companyId],
-    enabled: typeof companyId === "string",
-  })
+  // const locations = useQuery({
+  //   queryFn: () => CompanyServices.getCompanyLocations(company!.id),
+  //   queryKey: [CompanyServices.GetCompanyLocationsKey, company?.id],
+  //   enabled: typeof company?.id === "string",
+  // })
 
-  const assets = useQuery({
-    queryFn: () => CompanyServices.getCompanyAssets(companyId as string),
-    queryKey: [CompanyServices.GetCompanyAssetsKey, companyId],
-    enabled: typeof companyId === "string",
-  })
+  // const assets = useQuery({
+  //   queryFn: () => CompanyServices.getCompanyAssets(company!.id),
+  //   queryKey: [CompanyServices.GetCompanyAssetsKey, company?.id],
+  //   enabled: typeof company?.id === "string",
+  // })
 
-  console.log({ locations: locations.data, assets: assets.data })
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="inline-flex items-end gap-1">
+          Assets
+          {company ? (
+            <Typography className="font-normal" as="span" affects="muted">
+              / {company.name} Unit
+            </Typography>
+          ) : (
+            <Skeleton className="mb-0.5 h-4 w-20" as="span" />
+          )}
+        </CardTitle>
+      </CardHeader>
 
-  return <h1>tree view</h1>
+      <CardContent></CardContent>
+    </Card>
+  )
 }

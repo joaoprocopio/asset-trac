@@ -5,10 +5,18 @@ import { cn } from "~/utils/cn"
 
 export interface ITypographyProps
   extends VariantProps<typeof typographyVariants>,
-    React.HTMLAttributes<HTMLHeadingElement> {}
+    React.HTMLAttributes<HTMLHeadingElement> {
+  as?: React.ElementType
+}
 
-export function Typography({ className, variant, affects, ...forwardedProps }: ITypographyProps) {
-  const Comp = variant || "p"
+export function Typography({
+  className,
+  variant,
+  affects,
+  as,
+  ...forwardedProps
+}: ITypographyProps) {
+  const Comp = as || variant || "p"
 
   return (
     <Comp className={cn(typographyVariants({ variant, affects, className }))} {...forwardedProps} />
