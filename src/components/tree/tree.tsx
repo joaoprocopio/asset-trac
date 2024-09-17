@@ -1,5 +1,3 @@
-import "./tree.css"
-
 import { forwardRef, memo } from "react"
 
 export interface ITreeNode {
