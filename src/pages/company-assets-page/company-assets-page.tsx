@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query"
 import { useAtomValue } from "jotai"
 import { useMemo } from "react"
 
+import FilterIcon from "~/assets/icons/filter-icon.svg?react"
 import SearchIcon from "~/assets/icons/search-icon.svg?react"
 import { CompanyAtoms } from "~/atoms"
+import { Button } from "~/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
 import { Input } from "~/components/input"
 import { Skeleton } from "~/components/skeleton"
@@ -60,7 +62,13 @@ export function CompanyAssetsPage() {
 
       <CardContent className="grid grid-cols-2">
         <div>
-          <Input startIcon={SearchIcon} placeholder="Search assets" className="mb-4" />
+          <div className="mb-4 flex gap-6">
+            <Input startIcon={SearchIcon} placeholder="Search assets" />
+
+            <Button className="flex-shrink-0" size="icon" variant="outline">
+              <FilterIcon className="h-6 w-6" />
+            </Button>
+          </div>
 
           <Tree fields={fields} />
         </div>

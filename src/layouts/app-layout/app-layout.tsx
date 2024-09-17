@@ -37,7 +37,7 @@ export function AppLayout() {
             <TractianLogo className="h-4" />
           </NavLink>
 
-          <div className="grid grid-cols-[128px_128px_128px] gap-4">
+          <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
             {companies.isLoading && (
               <>
                 <Skeleton className="h-8" />
