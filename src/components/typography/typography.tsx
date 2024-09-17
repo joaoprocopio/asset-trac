@@ -1,27 +1,27 @@
 import type { VariantProps } from "class-variance-authority"
 import { cva } from "class-variance-authority"
+import { forwardRef } from "react"
 
 import { cn } from "~/utils/cn"
 
 export interface ITypographyProps
   extends VariantProps<typeof typographyVariants>,
-    React.HTMLAttributes<HTMLHeadingElement> {
-  as?: React.ElementType
-}
+    React.HTMLAttributes<HTMLHeadingElement> {}
 
-export function Typography({
-  className,
-  variant,
-  affects,
-  as,
-  ...forwardedProps
-}: ITypographyProps) {
-  const Comp = as || variant || "p"
+export const Typography = forwardRef<HTMLParagraphElement, ITypographyProps>(
+  ({ className, variant, affects, ...forwardedProps }: ITypographyProps, forwardedRef) => {
+    const Comp = variant || "p"
 
-  return (
-    <Comp className={cn(typographyVariants({ variant, affects, className }))} {...forwardedProps} />
-  )
-}
+    return (
+      <Comp
+        ref={forwardedRef}
+        className={cn(typographyVariants({ variant, affects, className }))}
+        {...forwardedProps}
+      />
+    )
+  }
+)
+Typography.displayName = "Typography"
 
 export const typographyVariants = cva("text-xl", {
   variants: {

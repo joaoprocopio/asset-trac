@@ -1,20 +1,18 @@
+import { forwardRef } from "react"
+
 import { cn } from "~/utils/cn"
 
-export interface ISkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  as?: React.ElementType
-}
+export interface ISkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function Skeleton({ className, as, ...forwardedProps }: ISkeletonProps) {
-  const Comp = as || "div"
-
-  return (
-    <Comp
-      className={cn(
-        "animate-pulse rounded-md bg-muted",
-
-        className
-      )}
-      {...forwardedProps}
-    />
-  )
-}
+export const Skeleton = forwardRef<HTMLDivElement, ISkeletonProps>(
+  ({ className, ...forwardedProps }, forwardedRef) => {
+    return (
+      <div
+        ref={forwardedRef}
+        className={cn("animate-pulse rounded-md bg-muted", className)}
+        {...forwardedProps}
+      />
+    )
+  }
+)
+Skeleton.displayName = "Skeleton"

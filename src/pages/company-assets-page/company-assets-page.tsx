@@ -7,29 +7,20 @@ import SearchIcon from "~/assets/icons/search-icon.svg?react"
 import { CompanyAtoms } from "~/atoms"
 import { Button } from "~/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/dropdown-menu"
 import { Input } from "~/components/input"
 import { Skeleton } from "~/components/skeleton"
 import type { ITreeNode } from "~/components/tree"
 import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
-import { CompanyConstants } from "~/constants"
-import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
+// import { CompanyConstants } from "~/constants"
+// import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
 import type { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
 export function CompanyAssetsPage() {
-  const [filterStatus, setFilterStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
-    paramKey: "status",
-  })
+  // const [filterStatus, setFilterStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
+  //   paramKey: "status",
+  // })
   const company = useAtomValue(CompanyAtoms.companyAtom)
 
   const locations = useQuery({
@@ -50,13 +41,13 @@ export function CompanyAssetsPage() {
     return buildAssetsTree(locations.data, assets.data)
   }, [locations.data, assets.data, locations.isSuccess, assets.isSuccess])
 
-  const handleChangeFilterStatus = (nextValue: CompanyConstants.TAssetStatus) => {
-    if (filterStatus === nextValue) {
-      return setFilterStatus(RESET_SEARCH_PARAM)
-    }
+  // const handleChangeFilterStatus = (nextValue: CompanyConstants.TAssetStatus) => {
+  //   if (filterStatus === nextValue) {
+  //     return setFilterStatus(RESET_SEARCH_PARAM)
+  //   }
 
-    return setFilterStatus(nextValue)
-  }
+  //   return setFilterStatus(nextValue)
+  // }
 
   return (
     <Card className="h-full">
@@ -64,11 +55,11 @@ export function CompanyAssetsPage() {
         <CardTitle className="inline-flex items-end gap-1">
           Assets
           {company ? (
-            <Typography className="font-normal" as="span" affects="muted">
+            <Typography className="font-normal" affects="muted">
               / {company.name} Unit
             </Typography>
           ) : (
-            <Skeleton className="mb-0.5 h-4 w-20" as="span" />
+            <Skeleton className="mb-0.5 h-4 w-20" />
           )}
         </CardTitle>
       </CardHeader>
@@ -78,32 +69,10 @@ export function CompanyAssetsPage() {
           <div className="mb-4 grid grid-cols-[1fr_6rem] items-center gap-4">
             <Input startIcon={SearchIcon} placeholder="Search assets" />
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="h-full gap-2" variant="outline">
-                  <FilterIcon className="h-5 w-5" />
-                  Filter
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Filter assets by status</DropdownMenuLabel>
-
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup
-                  value={filterStatus}
-                  onValueChange={(nextValue) =>
-                    handleChangeFilterStatus(nextValue as CompanyConstants.TAssetStatus)
-                  }>
-                  <DropdownMenuRadioItem value={CompanyConstants.AssetStatus.Operating}>
-                    Operating
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value={CompanyConstants.AssetStatus.Alert}>
-                    Critical
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button className="h-full gap-2" variant="outline">
+              <FilterIcon className="h-5 w-5" />
+              Filter
+            </Button>
           </div>
 
           <div className="h-full overflow-auto">

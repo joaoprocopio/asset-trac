@@ -1,3 +1,5 @@
+import { forwardRef } from "react"
+
 export interface ITreeProps {
   tree?: ITree
 }
@@ -10,6 +12,7 @@ export interface ITreeNode {
   children?: ITreeNode[]
 }
 
-export function Tree({ tree }: ITreeProps) {
-  return <div>ima tree</div>
-}
+export const Tree = forwardRef<HTMLDivElement, ITreeProps>(({ tree }: ITreeProps, forwardedRef) => {
+  return <div ref={forwardedRef}>ima tree</div>
+})
+Tree.displayName = "Tree"

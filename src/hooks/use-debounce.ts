@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from "react"
 
-// https://github.com/eavam/use-debouncy/blob/main/src/fn.ts
 export const useDebouncedFn = <Fn extends (...args: Parameters<Fn>) => void>(
   fn: Fn,
   wait = 500
