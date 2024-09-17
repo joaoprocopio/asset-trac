@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
 import { Input } from "~/components/input"
 import { Separator } from "~/components/separator"
 import { Skeleton } from "~/components/skeleton"
+import type { ITree } from "~/components/tree"
+import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
 import { CompanyConstants } from "~/constants"
 import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
@@ -54,7 +56,7 @@ export function CompanyAssetsPage() {
 
   return (
     <Card className="flex h-full flex-col">
-      <CardHeader>
+      <CardHeader className="border-b">
         <CardTitle className="inline-flex items-end gap-1">
           Assets
           {company ? (
@@ -67,9 +69,9 @@ export function CompanyAssetsPage() {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0">
-        <div className="mb-6 overflow-y-auto">
-          <div className="sticky top-0 flex gap-6 bg-background p-6 pt-2">
+      <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0 pb-6">
+        <div className="overflow-y-scroll">
+          <div className="sticky inset-0 flex gap-6 border-b bg-background px-6 py-4">
             <Input startIcon={SearchIcon} placeholder="Search assets" />
 
             <div className="flex gap-4">
@@ -94,11 +96,17 @@ export function CompanyAssetsPage() {
               </Button>
             </div>
           </div>
+
+          <div className="p-6 pb-0">
+            <pre>
+              <Tree tree={assetsTree} />
+            </pre>
+          </div>
         </div>
 
-        <Separator className="mb-6 h-auto overflow-hidden" orientation="vertical" />
+        <Separator className="h-auto overflow-hidden" orientation="vertical" />
 
-        <div className="mb-6 overflow-y-auto p-6 pt-2">
+        <div className="overflow-y-scroll p-6 pt-2">
           <Typography variant="h3">MOTORS H12D - Stage 3</Typography>
         </div>
       </CardContent>
@@ -106,20 +114,9 @@ export function CompanyAssetsPage() {
   )
 }
 
-type TTree = {
-  id: string
-  name: string
-  children?: TTree[]
-}
-
-type TGraphNode = {
-  id: string
-  attributes?: Record<string, unknown>
-}
-
 class Graph {
-  private _nodes = new Map<string, TGraphNode["attributes"]>()
-  private _edges = new Map<string, Set<TGraphNode["id"]>>()
+  private _nodes = new Map<string, Record<string, unknown>>()
+  private _edges = new Map<string, Set<string>>()
 
   get nodes() {
     return this._nodes
@@ -129,19 +126,19 @@ class Graph {
     return this._edges
   }
 
-  hasNode(id: TGraphNode["id"]): boolean {
+  hasNode(id: string): boolean {
     return this._nodes.has(id)
   }
 
-  getNode(id: TGraphNode["id"]): TGraphNode["attributes"] | undefined {
+  getNode(id: string): Record<string, unknown> | undefined {
     return this._nodes.get(id)
   }
 
-  setNode(id: TGraphNode["id"], attributes?: TGraphNode["attributes"]): void {
-    this._nodes.set(id, attributes)
+  setNode(id: string, attributes?: Record<string, unknown>): void {
+    this._nodes.set(id, attributes ?? {})
   }
 
-  setEdge(parentId: TGraphNode["id"], childId: TGraphNode["id"]): void {
+  setEdge(parentId: string, childId: string): void {
     if (!this._edges.has(parentId)) {
       this._edges.set(parentId, new Set())
     }
@@ -193,9 +190,9 @@ function buildTree(graph: Graph) {
     }
   }
 
-  const tree: TTree[] = []
+  const tree: ITree[] = []
 
-  function buildSubtree(nodeId: string): TTree {
+  function buildSubtree(nodeId: string): ITree {
     const node = graph.getNode(nodeId)
     const children = graph.edges.get(nodeId)
 
@@ -203,7 +200,7 @@ function buildTree(graph: Graph) {
       node!.children = Array.from(children).map(buildSubtree)
     }
 
-    return node as TTree
+    return node as unknown as ITree
   }
 
   for (const root of roots) {
