@@ -55,9 +55,10 @@ export function AppLayout() {
                     buttonVariants({
                       size: "sm",
                       variant: state.isActive ? "default" : "secondary",
+                      className: "gap-2",
                     })
                   }>
-                  <GoldIcon className="mr-2 h-5" />
+                  <GoldIcon className="h-5 w-5" />
 
                   {`${company.name} Unit`}
                 </NavLink>

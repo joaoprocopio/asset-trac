@@ -1,5 +1,5 @@
 import { atom } from "jotai"
 
-import { TCompany } from "~/schemas"
+import { CompanySchemas } from "~/schemas"
 
-export const companyAtom = atom<TCompany>()
+export const companyAtom = atom<CompanySchemas.TCompany>()

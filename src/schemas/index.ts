@@ -1,1 +1,1 @@
-export * from "./company-schemas"
+export * as CompanySchemas from "./company-schemas"

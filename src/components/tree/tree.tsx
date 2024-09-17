@@ -1,9 +1,15 @@
-import "@syncfusion/ej2-base/styles/material.css"
-import "@syncfusion/ej2-react-navigations/styles/material.css"
-import "@syncfusion/ej2-inputs/styles/material.css"
-import "@syncfusion/ej2-buttons/styles/material.css"
+export interface ITreeProps {
+  tree?: ITree
+}
 
-import { registerLicense } from "@syncfusion/ej2-base"
-export * from "@syncfusion/ej2-react-navigations"
+export interface ITree extends Array<ITreeNode> {}
 
-registerLicense(import.meta.env.VITE_KEY)
+export interface ITreeNode {
+  id: string
+  name: string
+  children?: ITreeNode[]
+}
+
+export function Tree({ tree }: ITreeProps) {
+  return <div>ima tree</div>
+}

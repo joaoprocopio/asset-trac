@@ -7,15 +7,29 @@ import SearchIcon from "~/assets/icons/search-icon.svg?react"
 import { CompanyAtoms } from "~/atoms"
 import { Button } from "~/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/dropdown-menu"
 import { Input } from "~/components/input"
 import { Skeleton } from "~/components/skeleton"
-import type { FieldsSettingsModel } from "~/components/tree"
-import { TreeViewComponent as Tree } from "~/components/tree"
+import type { ITreeNode } from "~/components/tree"
+import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
-import type { TAssets, TLocations } from "~/schemas"
+import { CompanyConstants } from "~/constants"
+import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
+import type { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
 export function CompanyAssetsPage() {
+  const [filterStatus, setFilterStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
+    paramKey: "status",
+  })
   const company = useAtomValue(CompanyAtoms.companyAtom)
 
   const locations = useQuery({
@@ -30,23 +44,22 @@ export function CompanyAssetsPage() {
     enabled: typeof company?.id === "string",
   })
 
-  const fields = useMemo<FieldsSettingsModel | undefined>(() => {
-    const baseFields: FieldsSettingsModel = {
-      id: "id",
-      text: "name",
-      child: "children",
-    }
-
+  const assetsTree = useMemo(() => {
     if (!(locations.isSuccess && assets.isSuccess)) return undefined
-    if (!(locations.data?.length && assets.data?.length)) return undefined
 
-    baseFields.dataSource = composeAssetsDataSource(locations.data, assets.data)
-
-    return baseFields
+    return buildAssetsTree(locations.data, assets.data)
   }, [locations.data, assets.data, locations.isSuccess, assets.isSuccess])
 
+  const handleChangeFilterStatus = (nextValue: CompanyConstants.TAssetStatus) => {
+    if (filterStatus === nextValue) {
+      return setFilterStatus(RESET_SEARCH_PARAM)
+    }
+
+    return setFilterStatus(nextValue)
+  }
+
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="inline-flex items-end gap-1">
           Assets
@@ -60,71 +73,86 @@ export function CompanyAssetsPage() {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="grid grid-cols-2">
-        <div>
-          <div className="mb-4 flex gap-6">
+      <CardContent className="grid grid-cols-2 gap-8">
+        <div className="grid grid-rows-[2.5rem_1fr] gap-8">
+          <div className="mb-4 grid grid-cols-[1fr_6rem] items-center gap-4">
             <Input startIcon={SearchIcon} placeholder="Search assets" />
 
-            <Button className="flex-shrink-0" size="icon" variant="outline">
-              <FilterIcon className="h-6 w-6" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="h-full gap-2" variant="outline">
+                  <FilterIcon className="h-5 w-5" />
+                  Filter
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Filter assets by status</DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={filterStatus}
+                  onValueChange={(nextValue) =>
+                    handleChangeFilterStatus(nextValue as CompanyConstants.TAssetStatus)
+                  }>
+                  <DropdownMenuRadioItem value={CompanyConstants.AssetStatus.Operating}>
+                    Operating
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value={CompanyConstants.AssetStatus.Alert}>
+                    Critical
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
-          <Tree fields={fields} />
+          <div className="h-full overflow-auto">
+            <Tree tree={assetsTree} />
+          </div>
         </div>
+
+        <div>Tree content</div>
       </CardContent>
     </Card>
   )
 }
 
-interface AssetNode {
-  id: string
-  name: string
-  children?: AssetNode[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any
-}
+function buildAssetsTree(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
+  const treeMemo: Record<string, ITreeNode> = {}
 
-// TODO: Isso aqui não tá completamente correto, melhorar
-function composeAssetsDataSource(locations: TLocations, assets: TAssets): AssetNode[] {
-  const locationMap = new Map<string, AssetNode>()
-  const assetMap = new Map<string, AssetNode>()
+  function buildTree(parentId: string | null) {
+    for (let locationIndex = 0; locations.length > locationIndex; locationIndex++) {
+      const location = locations[locationIndex]
 
-  // Create a map of locations
-  locations.forEach((location) => {
-    locationMap.set(location.id, { id: location.id, name: location.name, children: [] })
-  })
+      if (!treeMemo[location.id]) {
+        treeMemo[location.id] = {
+          id: location.id,
+          name: location.name,
+        }
+      }
 
-  // Create a map of assets
-  assets.forEach((asset) => {
-    assetMap.set(asset.id, { id: asset.id, name: asset.name, children: [] })
-  })
-
-  // Helper function to build the tree
-  function buildTree(parentId: string | null): AssetNode[] {
-    const nodes: AssetNode[] = []
-
-    // Add locations with the given parentId
-    locations.forEach((location) => {
       if (location.parentId === parentId) {
-        const node = locationMap.get(location.id)!
-        node.children = buildTree(location.id)
-        nodes.push(node)
-      }
-    })
+        treeMemo[location.id].children = []
 
-    // Add assets with the given parentId
-    assets.forEach((asset) => {
-      if (asset.parentId === parentId) {
-        const node = assetMap.get(asset.id)!
-        node.children = buildTree(asset.id)
-        nodes.push(node)
-      }
-    })
+        for (let assetIndex = 0; assets.length > assetIndex; assetIndex++) {
+          const asset = assets[assetIndex]
 
-    return nodes
+          if (asset.locationId === location.id) {
+            treeMemo[location.id].children!.push({
+              id: asset.id,
+              name: asset.name,
+            })
+          }
+        }
+
+        buildTree(location.id)
+      }
+    }
   }
 
-  // Start building the tree from the root nodes (parentId is null)
-  return buildTree(null)
+  buildTree(null)
+
+  const tree = Object.values(treeMemo)
+
+  return tree
 }

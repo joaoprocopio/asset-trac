@@ -25,11 +25,11 @@ export function Input({ className, type, startIcon, endIcon, ...forwardedProps }
       />
 
       {StartIcon && (
-        <StartIcon className="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 transform text-muted-foreground peer-focus:text-foreground" />
+        <StartIcon className="absolute left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 transform text-muted-foreground peer-focus:text-foreground" />
       )}
 
       {EndIcon && (
-        <EndIcon className="absolute right-2.5 top-1/2 size-5 -translate-y-1/2 transform text-muted-foreground peer-focus:text-foreground" />
+        <EndIcon className="absolute right-2.5 top-1/2 h-5 w-5 -translate-y-1/2 transform text-muted-foreground peer-focus:text-foreground" />
       )}
     </div>
   )
