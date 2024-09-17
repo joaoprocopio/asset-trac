@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
 import { Input } from "~/components/input"
 import { Separator } from "~/components/separator"
 import { Skeleton } from "~/components/skeleton"
-import type { ITree } from "~/components/tree"
+import type { ITreeNode } from "~/components/tree"
 import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
 import { CompanyConstants } from "~/constants"
@@ -69,7 +69,7 @@ export function CompanyAssetsPage() {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0 pb-6">
+      <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0">
         <div className="overflow-y-scroll">
           <div className="sticky inset-0 flex gap-6 border-b bg-background px-6 py-4">
             <Input startIcon={SearchIcon} placeholder="Search assets" />
@@ -97,16 +97,14 @@ export function CompanyAssetsPage() {
             </div>
           </div>
 
-          <div className="p-6 pb-0">
-            <pre>
-              <Tree tree={assetsTree} />
-            </pre>
+          <div className="p-6">
+            <Tree tree={assetsTree} />
           </div>
         </div>
 
         <Separator className="h-auto overflow-hidden" orientation="vertical" />
 
-        <div className="overflow-y-scroll p-6 pt-2">
+        <div className="overflow-y-scroll px-6 pb-6 pt-4">
           <Typography variant="h3">MOTORS H12D - Stage 3</Typography>
         </div>
       </CardContent>
@@ -190,9 +188,9 @@ function buildTree(graph: Graph) {
     }
   }
 
-  const tree: ITree[] = []
+  const tree: ITreeNode[] = []
 
-  function buildSubtree(nodeId: string): ITree {
+  function buildSubtree(nodeId: string): ITreeNode {
     const node = graph.getNode(nodeId)
     const children = graph.edges.get(nodeId)
 
@@ -200,7 +198,7 @@ function buildTree(graph: Graph) {
       node!.children = Array.from(children).map(buildSubtree)
     }
 
-    return node as unknown as ITree
+    return node as unknown as ITreeNode
   }
 
   for (const root of roots) {
