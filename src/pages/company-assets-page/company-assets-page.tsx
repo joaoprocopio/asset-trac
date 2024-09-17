@@ -2,25 +2,27 @@ import { useQuery } from "@tanstack/react-query"
 import { useAtomValue } from "jotai"
 import { useMemo } from "react"
 
-import FilterIcon from "~/assets/icons/filter-icon.svg?react"
+import AlertIcon from "~/assets/icons/alert-icon.svg?react"
+import OperatingIcon from "~/assets/icons/operating-icon.svg?react"
 import SearchIcon from "~/assets/icons/search-icon.svg?react"
 import { CompanyAtoms } from "~/atoms"
 import { Button } from "~/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
 import { Input } from "~/components/input"
+import { Separator } from "~/components/separator"
 import { Skeleton } from "~/components/skeleton"
 import type { ITreeNode } from "~/components/tree"
 import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
-// import { CompanyConstants } from "~/constants"
-// import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
+import { CompanyConstants } from "~/constants"
+import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
 import type { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
 export function CompanyAssetsPage() {
-  // const [filterStatus, setFilterStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
-  //   paramKey: "status",
-  // })
+  const [filterStatus, setFilterStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
+    paramKey: "status",
+  })
   const company = useAtomValue(CompanyAtoms.companyAtom)
 
   const locations = useQuery({
@@ -35,22 +37,23 @@ export function CompanyAssetsPage() {
     enabled: typeof company?.id === "string",
   })
 
+  // TODO: mover essa função pra um worker
   const assetsTree = useMemo(() => {
     if (!(locations.isSuccess && assets.isSuccess)) return undefined
 
     return buildAssetsTree(locations.data, assets.data)
   }, [locations.data, assets.data, locations.isSuccess, assets.isSuccess])
 
-  // const handleChangeFilterStatus = (nextValue: CompanyConstants.TAssetStatus) => {
-  //   if (filterStatus === nextValue) {
-  //     return setFilterStatus(RESET_SEARCH_PARAM)
-  //   }
+  const handleChangeFilterStatus = (nextValue: CompanyConstants.TAssetStatus) => {
+    if (filterStatus === nextValue) {
+      return setFilterStatus(RESET_SEARCH_PARAM)
+    }
 
-  //   return setFilterStatus(nextValue)
-  // }
+    return setFilterStatus(nextValue)
+  }
 
   return (
-    <Card className="h-full">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle className="inline-flex items-end gap-1">
           Assets
@@ -64,23 +67,44 @@ export function CompanyAssetsPage() {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="grid grid-cols-2 gap-8">
-        <div className="grid grid-rows-[2.5rem_1fr] gap-8">
-          <div className="mb-4 grid grid-cols-[1fr_6rem] items-center gap-4">
+      <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0">
+        <div className="mb-6 overflow-y-auto">
+          <div className="sticky top-0 flex gap-6 bg-background p-6 pt-2">
             <Input startIcon={SearchIcon} placeholder="Search assets" />
 
-            <Button className="h-full gap-2" variant="outline">
-              <FilterIcon className="h-5 w-5" />
-              Filter
-            </Button>
+            <div className="flex gap-4">
+              <Button
+                className="h-10 gap-2"
+                variant={
+                  filterStatus === CompanyConstants.AssetStatus.Operating ? "default" : "outline"
+                }
+                onClick={() => handleChangeFilterStatus(CompanyConstants.AssetStatus.Operating)}>
+                <OperatingIcon className="h-5 w-5" />
+                Operating
+              </Button>
+
+              <Button
+                className="h-10 gap-2"
+                variant={
+                  filterStatus === CompanyConstants.AssetStatus.Alert ? "default" : "outline"
+                }
+                onClick={() => handleChangeFilterStatus(CompanyConstants.AssetStatus.Alert)}>
+                <AlertIcon className="h-5 w-5" />
+                Critical
+              </Button>
+            </div>
           </div>
 
-          <div className="h-full overflow-auto">
+          <div className="p-6 pt-0">
             <Tree tree={assetsTree} />
           </div>
         </div>
 
-        <div>Tree content</div>
+        <Separator className="mb-6 h-auto overflow-hidden" orientation="vertical" />
+
+        <div className="mb-6 overflow-y-auto p-6 pt-2">
+          <Typography variant="h3">MOTORS H12D - Stage 3</Typography>
+        </div>
       </CardContent>
     </Card>
   )

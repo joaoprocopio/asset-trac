@@ -9,13 +9,9 @@ export interface IButtonProps
     VariantProps<typeof buttonVariants> {}
 
 export const Button = forwardRef<HTMLButtonElement, IButtonProps>(
-  ({ className, variant, size, ...forwardedProps }, forwardedRef) => {
+  ({ className, variant, size, ...props }, ref) => {
     return (
-      <button
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={forwardedRef}
-        {...forwardedProps}
-      />
+      <button className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
     )
   }
 )

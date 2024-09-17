@@ -39,6 +39,6 @@
   html,
   body,
   #__react {
-    @apply h-full;
+    @apply h-full max-h-full min-h-full;
   }
 }

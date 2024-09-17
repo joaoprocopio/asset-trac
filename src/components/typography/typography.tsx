@@ -9,14 +9,14 @@ export interface ITypographyProps
     React.HTMLAttributes<HTMLHeadingElement> {}
 
 export const Typography = forwardRef<HTMLParagraphElement, ITypographyProps>(
-  ({ className, variant, affects, ...forwardedProps }: ITypographyProps, forwardedRef) => {
+  ({ className, variant, affects, ...props }: ITypographyProps, ref) => {
     const Comp = variant || "p"
 
     return (
       <Comp
-        ref={forwardedRef}
+        ref={ref}
         className={cn(typographyVariants({ variant, affects, className }))}
-        {...forwardedProps}
+        {...props}
       />
     )
   }

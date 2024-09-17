@@ -12,7 +12,7 @@ export interface ITreeNode {
   children?: ITreeNode[]
 }
 
-export const Tree = forwardRef<HTMLDivElement, ITreeProps>(({ tree }: ITreeProps, forwardedRef) => {
-  return <div ref={forwardedRef}>ima tree</div>
+export const Tree = forwardRef<HTMLDivElement, ITreeProps>(({ tree }: ITreeProps, ref) => {
+  return <div ref={ref}>ima tree</div>
 })
 Tree.displayName = "Tree"

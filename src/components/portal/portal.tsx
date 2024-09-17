@@ -6,16 +6,14 @@ export interface IPortalProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Portal = forwardRef<React.ElementRef<"div">, IPortalProps>(
-  ({ container: containerProp, ...forwardedProps }, forwardedRef) => {
+  ({ container: containerProp, ...props }, ref) => {
     const [mounted, setMounted] = useState(false)
 
     useLayoutEffect(() => setMounted(true), [])
 
     const container = containerProp || (mounted && globalThis?.document?.body)
 
-    return container
-      ? createPortal(<div {...forwardedProps} ref={forwardedRef} />, container)
-      : null
+    return container ? createPortal(<div {...props} ref={ref} />, container) : null
   }
 )
 Portal.displayName = "Portal"
