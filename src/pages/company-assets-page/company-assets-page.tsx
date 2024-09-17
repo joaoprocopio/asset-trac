@@ -11,8 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
 import { Input } from "~/components/input"
 import { Separator } from "~/components/separator"
 import { Skeleton } from "~/components/skeleton"
-import type { ITreeNode } from "~/components/tree"
-import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
 import { CompanyConstants } from "~/constants"
 import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
@@ -37,11 +35,13 @@ export function CompanyAssetsPage() {
     enabled: typeof company?.id === "string",
   })
 
-  // TODO: mover essa função pra um worker
   const assetsTree = useMemo(() => {
     if (!(locations.isSuccess && assets.isSuccess)) return undefined
 
-    return buildAssetsTree(locations.data, assets.data)
+    const graph = buildGraph(locations.data, assets.data)
+    const tree = buildTree(graph)
+
+    return tree
   }, [locations.data, assets.data, locations.isSuccess, assets.isSuccess])
 
   const handleChangeFilterStatus = (nextValue: CompanyConstants.TAssetStatus) => {
@@ -94,10 +94,6 @@ export function CompanyAssetsPage() {
               </Button>
             </div>
           </div>
-
-          <div className="p-6 pt-0">
-            <Tree tree={assetsTree} />
-          </div>
         </div>
 
         <Separator className="mb-6 h-auto overflow-hidden" orientation="vertical" />
@@ -110,42 +106,111 @@ export function CompanyAssetsPage() {
   )
 }
 
-function buildAssetsTree(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
-  const treeMemo: Record<string, ITreeNode> = {}
+type TTree = {
+  id: string
+  name: string
+  children?: TTree[]
+}
 
-  function buildTree(parentId: string | null) {
-    for (let locationIndex = 0; locations.length > locationIndex; locationIndex++) {
-      const location = locations[locationIndex]
+type TGraphNode = {
+  id: string
+  attributes?: Record<string, unknown>
+}
 
-      if (!treeMemo[location.id]) {
-        treeMemo[location.id] = {
-          id: location.id,
-          name: location.name,
-        }
+class Graph {
+  private _nodes = new Map<string, TGraphNode["attributes"]>()
+  private _edges = new Map<string, Set<TGraphNode["id"]>>()
+
+  get nodes() {
+    return this._nodes
+  }
+
+  get edges() {
+    return this._edges
+  }
+
+  hasNode(id: TGraphNode["id"]): boolean {
+    return this._nodes.has(id)
+  }
+
+  getNode(id: TGraphNode["id"]): TGraphNode["attributes"] | undefined {
+    return this._nodes.get(id)
+  }
+
+  setNode(id: TGraphNode["id"], attributes?: TGraphNode["attributes"]): void {
+    this._nodes.set(id, attributes)
+  }
+
+  setEdge(parentId: TGraphNode["id"], childId: TGraphNode["id"]): void {
+    if (!this._edges.has(parentId)) {
+      this._edges.set(parentId, new Set())
+    }
+
+    this._edges.get(parentId)!.add(childId)
+  }
+}
+
+function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
+  const graph = new Graph()
+
+  for (let locationIndex = 0; locationIndex < locations.length; locationIndex++) {
+    const location = locations[locationIndex]
+
+    graph.setNode(location.id, location)
+
+    if (location.parentId) {
+      if (!graph.hasNode(location.parentId)) {
+        graph.setNode(location.parentId)
       }
 
-      if (location.parentId === parentId) {
-        treeMemo[location.id].children = []
-
-        for (let assetIndex = 0; assets.length > assetIndex; assetIndex++) {
-          const asset = assets[assetIndex]
-
-          if (asset.locationId === location.id) {
-            treeMemo[location.id].children!.push({
-              id: asset.id,
-              name: asset.name,
-            })
-          }
-        }
-
-        buildTree(location.id)
-      }
+      graph.setEdge(location.parentId, location.id)
     }
   }
 
-  buildTree(null)
+  for (let assetsIndex = 0; assetsIndex < assets.length; assetsIndex++) {
+    const asset = assets[assetsIndex]
 
-  const tree = Object.values(treeMemo)
+    graph.setNode(asset.id, asset)
+
+    if (asset.parentId) {
+      if (!graph.hasNode(asset.parentId)) {
+        graph.setNode(asset.parentId)
+      }
+
+      graph.setEdge(asset.parentId, asset.id)
+    }
+  }
+
+  return graph
+}
+
+function buildTree(graph: Graph) {
+  const roots = new Set(graph.nodes.keys())
+
+  for (const [, children] of graph.edges) {
+    for (const child of children) {
+      roots.delete(child)
+    }
+  }
+
+  const tree: TTree[] = []
+
+  function buildSubtree(nodeId: string): TTree {
+    const node = graph.getNode(nodeId)
+    const children = graph.edges.get(nodeId)
+
+    if (children) {
+      node!.children = Array.from(children).map(buildSubtree)
+    }
+
+    return node as TTree
+  }
+
+  for (const root of roots) {
+    const subTree = buildSubtree(root)
+
+    tree.push(subTree)
+  }
 
   return tree
 }

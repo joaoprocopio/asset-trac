@@ -28,9 +28,8 @@ export const LocationsSchema = z.array(LocationSchema)
 export const AssetSchema = z.object({
   id: z.string(),
   name: z.string(),
-  locationId: z.string().nullable(),
   gatewayId: z.string().optional(),
-  parentId: z.string().nullable(),
+  parentId: z.string().nullable(), // locationId e parentId são iguais sempre.
   sensorId: z.string().optional(),
   sensorType: z.nativeEnum(CompanyConstants.AssetSensorType).nullable(),
   status: z.nativeEnum(CompanyConstants.AssetStatus).nullable(),
