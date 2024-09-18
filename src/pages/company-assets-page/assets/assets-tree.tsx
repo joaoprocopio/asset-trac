@@ -105,28 +105,23 @@ function AssetsTreeNodeIcon(props) {
 function AssetsTreeNodeTitle(props) {
   if (!(props.status && props.sensorType)) return props.name
 
-  let Icon
-  let className = "ml-2 inline-block w-3 h-4"
   const isAlert = props.status === CompanyConstants.AssetStatus.Alert
   const isOperating = props.status === CompanyConstants.AssetStatus.Operating
+
   const isEnergyType = props.sensorType === CompanyConstants.AssetSensorType.Energy
   const isVibrationType = props.sensorType === CompanyConstants.AssetSensorType.Vibration
 
-  if (isEnergyType) {
-    Icon = ZapIcon
-  } else if (isVibrationType) {
-    Icon = CircleIcon
-  }
-
-  if (isAlert) {
-    className += " fill-destructive text-destructive"
-  } else if (isOperating) {
-    className += " fill-success text-success"
-  }
+  const classes = clsx("ml-2 inline-block h-4 w-3", {
+    "fill-destructive text-destructive": isAlert,
+    "fill-success text-success": isOperating,
+  })
 
   return (
     <>
-      {props.name} <Icon className={className} />
+      {props.name}
+
+      {isEnergyType && <ZapIcon className={classes} />}
+      {isVibrationType && <CircleIcon className={classes} />}
     </>
   )
 }
