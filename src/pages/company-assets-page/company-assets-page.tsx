@@ -28,6 +28,7 @@ import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
 import type { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
+// TODO: fazer a filtragem https://ant.design/components/tree#tree-demo-search
 export function CompanyAssetsPage() {
   const treeWrapperRef = useRef<HTMLDivElement>(null)
 
@@ -94,6 +95,8 @@ export function CompanyAssetsPage() {
     if (!nextNodeId || nextNodeId === nodeId) {
       return setNodeId(RESET_SEARCH_PARAM)
     }
+
+    console.log(graph?.getNode(nextNodeId))
 
     return setNodeId(nextNodeId)
   })
@@ -245,6 +248,10 @@ export function CompanyAssetsPage() {
             </div>
           )}
 
+          {/* TODO: mostrar o gateway */}
+          {/* TODO: mostrar o sensor */}
+          {/* TODO: mostrar o sensor type */}
+          {/* TODO: mostrar o sensor status */}
           {nodeId && <Typography variant="h3">{nodeId}</Typography>}
         </div>
       </CardContent>
