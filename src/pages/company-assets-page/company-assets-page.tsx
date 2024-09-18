@@ -6,12 +6,13 @@ import {
   ChevronDownIcon,
   CircleIcon,
   CodepenIcon,
+  InboxIcon,
   InfoIcon,
   MapPinIcon,
   SearchIcon,
   ZapIcon,
 } from "lucide-react"
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef } from "react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Button } from "~/components/button"
@@ -36,9 +37,11 @@ export function CompanyAssetsPage() {
   const [assetQuery, setAssetQuery] = useSearchParam<string>({
     paramKey: "q",
   })
+  const [nodeId, setNodeId] = useSearchParam<string>({
+    paramKey: "a",
+  })
 
   const company = useAtomValue(CompanyAtoms.companyAtom)
-  const [asset, setAsset] = useState()
 
   const locations = useQuery({
     queryFn: () => CompanyServices.getCompanyLocations(company!.id),
@@ -63,12 +66,10 @@ export function CompanyAssetsPage() {
   const tree = useMemo(() => {
     if (!graph) return undefined
 
-    setAsset(undefined)
-
     const tree = buildTree(graph)
 
     return tree
-  }, [graph, setAsset])
+  }, [graph])
 
   // TODO: separar o controlled value e debounced value em componentes
   const handleChangeAssetStatus = useDebouncedFn((nextValue: CompanyConstants.TAssetStatus) => {
@@ -79,20 +80,22 @@ export function CompanyAssetsPage() {
     return setAssetStatus(nextValue)
   })
 
-  const onSelectNode = (keys) => {
-    const [key] = keys
-
-    const node = graph?.getNode(key)
-
-    setAsset(node)
-  }
-
   const handleChangeAssetQuery = useDebouncedFn((event) => {
     if (!event.target.value.length) {
       return setAssetQuery(RESET_SEARCH_PARAM)
     }
 
     return setAssetQuery(event.target.value.trim().toLowerCase())
+  })
+
+  const onSelect = useDebouncedFn((nodeIds) => {
+    const [nextNodeId] = nodeIds
+
+    if (!nextNodeId || nextNodeId === nodeId) {
+      return setNodeId(RESET_SEARCH_PARAM)
+    }
+
+    return setNodeId(nextNodeId)
   })
 
   return (
@@ -223,8 +226,8 @@ export function CompanyAssetsPage() {
                   )
                 }}
                 selectable={true}
-                onSelect={onSelectNode}
                 treeData={tree}
+                onSelect={onSelect}
               />
             )}
           </div>
@@ -232,10 +235,17 @@ export function CompanyAssetsPage() {
 
         <Separator className="h-auto overflow-hidden" orientation="vertical" />
 
-        <div className="overflow-y-scroll px-6 pb-6 pt-4">
-          {!asset && <div></div>}
+        <div className="flex flex-col overflow-y-scroll px-6 pb-6 pt-4">
+          {!nodeId && (
+            <div className="flex flex-grow basis-px flex-col items-center justify-center text-center">
+              <InboxIcon className="h-14 w-14" />
 
-          <pre>{JSON.stringify(asset, null, 2)}</pre>
+              <Typography variant="h3">Empty</Typography>
+              <Typography affects="muted">Select any location or asset</Typography>
+            </div>
+          )}
+
+          {nodeId && <Typography variant="h3">{nodeId}</Typography>}
         </div>
       </CardContent>
     </Card>
