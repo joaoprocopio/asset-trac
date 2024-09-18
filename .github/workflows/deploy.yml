@@ -40,7 +40,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deployment
+          name: deploy
           path: ./dist
 
   deploy:
@@ -50,16 +50,16 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: deployment
+          name: deploy
           path: ./dist
 
       - name: Publish to Cloudflare Pages
-        id: deployment
-        uses: cloudflare/pages-action@v1
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
-          directory: ./dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: 3
+          command: pages deploy --project-name ${{ secrets.CLOUDFLARE_PROJECT_NAME }} ./dist
+
+      - name: Deployed
+        run: echo "Deployed to ${{ steps.deploy.outputs.command-output }}"
