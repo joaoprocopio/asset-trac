@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview",
+    "typecheck": "tsc -b",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint ."
   },
   "dependencies": {

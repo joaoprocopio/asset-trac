@@ -6,7 +6,6 @@ import svgr from "vite-plugin-svgr"
 export default defineConfig(() => {
   return {
     plugins: [react(), svgr()],
-    base: "/assets-trac/",
     server: {
       port: 3000,
     },
