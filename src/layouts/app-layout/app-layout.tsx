@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useSetAtom } from "jotai"
-import { BoxesIcon, Package2Icon } from "lucide-react"
+import { Package2Icon } from "lucide-react"
 import { useEffect } from "react"
 import { NavLink, Outlet, useParams } from "react-router-dom"
 
@@ -13,7 +13,7 @@ import { CompanyServices } from "~/services"
 export function AppLayout() {
   const { companyId } = useParams()
 
-  const setCompany = useSetAtom(CompanyAtoms.companyAtom)
+  const setCompany = useSetAtom(CompanyAtoms.selectedCompanyAtom)
 
   const companies = useQuery({
     queryFn: CompanyServices.getCompanies,
