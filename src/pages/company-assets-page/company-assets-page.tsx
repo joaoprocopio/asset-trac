@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query"
+import clsx from "clsx"
 import { useAtomValue } from "jotai"
+import {
+  BoxIcon,
+  ChevronDownIcon,
+  CircleIcon,
+  CodepenIcon,
+  InfoIcon,
+  MapPinIcon,
+  SearchIcon,
+  ZapIcon,
+} from "lucide-react"
 import { useMemo, useRef, useState } from "react"
 
-import AlertIcon from "~/assets/icons/alert-icon.svg?react"
-import AssetIcon from "~/assets/icons/asset-icon.svg?react"
-import ChevronDownIcon from "~/assets/icons/chevron-down-icon.svg?react"
-import ComponentIcon from "~/assets/icons/component-icon.svg?react"
-import LocationIcon from "~/assets/icons/location-icon.svg?react"
-import OperatingIcon from "~/assets/icons/operating-icon.svg?react"
-import SearchIcon from "~/assets/icons/search-icon.svg?react"
 import { CompanyAtoms } from "~/atoms"
 import { Button } from "~/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
@@ -122,7 +126,7 @@ export function CompanyAssetsPage() {
                   assetStatus === CompanyConstants.AssetStatus.Operating ? "default" : "outline"
                 }
                 onClick={() => handleChangeAssetStatus(CompanyConstants.AssetStatus.Operating)}>
-                <OperatingIcon className="h-5 w-5" />
+                <ZapIcon className="h-5 w-5" />
                 Operating
               </Button>
 
@@ -130,7 +134,7 @@ export function CompanyAssetsPage() {
                 className="h-10 gap-2"
                 variant={assetStatus === CompanyConstants.AssetStatus.Alert ? "default" : "outline"}
                 onClick={() => handleChangeAssetStatus(CompanyConstants.AssetStatus.Alert)}>
-                <AlertIcon className="h-5 w-5" />
+                <InfoIcon className="h-5 w-5" />
                 Critical
               </Button>
             </div>
@@ -168,29 +172,53 @@ export function CompanyAssetsPage() {
                 itemHeight={28}
                 switcherIcon={(props) => {
                   return (
-                    <ChevronDownIcon className={props.expanded && "-rotate-90 transition-all"} />
+                    <ChevronDownIcon
+                      className={clsx("h-full w-4 transition-all", {
+                        "-rotate-90": props.expanded,
+                      })}
+                    />
                   )
                 }}
                 icon={(props) => {
                   switch (props!.data!.type) {
                     case "location":
-                      return <LocationIcon className="mx-auto h-full w-4" />
+                      return <MapPinIcon className="mx-auto h-full w-4" />
                     case "asset":
-                      return <AssetIcon className="mx-auto h-full w-4" />
+                      return <BoxIcon className="mx-auto h-full w-4" />
                     case "component":
-                      return <ComponentIcon className="mx-auto h-full w-4" />
+                      return <CodepenIcon className="mx-auto h-full w-4" />
                   }
                 }}
                 titleRender={(props) => {
+                  if (!(props.status && props.sensorType)) return props.name
+
+                  let Icon
+                  let className = "ml-2 inline-block w-3 h-4"
+                  const isAlert = props.status === CompanyConstants.AssetStatus.Alert
+                  const isOperating = props.status === CompanyConstants.AssetStatus.Operating
+                  const isEnergyType = props.sensorType === CompanyConstants.AssetSensorType.Energy
+                  const isVibrationType =
+                    props.sensorType === CompanyConstants.AssetSensorType.Vibration
+
+                  if (isEnergyType) {
+                    Icon = ZapIcon
+                  } else if (isVibrationType) {
+                    Icon = CircleIcon
+                  }
+
+                  if (isAlert) {
+                    className += " fill-destructive text-destructive"
+                  } else if (isOperating) {
+                    className += " fill-success text-success"
+                  }
+
+                  if (!Icon) {
+                    debugger
+                  }
+
                   return (
                     <>
-                      {props.name}
-                      {props.status === CompanyConstants.AssetStatus.Alert && (
-                        <span className="ml-2 inline-block h-3 w-3 rounded-full bg-destructive align-middle" />
-                      )}
-                      {props.status === CompanyConstants.AssetStatus.Operating && (
-                        <span className="bg-success ml-2 inline-block h-3 w-3 rounded-full align-middle" />
-                      )}
+                      {props.name} <Icon className={className} />
                     </>
                   )
                 }}

@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { useSetAtom } from "jotai"
+import { BoxesIcon, Package2Icon } from "lucide-react"
 import { useEffect } from "react"
 import { NavLink, Outlet, useParams } from "react-router-dom"
 
-import GoldIcon from "~/assets/icons/gold-icon.svg?react"
-import TractianLogo from "~/assets/icons/tractian-logo.svg?react"
+import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { CompanyAtoms } from "~/atoms"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
@@ -58,7 +58,7 @@ export function AppLayout() {
                       className: "gap-2",
                     })
                   }>
-                  <GoldIcon className="h-5 w-5" />
+                  <Package2Icon className="h-4 w-4" />
 
                   {`${company.name} Unit`}
                 </NavLink>
