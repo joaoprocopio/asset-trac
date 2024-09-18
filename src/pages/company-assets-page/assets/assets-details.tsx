@@ -1,15 +1,16 @@
 import { InboxIcon } from "lucide-react"
 
 import { Typography } from "~/components/typography"
+import type { CompanySchemas } from "~/schemas"
 
-export interface IAssetsDetails extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAssetId?: string
+export interface IAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
+  selectedAsset: CompanySchemas.TAsset | CompanySchemas.TLocation
 }
 
-export function AssetsDetails({ selectedAssetId, ...props }: IAssetsDetails) {
+export function AssetsDetails({ selectedAsset, ...props }: IAssetsDetailsProps) {
   return (
     <div {...props}>
-      {!selectedAssetId && (
+      {!selectedAsset && (
         <div className="flex flex-grow basis-px flex-col items-center justify-center text-center">
           <InboxIcon className="h-14 w-14" />
 
@@ -22,7 +23,17 @@ export function AssetsDetails({ selectedAssetId, ...props }: IAssetsDetails) {
       {/* TODO: mostrar o sensor */}
       {/* TODO: mostrar o sensor type */}
       {/* TODO: mostrar o sensor status */}
-      {selectedAssetId && <Typography variant="h3">{selectedAssetId}</Typography>}
+      {selectedAsset && (
+        <div>
+          <header className="sticky inset-0 border-b bg-background px-4 py-5">
+            <Typography variant="h3">{selectedAsset.name}</Typography>
+          </header>
+
+          <div className="p-6">
+            <pre>{JSON.stringify(selectedAsset, null, 4)}</pre>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
