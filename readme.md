@@ -2,7 +2,7 @@
 
 ### To-do
 
-- Write unit tests with Vitest.
+- Write unit tests a benchmark with Vitest.
 - Write E2E tests with Playwright.
 - Build not-found page.
 - Build error boundary-page for unhandled errors.
