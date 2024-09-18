@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
 
-import { cn } from "~/utils/cn"
+import { cn } from "~/utils"
 
 export interface IInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   startIcon?: React.ElementType

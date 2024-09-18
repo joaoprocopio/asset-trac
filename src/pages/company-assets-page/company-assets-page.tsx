@@ -11,7 +11,10 @@ import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
 import { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
-import { AssetsDetails, AssetsFilter, AssetsHeader, AssetsTree } from "./assets"
+import { CompanyAssetsDetails } from "./company-assets-details"
+import { CompanyAssetsFilter } from "./company-assets-filter"
+import { CompanyAssetsHeader } from "./company-assets-header"
+import { CompanyAssetsTree } from "./company-assets-tree"
 
 export function CompanyAssetsPage() {
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
@@ -43,17 +46,13 @@ export function CompanyAssetsPage() {
   const graph = useMemo(() => {
     if (!(locationsQuery.isSuccess && assetsQuery.isSuccess)) return undefined
 
-    const graph = buildGraph(locationsQuery.data, assetsQuery.data)
-
-    return graph
+    return buildGraph(locationsQuery.data, assetsQuery.data)
   }, [locationsQuery.data, assetsQuery.data, locationsQuery.isSuccess, assetsQuery.isSuccess])
 
   const tree = useMemo(() => {
     if (!graph) return undefined
 
-    const tree = buildTree(graph)
-
-    return tree
+    return graph.buildTree()
   }, [graph])
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string) => {
@@ -94,11 +93,11 @@ export function CompanyAssetsPage() {
 
   return (
     <Card className="flex h-full flex-col">
-      <AssetsHeader className="border-b" selectedCompany={selectedCompany} />
+      <CompanyAssetsHeader className="border-b" selectedCompany={selectedCompany} />
 
       <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0">
         <div className="flex flex-col">
-          <AssetsFilter
+          <CompanyAssetsFilter
             className="sticky inset-0 z-10 flex gap-6 border-b bg-background px-6 py-4"
             selectedAssetName={selectedAssetName}
             selectedAssetStatus={selectedAssetStatus}
@@ -106,7 +105,7 @@ export function CompanyAssetsPage() {
             handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
           />
 
-          <AssetsTree
+          <CompanyAssetsTree
             className="flex-grow basis-px p-6 pr-0"
             tree={tree}
             selectedAssetId={selectedAssetId}
@@ -116,7 +115,10 @@ export function CompanyAssetsPage() {
 
         <Separator className="h-auto overflow-hidden" orientation="vertical" />
 
-        <AssetsDetails className="flex flex-col overflow-auto" selectedAsset={selectedAsset} />
+        <CompanyAssetsDetails
+          className="flex flex-col overflow-auto"
+          selectedAsset={selectedAsset}
+        />
       </CardContent>
     </Card>
   )
@@ -160,35 +162,4 @@ function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas
   }
 
   return graph
-}
-
-function buildTree(graph: Graph) {
-  const roots = new Set(graph.nodes.keys())
-
-  for (const [, children] of graph.edges) {
-    for (const child of children) {
-      roots.delete(child)
-    }
-  }
-
-  const tree = []
-
-  function buildSubtree(nodeId: string) {
-    const node = graph.getNode(nodeId)
-    const children = graph.edges.get(nodeId)
-
-    if (children) {
-      node!.children = Array.from(children).map(buildSubtree)
-    }
-
-    return node
-  }
-
-  for (const root of roots) {
-    const subTree = buildSubtree(root)
-
-    tree.push(subTree)
-  }
-
-  return tree
 }

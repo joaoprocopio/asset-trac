@@ -2,7 +2,7 @@ import type { VariantProps } from "class-variance-authority"
 import { cva } from "class-variance-authority"
 import { forwardRef } from "react"
 
-import { cn } from "~/utils/cn"
+import { cn } from "~/utils"
 
 export interface IButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,

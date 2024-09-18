@@ -3,11 +3,11 @@ import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import type { CompanySchemas } from "~/schemas"
 
-export interface IAssetsHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ICompanyAssetsHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedCompany?: CompanySchemas.TCompany
 }
 
-export function AssetsHeader({ selectedCompany, ...props }: IAssetsHeaderProps) {
+export function CompanyAssetsHeader({ selectedCompany, ...props }: ICompanyAssetsHeaderProps) {
   return (
     <CardHeader {...props}>
       <CardTitle className="inline-flex items-end gap-1">

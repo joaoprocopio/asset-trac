@@ -4,20 +4,20 @@ import { Button } from "~/components/button"
 import { Input } from "~/components/input"
 import { CompanyConstants } from "~/constants"
 
-export interface IAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ICompanyAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAssetName?: string
   selectedAssetStatus?: CompanyConstants.TAssetStatus
   handleChangeSelectedAssetName: (nextAssetQuery: string) => void
   handleChangeSelectedAssetStatus: (nextAssetStatus: CompanyConstants.TAssetStatus) => void
 }
 
-export function AssetsFilter({
+export function CompanyAssetsFilter({
   selectedAssetName,
   selectedAssetStatus,
   handleChangeSelectedAssetName,
   handleChangeSelectedAssetStatus,
   ...props
-}: IAssetsFilterProps) {
+}: ICompanyAssetsFilterProps) {
   return (
     <div {...props}>
       <Input

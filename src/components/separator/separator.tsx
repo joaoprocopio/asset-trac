@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
 
-import { cn } from "~/utils/cn"
+import { cn } from "~/utils"
 
 export interface ISeparatorProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: "horizontal" | "vertical"

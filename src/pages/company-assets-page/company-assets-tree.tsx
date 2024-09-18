@@ -15,18 +15,18 @@ import { Tree } from "~/components/tree"
 import { CompanyConstants } from "~/constants"
 
 // TODO: fazer a filtragem https://ant.design/components/tree#tree-demo-search
-export interface IAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
   tree?: DataNode[]
   selectedAssetId?: string
   handleChangeSelectedAssetId: (assetIds: string[]) => void
 }
 
-export function AssetsTree({
+export function CompanyAssetsTree({
   tree,
   selectedAssetId,
   handleChangeSelectedAssetId,
   ...props
-}: IAssetsTreeProps) {
+}: ICompanyAssetsTreeProps) {
   const [mounted, setMounted] = useState<boolean>(false)
 
   const treeWrapperRef = useRef<HTMLDivElement>(null)

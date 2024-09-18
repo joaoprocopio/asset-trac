@@ -3,11 +3,11 @@ import { InboxIcon } from "lucide-react"
 import { Typography } from "~/components/typography"
 import type { CompanySchemas } from "~/schemas"
 
-export interface IAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAsset: CompanySchemas.TAsset | CompanySchemas.TLocation
 }
 
-export function AssetsDetails({ selectedAsset, ...props }: IAssetsDetailsProps) {
+export function CompanyAssetsDetails({ selectedAsset, ...props }: ICompanyAssetsDetailsProps) {
   return (
     <div {...props}>
       {!selectedAsset && (
