@@ -45,29 +45,31 @@ export function CompanyAssetsPage() {
     <Card className="flex h-full flex-col">
       <CompanyAssetsHeader className="border-b px-6 py-4" selectedCompany={selectedCompany} />
 
-      <CardContent className="grid flex-grow grid-cols-[1fr_1fr] grid-rows-[4rem_1fr] overflow-hidden p-0">
-        <CompanyAssetsFilter
-          className="flex items-center gap-4 border-b px-6"
-          selectedAssetName={selectedAssetName}
-          selectedAssetStatus={selectedAssetStatus}
-          handleChangeSelectedAssetName={handleChangeSelectedAssetName}
-          handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
-        />
-
-        {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
-          <CompanyAssetsDetails className="row-span-3 border-l" />
-        ) : (
-          <CompanyAssetsDetailsSkeleton className="row-span-3 border-l" />
-        )}
-
-        {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
-          <CompanyAssetsTree
-            className="p-6 pr-0"
-            locations={locationsQuery.data}
-            assets={assetsQuery.data}
+      <CardContent className="grid flex-grow grid-cols-2 overflow-hidden p-0">
+        <div className="grid grid-rows-[4rem_1fr] border-r">
+          <CompanyAssetsFilter
+            className="flex items-center gap-6 border-b px-6"
+            selectedAssetName={selectedAssetName}
+            selectedAssetStatus={selectedAssetStatus}
+            handleChangeSelectedAssetName={handleChangeSelectedAssetName}
+            handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
           />
+
+          {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
+            <CompanyAssetsTree
+              className="p-6 pr-0"
+              locations={locationsQuery.data}
+              assets={assetsQuery.data}
+            />
+          ) : (
+            <CompanyAssetsTreeSkeleton className="p-6" />
+          )}
+        </div>
+
+        {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
+          <CompanyAssetsDetails />
         ) : (
-          <CompanyAssetsTreeSkeleton className="p-6" />
+          <CompanyAssetsDetailsSkeleton />
         )}
       </CardContent>
     </Card>
