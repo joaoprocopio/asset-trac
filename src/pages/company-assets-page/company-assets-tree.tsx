@@ -63,11 +63,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     })
 
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
-    const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => {
-      if (!node) return
-
-      return node.id
-    })
+    const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => node!.id)
 
     setExpandedKeys(nextExpandedKeys)
     setAutoExpandParent(true)
