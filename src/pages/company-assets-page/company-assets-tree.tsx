@@ -12,10 +12,9 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
 import { Tree } from "~/components/tree"
-import { CompanyConstants } from "~/constants"
+import { CompanyConstants, SearchParamsConstants } from "~/constants"
 import { Graph } from "~/datastructures"
-import type { TSetSearchParamValue } from "~/hooks"
-import { RESET_SEARCH_PARAM } from "~/hooks"
+import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks"
 import type { CompanySchemas } from "~/schemas"
 import { cn } from "~/utils"
 
@@ -23,28 +22,65 @@ import { cn } from "~/utils"
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
   locations: CompanySchemas.TLocations
   assets: CompanySchemas.TAssets
-  selectedAssetName?: string
-  selectedAssetStatus?: CompanyConstants.TAssetStatus
-  selectedAssetId?: string
-  setSelectedAssetId: TSetSearchParamValue<string>
 }
 
-export function CompanyAssetsTree({
-  locations,
-  assets,
-  selectedAssetName,
-  selectedAssetStatus,
-  selectedAssetId,
-  setSelectedAssetId,
-  ...props
-}: ICompanyAssetsTreeProps) {
+export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
   const treeWrapperRef = useRef<HTMLDivElement>(null)
 
   const [mounted, setMounted] = useState<boolean>(false)
 
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
+  const [autoExpandParent, setAutoExpandParent] = useState(true)
+
+  const [selectedAssetName] = useSearchParam<string>({
+    paramKey: SearchParamsConstants.AssetNameKey,
+  })
+  const [selectedAssetStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
+    paramKey: SearchParamsConstants.AssetStatusKey,
+  })
+  const [selectedAssetId, setSelectedAssetId] = useSearchParam<string>({
+    paramKey: SearchParamsConstants.AssetIdKey,
+  })
+
   const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
   const tree = useMemo(() => graph.buildTree(), [graph])
+  const filteredTree = useMemo(() => {
+    if (!selectedAssetStatus && !selectedAssetName) return tree
+
+    const filteredTree = graph.buildFilteredTree((node) => {
+      const shouldMatchName = node?.name && selectedAssetName
+      const shouldMatchStatus = node?.status && selectedAssetStatus
+
+      let matchName
+      let matchStatus
+
+      if (shouldMatchName) {
+        matchName = node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase()) >= 0
+      }
+
+      if (shouldMatchStatus) {
+        matchStatus = node.status === selectedAssetStatus
+      }
+
+      console.log({
+        shouldMatchName,
+        shouldMatchStatus,
+      })
+
+      if (shouldMatchName && shouldMatchStatus) {
+        return matchName && matchStatus
+      } else if (shouldMatchName) {
+        return matchName
+      } else if (shouldMatchStatus) {
+        return matchStatus
+      } else {
+        return false
+      }
+    })
+
+    return filteredTree
+  }, [graph, tree, selectedAssetStatus, selectedAssetName])
 
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
@@ -71,6 +107,11 @@ export function CompanyAssetsTree({
     [graph, setSelectedAsset, setSelectedAssetId]
   )
 
+  const handleExpand = useCallback((newExpandedKeys: React.Key[]) => {
+    setExpandedKeys(newExpandedKeys)
+    setAutoExpandParent(false)
+  }, [])
+
   useEffect(() => {
     if (mounted) return
     if (!defaultSelectedKeys[0]?.length) return
@@ -78,17 +119,13 @@ export function CompanyAssetsTree({
     handleSelect(defaultSelectedKeys)
   }, [mounted, defaultSelectedKeys, handleSelect])
 
-  useEffect(() => {}, [selectedAssetName])
-
-  useEffect(() => {}, [selectedAssetStatus])
-
   useLayoutEffect(() => {
     setMounted(true)
   }, [])
 
   return (
     <div ref={treeWrapperRef} {...props}>
-      {mounted && graph && tree ? (
+      {mounted && graph && filteredTree ? (
         <Tree
           className="!border-0"
           fieldNames={{
@@ -96,18 +133,19 @@ export function CompanyAssetsTree({
             children: "children",
             title: "name",
           }}
-          treeData={tree}
+          treeData={filteredTree}
           defaultSelectedKeys={defaultSelectedKeys}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
           showLine={true}
-          virtual={true}
           showIcon={true}
-          selectable={true}
           height={treeWrapperRef.current!.offsetHeight - 48}
           itemHeight={28}
-          switcherIcon={CompanyAssetsTreeNodeSwitcherIcon}
           icon={CompanyAssetsTreeNodeIcon}
+          switcherIcon={CompanyAssetsTreeNodeSwitcherIcon}
           titleRender={CompanyAssetsTreeNodeTitle}
           onSelect={handleSelect}
+          onExpand={handleExpand}
         />
       ) : (
         <CompanyAssetsTreeSkeleton className="pr-6" />
@@ -160,8 +198,6 @@ function CompanyAssetsTreeNodeIcon(props) {
 }
 
 function CompanyAssetsTreeNodeTitle(props) {
-  if (!(props.status && props.sensorId)) return props.name
-
   const classes = cn("ml-2 inline-block h-4 w-3", {
     "fill-destructive text-destructive": props.status === CompanyConstants.AssetStatus.Alert,
     "fill-success text-success": props.status === CompanyConstants.AssetStatus.Operating,

@@ -34,16 +34,15 @@ export function CompanyAssetsFilter({
 
   const handleChangeSelectedAssetNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextAssetQuery = event.target.value
-    const normalizedQuery = nextAssetQuery.trim().toLowerCase()
 
-    if (!normalizedQuery.length) {
+    if (!nextAssetQuery.length) {
       setSelectedAssetNameControlled(undefined)
       return debouncedHandleChangeSelectedAssetName(RESET_SEARCH_PARAM)
     }
 
-    setSelectedAssetNameControlled(normalizedQuery)
+    setSelectedAssetNameControlled(nextAssetQuery)
 
-    return debouncedHandleChangeSelectedAssetName(normalizedQuery)
+    return debouncedHandleChangeSelectedAssetName(nextAssetQuery)
   }
 
   const handleChangeSelectedAssetStatusInput = (

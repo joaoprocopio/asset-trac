@@ -28,6 +28,20 @@ export class Graph {
     this.edges.get(parentId)!.add(childId)
   }
 
+  findRoot(nodeId: string): string | undefined {
+    const node = this.nodes.get(nodeId)
+
+    if (!node) {
+      return undefined
+    }
+
+    if (!node.parentId) {
+      return nodeId
+    }
+
+    return this.findRoot(node.parentId)
+  }
+
   buildSubtree(nodeId: string) {
     const node = this.getNode(nodeId)
     const children = this.edges.get(nodeId)
@@ -61,5 +75,44 @@ export class Graph {
     }
 
     return tree
+  }
+
+  buildFilteredTree(predicate: (node: Record<string, unknown>) => boolean) {
+    const filteredNodes = new Map<string, Record<string, unknown>>()
+
+    for (const [nodeId, node] of this.nodes) {
+      if (!predicate(node)) {
+        continue
+      }
+
+      filteredNodes.set(nodeId, node)
+    }
+
+    const tree = new Map<string, Record<string, unknown>>()
+
+    for (const [nodeId, node] of filteredNodes) {
+      if (tree.has(nodeId)) {
+        continue
+      }
+
+      if (!node.parentId) {
+        // Se não tem parentId, é raiz, então constrói a sub-árvore a partir desse nó
+        const subTree = this.buildSubtree(nodeId)
+        tree.set(nodeId, subTree)
+
+        continue
+      }
+
+      const rootNodeId = this.findRoot(node.parentId)
+
+      if (!rootNodeId || tree.has(rootNodeId)) {
+        continue
+      }
+
+      const subTree = this.buildSubtree(rootNodeId)
+      tree.set(rootNodeId, subTree)
+    }
+
+    return Array.from(tree.values())
   }
 }

@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai"
 
 import { CompanyAtoms } from "~/atoms"
 import { Card, CardContent } from "~/components/card"
-import { CompanyConstants } from "~/constants"
+import { CompanyConstants, SearchParamsConstants } from "~/constants"
 import { TSetSearchParamValue, useSearchParam } from "~/hooks"
 import { CompanyServices } from "~/services"
 
@@ -16,15 +16,12 @@ export function CompanyAssetsPage() {
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
 
   const [selectedAssetName, setSelectedAssetName] = useSearchParam<string>({
-    paramKey: "an",
+    paramKey: SearchParamsConstants.AssetNameKey,
   })
   const [selectedAssetStatus, setSelectedAssetStatus] =
     useSearchParam<CompanyConstants.TAssetStatus>({
-      paramKey: "as",
+      paramKey: SearchParamsConstants.AssetStatusKey,
     })
-  const [selectedAssetId, setSelectedAssetId] = useSearchParam<string>({
-    paramKey: "ai",
-  })
 
   const locationsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyLocations(selectedCompany!.id),
@@ -52,7 +49,7 @@ export function CompanyAssetsPage() {
     <Card className="flex h-full flex-col">
       <CompanyAssetsHeader className="border-b px-6 py-4" selectedCompany={selectedCompany} />
 
-      <CardContent className="grid flex-grow grid-cols-[1fr_0.75fr] grid-rows-[4rem_1fr] overflow-hidden p-0">
+      <CardContent className="grid flex-grow grid-cols-[1fr_1fr] grid-rows-[4rem_1fr] overflow-hidden p-0">
         <CompanyAssetsFilter
           className="flex items-center gap-4 border-b px-6"
           selectedAssetName={selectedAssetName}
@@ -72,10 +69,6 @@ export function CompanyAssetsPage() {
             className="p-6 pr-0"
             locations={locationsQuery.data}
             assets={assetsQuery.data}
-            selectedAssetName={selectedAssetName}
-            selectedAssetStatus={selectedAssetStatus}
-            selectedAssetId={selectedAssetId}
-            setSelectedAssetId={setSelectedAssetId}
           />
         ) : (
           <CompanyAssetsTreeSkeleton className="p-6" />
