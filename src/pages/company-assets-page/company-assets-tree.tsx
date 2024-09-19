@@ -48,36 +48,31 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const filteredTree = useMemo(() => {
     if (!selectedAssetStatus && !selectedAssetName) return tree
 
-    const filteredTree = graph.buildFilteredTree((node) => {
-      const shouldMatchName = node?.name && selectedAssetName
-      const shouldMatchStatus = node?.status && selectedAssetStatus
+    const filteredNodes = graph.filterNodes((node) => {
+      const shouldMatchName = !!selectedAssetName
+      const shouldMatchStatus = !!selectedAssetStatus
 
-      let matchName
-      let matchStatus
+      const matchName =
+        shouldMatchName && node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase()) >= 0
+      const matchStatus = shouldMatchStatus && node.status === selectedAssetStatus
 
+      if (shouldMatchStatus && shouldMatchName) {
+        return matchStatus && matchName
+      }
       if (shouldMatchName) {
-        matchName = node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase()) >= 0
-      }
-
-      if (shouldMatchStatus) {
-        matchStatus = node.status === selectedAssetStatus
-      }
-
-      console.log({
-        shouldMatchName,
-        shouldMatchStatus,
-      })
-
-      if (shouldMatchName && shouldMatchStatus) {
-        return matchName && matchStatus
-      } else if (shouldMatchName) {
         return matchName
-      } else if (shouldMatchStatus) {
-        return matchStatus
-      } else {
-        return false
       }
+      if (shouldMatchStatus) {
+        return matchStatus
+      }
+      return false
     })
+
+    const filteredTree = graph.buildBacktracedTree(filteredNodes)
+    const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => node.id)
+
+    setExpandedKeys(nextExpandedKeys)
+    setAutoExpandParent(true)
 
     return filteredTree
   }, [graph, tree, selectedAssetStatus, selectedAssetName])

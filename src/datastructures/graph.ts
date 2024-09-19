@@ -28,7 +28,7 @@ export class Graph {
     this.edges.get(parentId)!.add(childId)
   }
 
-  findRoot(nodeId: string): string | undefined {
+  findNodeRoot(nodeId: string): string | undefined {
     const node = this.nodes.get(nodeId)
 
     if (!node) {
@@ -39,7 +39,21 @@ export class Graph {
       return nodeId
     }
 
-    return this.findRoot(node.parentId)
+    return this.findNodeRoot(node.parentId)
+  }
+
+  filterNodes(predicate: (node: Record<string, unknown>) => boolean) {
+    const filteredNodes = new Map<string, Record<string, unknown>>()
+
+    for (const [nodeId, node] of this.nodes) {
+      if (!predicate(node)) {
+        continue
+      }
+
+      filteredNodes.set(nodeId, node)
+    }
+
+    return filteredNodes
   }
 
   buildSubtree(nodeId: string) {
@@ -74,45 +88,61 @@ export class Graph {
       tree.push(subTree)
     }
 
+    sortTree(tree)
+
     return tree
   }
 
-  buildFilteredTree(predicate: (node: Record<string, unknown>) => boolean) {
-    const filteredNodes = new Map<string, Record<string, unknown>>()
+  buildBacktracedTree(nodes: Map<string, Record<string, unknown>>) {
+    const treeMap = new Map<string, Record<string, unknown>>()
 
-    for (const [nodeId, node] of this.nodes) {
-      if (!predicate(node)) {
-        continue
-      }
-
-      filteredNodes.set(nodeId, node)
-    }
-
-    const tree = new Map<string, Record<string, unknown>>()
-
-    for (const [nodeId, node] of filteredNodes) {
-      if (tree.has(nodeId)) {
+    for (const [nodeId, node] of nodes) {
+      if (treeMap.has(nodeId)) {
         continue
       }
 
       if (!node.parentId) {
         // Se não tem parentId, é raiz, então constrói a sub-árvore a partir desse nó
         const subTree = this.buildSubtree(nodeId)
-        tree.set(nodeId, subTree)
+        treeMap.set(nodeId, subTree)
 
         continue
       }
 
-      const rootNodeId = this.findRoot(node.parentId)
+      const rootNodeId = this.findNodeRoot(node.parentId)
 
-      if (!rootNodeId || tree.has(rootNodeId)) {
+      if (!rootNodeId || treeMap.has(rootNodeId)) {
         continue
       }
 
       const subTree = this.buildSubtree(rootNodeId)
-      tree.set(rootNodeId, subTree)
+
+      treeMap.set(rootNodeId, subTree)
     }
 
-    return Array.from(tree.values())
+    const tree = Array.from(treeMap.values())
+
+    sortTree(tree)
+
+    return tree
   }
+}
+
+function sortTree(tree: Record<string, unknown>[]) {
+  const collator = new Intl.Collator("en-US", {
+    numeric: true,
+    sensitivity: "base",
+  })
+
+  tree.sort((currentNode, nextNode) => {
+    if (currentNode.children && !nextNode.children) {
+      return -1
+    }
+
+    if (!currentNode.children && nextNode.children) {
+      return 1
+    }
+
+    return collator.compare(currentNode.name, nextNode.name)
+  })
 }
