@@ -4,7 +4,7 @@ import { Typography } from "~/components/typography"
 import type { CompanySchemas } from "~/schemas"
 
 export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAsset: CompanySchemas.TAsset | CompanySchemas.TLocation
+  selectedAsset?: CompanySchemas.TAsset | CompanySchemas.TLocation
 }
 
 export function CompanyAssetsDetails({ selectedAsset, ...props }: ICompanyAssetsDetailsProps) {

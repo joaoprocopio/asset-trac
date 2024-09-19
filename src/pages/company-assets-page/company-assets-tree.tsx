@@ -1,4 +1,3 @@
-import { DataNode } from "antd/es/tree"
 import clsx from "clsx"
 import {
   BoxIcon,
@@ -8,7 +7,7 @@ import {
   MapPinIcon,
   ZapIcon,
 } from "lucide-react"
-import { useLayoutEffect, useRef, useState } from "react"
+import { ComponentProps, useLayoutEffect, useRef, useState } from "react"
 
 import { Skeleton } from "~/components/skeleton"
 import { Tree } from "~/components/tree"
@@ -16,7 +15,7 @@ import { CompanyConstants } from "~/constants"
 
 // TODO: fazer a filtragem https://ant.design/components/tree#tree-demo-search
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
-  tree?: DataNode[]
+  tree?: ComponentProps<typeof Tree>["treeData"]
   selectedAssetId?: string
   handleChangeSelectedAssetId: (assetIds: string[]) => void
 }

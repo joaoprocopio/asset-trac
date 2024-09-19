@@ -7,7 +7,7 @@ import { Card, CardContent } from "~/components/card"
 import { Separator } from "~/components/separator"
 import { CompanyConstants } from "~/constants"
 import { Graph } from "~/datastructures"
-import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks"
+import { RESET_SEARCH_PARAM, TSetSearchParamValue, useSearchParam } from "~/hooks"
 import { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
@@ -55,11 +55,13 @@ export function CompanyAssetsPage() {
     return graph.buildTree()
   }, [graph])
 
-  const handleChangeSelectedAssetName = (nextAssetQuery: string) => {
+  const handleChangeSelectedAssetName: TSetSearchParamValue<string> = (nextAssetQuery) => {
     setSelectedAssetName(nextAssetQuery)
   }
 
-  const handleChangeSelectedAssetStatus = (nextAssetStatus: CompanyConstants.TAssetStatus) => {
+  const handleChangeSelectedAssetStatus: TSetSearchParamValue<CompanyConstants.TAssetStatus> = (
+    nextAssetStatus
+  ) => {
     setSelectedAssetStatus(nextAssetStatus)
   }
 
@@ -75,11 +77,17 @@ export function CompanyAssetsPage() {
 
   useEffect(() => {
     if (!graph) return
+    if (!selectedAssetId) return
     if (selectedAsset?.id === selectedAssetId) return
+
     const nextAsset = graph.getNode(selectedAssetId)
 
-    setSelectedAsset(nextAsset)
-  }, [graph, selectedAsset, selectedAssetId, setSelectedAsset])
+    if (!nextAsset) {
+      return setSelectedAssetId(RESET_SEARCH_PARAM)
+    }
+
+    setSelectedAsset(nextAsset as CompanySchemas.TAsset | CompanySchemas.TLocation)
+  }, [graph, selectedAsset, selectedAssetId, setSelectedAsset, setSelectedAssetId])
 
   return (
     <Card className="flex h-full flex-col">
