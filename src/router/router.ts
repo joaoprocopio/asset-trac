@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter, redirect } from "react-router-dom"
 
 export const router = createBrowserRouter([
   {
@@ -19,10 +19,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "*",
-        lazy: async () => {
-          const { CompanyNotFoundPage } = await import("~/pages/company-not-found-page")
-
-          return { Component: CompanyNotFoundPage }
+        loader: () => {
+          throw redirect("/")
         },
       },
     ],
