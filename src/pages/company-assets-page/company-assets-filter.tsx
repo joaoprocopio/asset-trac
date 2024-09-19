@@ -23,9 +23,8 @@ export function CompanyAssetsFilter({
 }: ICompanyAssetsFilterProps) {
   // Isso pode parecer redundante, mas é necessário para que o valor do input seja controlado
   // E a alteração na URL seja debounced, para evitar mudanças desnecessárias na aplicação
-  const [selectedAssetNameControlled, setSelectedAssetNameControlled] = useState<
-    ICompanyAssetsFilterProps["selectedAssetName"]
-  >(selectedAssetName || "")
+  const [selectedAssetNameControlled, setSelectedAssetNameControlled] =
+    useState<ICompanyAssetsFilterProps["selectedAssetName"]>(selectedAssetName)
 
   const [selectedAssetStatusControlled, setSelectedAssetStatusControlled] =
     useState<ICompanyAssetsFilterProps["selectedAssetStatus"]>(selectedAssetStatus)
@@ -42,7 +41,7 @@ export function CompanyAssetsFilter({
       return debouncedHandleChangeSelectedAssetName(RESET_SEARCH_PARAM)
     }
 
-    setSelectedAssetNameControlled(event.target.value)
+    setSelectedAssetNameControlled(normalizedQuery)
 
     return debouncedHandleChangeSelectedAssetName(normalizedQuery)
   }
@@ -67,7 +66,7 @@ export function CompanyAssetsFilter({
   return (
     <div {...props}>
       <Input
-        value={selectedAssetNameControlled}
+        value={selectedAssetNameControlled || ""}
         onChange={handleChangeSelectedAssetNameInput}
         startIcon={SearchIcon}
         placeholder="Search assets"
