@@ -8,7 +8,7 @@ import {
   MapPinIcon,
   ZapIcon,
 } from "lucide-react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
@@ -27,7 +27,7 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
   const treeWrapperRef = useRef<HTMLDivElement>(null)
 
-  const [once, setOnce] = useState<boolean>(false)
+  const [mounted, setOnce] = useState<boolean>(false)
 
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -103,10 +103,10 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
   useEffect(() => {
     if (!defaultSelectedKeys[0]?.length) return
-    if (once) return
+    if (mounted) return
 
     handleSelect(defaultSelectedKeys)
-  }, [once, defaultSelectedKeys, handleSelect])
+  }, [mounted, defaultSelectedKeys, handleSelect])
 
   useEffect(() => {
     setOnce(true)
@@ -114,39 +114,41 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
   return (
     <div ref={treeWrapperRef} {...props}>
-      {!!(once && graph && !filteredTree.length) && (
+      {!!(mounted && graph && !filteredTree.length) && (
         <Typography className="mt-10 pr-6 text-center" variant="h5">
           No results for this search
         </Typography>
       )}
 
-      {!!(once && graph && filteredTree.length) && (
-        <Tree
-          className="!border-0"
-          fieldNames={{
-            key: "id",
-            children: "children",
-            title: "name",
-          }}
-          treeData={filteredTree}
-          defaultSelectedKeys={defaultSelectedKeys}
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}
-          showLine={true}
-          showIcon={true}
-          height={treeWrapperRef.current!.offsetHeight - 48}
-          itemHeight={28}
-          icon={(props) => <CompanyAssetsTreeNodeIcon {...props} />}
-          switcherIcon={(props) => <CompanyAssetsTreeNodeSwitcherIcon {...props} />}
-          titleRender={(props) => (
-            <CompanyAssetsTreeNodeTitle {...props} query={selectedAssetName} />
-          )}
-          onSelect={handleSelect}
-          onExpand={handleExpand}
-        />
-      )}
+      {!(mounted && graph && filteredTree) && <CompanyAssetsTreeSkeleton className="pr-6" />}
 
-      {!(once && graph && filteredTree) && <CompanyAssetsTreeSkeleton className="pr-6" />}
+      {!!(mounted && graph && filteredTree.length) && (
+        <Suspense fallback={<CompanyAssetsTreeSkeleton className="pr-6" />}>
+          <Tree
+            className="!border-0"
+            fieldNames={{
+              key: "id",
+              children: "children",
+              title: "name",
+            }}
+            treeData={filteredTree}
+            defaultSelectedKeys={defaultSelectedKeys}
+            expandedKeys={expandedKeys}
+            autoExpandParent={autoExpandParent}
+            showLine={true}
+            showIcon={true}
+            height={treeWrapperRef.current!.offsetHeight - 48}
+            itemHeight={28}
+            icon={(props) => <CompanyAssetsTreeNodeIcon {...props} />}
+            switcherIcon={(props) => <CompanyAssetsTreeNodeSwitcherIcon {...props} />}
+            titleRender={(props) => (
+              <CompanyAssetsTreeNodeTitle {...props} query={selectedAssetName} />
+            )}
+            onSelect={handleSelect}
+            onExpand={handleExpand}
+          />
+        </Suspense>
+      )}
     </div>
   )
 }
