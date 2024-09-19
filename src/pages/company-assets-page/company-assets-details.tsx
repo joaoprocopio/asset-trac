@@ -30,7 +30,7 @@ export function CompanyAssetsDetails({ className, ...props }: ICompanyAssetsDeta
       {selectedAsset && (
         <>
           <header className="flex items-center border-b bg-background px-6">
-            <Typography className="align-middle" variant="h3">
+            <Typography className="align-middle first-letter:uppercase" variant="h3">
               {selectedAsset.name}
             </Typography>
           </header>

@@ -46,7 +46,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
       const shouldMatchName = !!selectedAssetName
       const shouldMatchStatus = !!selectedAssetStatus
 
-      const matchName = () => node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase()) >= 0
+      const matchName = () => node.name.indexOf(selectedAssetName) >= 0
       const matchStatus = () => node.status === selectedAssetStatus
 
       if (shouldMatchStatus && shouldMatchName) {
@@ -218,8 +218,8 @@ function CompanyAssetsTreeNodeTitle(props) {
   }
 
   return (
-    <span key={props.id}>
-      {title}
+    <>
+      <span className="inline-block first-letter:uppercase">{title}</span>
 
       {props.sensorType === CompanyConstants.AssetSensorType.Energy && (
         <ZapIcon className={classes} />
@@ -227,7 +227,7 @@ function CompanyAssetsTreeNodeTitle(props) {
       {props.sensorType === CompanyConstants.AssetSensorType.Vibration && (
         <CircleIcon className={classes} />
       )}
-    </span>
+    </>
   )
 }
 
