@@ -72,6 +72,8 @@ export function CompanyAssetsPage() {
             className="p-6 pr-0"
             locations={locationsQuery.data}
             assets={assetsQuery.data}
+            selectedAssetName={selectedAssetName}
+            selectedAssetStatus={selectedAssetStatus}
             selectedAssetId={selectedAssetId}
             setSelectedAssetId={setSelectedAssetId}
           />

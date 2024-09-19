@@ -23,6 +23,8 @@ import { cn } from "~/utils"
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
   locations: CompanySchemas.TLocations
   assets: CompanySchemas.TAssets
+  selectedAssetName?: string
+  selectedAssetStatus?: CompanyConstants.TAssetStatus
   selectedAssetId?: string
   setSelectedAssetId: TSetSearchParamValue<string>
 }
@@ -30,16 +32,22 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 export function CompanyAssetsTree({
   locations,
   assets,
+  selectedAssetName,
+  selectedAssetStatus,
   selectedAssetId,
   setSelectedAssetId,
   ...props
 }: ICompanyAssetsTreeProps) {
-  const [mounted, setMounted] = useState<boolean>(false)
   const treeWrapperRef = useRef<HTMLDivElement>(null)
-  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
+
+  const [mounted, setMounted] = useState<boolean>(false)
+
   const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
   const tree = useMemo(() => graph.buildTree(), [graph])
+
+  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
+
   const handleSelect = useCallback(
     ([selectedNodeId]: React.Key[]) => {
       if (!selectedNodeId) {
@@ -62,12 +70,18 @@ export function CompanyAssetsTree({
     },
     [graph, setSelectedAsset, setSelectedAssetId]
   )
+
   useEffect(() => {
     if (mounted) return
     if (!defaultSelectedKeys[0]?.length) return
 
     handleSelect(defaultSelectedKeys)
   }, [mounted, defaultSelectedKeys, handleSelect])
+
+  useEffect(() => {}, [selectedAssetName])
+
+  useEffect(() => {}, [selectedAssetStatus])
+
   useLayoutEffect(() => {
     setMounted(true)
   }, [])
