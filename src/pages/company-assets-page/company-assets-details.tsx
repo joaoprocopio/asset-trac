@@ -1,25 +1,21 @@
+import { useAtomValue } from "jotai"
 import { InboxIcon } from "lucide-react"
 
+import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import type { CompanySchemas } from "~/schemas"
 import { cn } from "~/utils"
 
-export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAsset?: CompanySchemas.TAsset | CompanySchemas.TLocation
-}
+export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function CompanyAssetsDetails({
-  className,
-  selectedAsset,
-  ...props
-}: ICompanyAssetsDetailsProps) {
+export function CompanyAssetsDetails({ className, ...props }: ICompanyAssetsDetailsProps) {
+  const selectedAsset = useAtomValue(CompanyAtoms.selectedAssetAtom)
+
   return (
     <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
       {!selectedAsset && (
-        <div className="row-span-2 self-center text-center">
+        <div className="row-span-2 space-y-1.5 self-center text-center">
           <InboxIcon className="h-14 w-full" />
-
           <Typography variant="h3">Empty</Typography>
           <Typography className="mx-auto" affects="muted">
             Select any location, asset or component

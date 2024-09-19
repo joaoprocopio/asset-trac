@@ -1,3 +1,4 @@
+import { useSetAtom } from "jotai"
 import {
   BoxIcon,
   ChevronDownIcon,
@@ -6,31 +7,71 @@ import {
   MapPinIcon,
   ZapIcon,
 } from "lucide-react"
-import { ComponentProps, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 
+import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
 import { Tree } from "~/components/tree"
 import { CompanyConstants } from "~/constants"
+import { Graph } from "~/datastructures"
+import type { TSetSearchParamValue } from "~/hooks"
+import { RESET_SEARCH_PARAM } from "~/hooks"
+import type { CompanySchemas } from "~/schemas"
 import { cn } from "~/utils"
 
 // TODO: fazer a filtragem https://ant.design/components/tree#tree-demo-search
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
-  tree?: ComponentProps<typeof Tree>["treeData"]
+  graph: Graph
   selectedAssetId?: string
-  handleChangeSelectedAssetId: (assetIds: string[]) => void
+  setSelectedAssetId: TSetSearchParamValue<string>
 }
 
 export function CompanyAssetsTree({
-  tree,
+  graph,
   selectedAssetId,
-  handleChangeSelectedAssetId,
+  setSelectedAssetId,
   ...props
 }: ICompanyAssetsTreeProps) {
   const [mounted, setMounted] = useState<boolean>(false)
-
   const treeWrapperRef = useRef<HTMLDivElement>(null)
+  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
+  const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
+  const tree = useMemo(() => {
+    if (!graph) return undefined
 
-  useLayoutEffect(() => setMounted(true), [])
+    return graph.buildTree()
+  }, [graph])
+  const handleSelect = useCallback(
+    ([nodeId]: React.Key[]) => {
+      if (!nodeId) {
+        setSelectedAssetId(RESET_SEARCH_PARAM)
+        setSelectedAsset(undefined)
+        return
+      }
+
+      setSelectedAssetId(nodeId as string)
+
+      const asset = graph.getNode(nodeId as string)
+
+      if (!asset) {
+        setSelectedAssetId(RESET_SEARCH_PARAM)
+        setSelectedAsset(undefined)
+        return
+      }
+
+      setSelectedAsset(asset as CompanySchemas.TAsset | CompanySchemas.TLocation)
+    },
+    [graph, setSelectedAsset, setSelectedAssetId]
+  )
+  useEffect(() => {
+    if (mounted) return
+    if (!defaultSelectedKeys[0]?.length) return
+
+    handleSelect(defaultSelectedKeys)
+  }, [mounted, defaultSelectedKeys, handleSelect])
+  useLayoutEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <div ref={treeWrapperRef} {...props}>
@@ -45,8 +86,7 @@ export function CompanyAssetsTree({
             title: "name",
           }}
           treeData={tree}
-          defaultExpandAll={false}
-          defaultSelectedKeys={[selectedAssetId || ""]}
+          defaultSelectedKeys={defaultSelectedKeys}
           showLine={true}
           virtual={true}
           showIcon={true}
@@ -56,7 +96,7 @@ export function CompanyAssetsTree({
           switcherIcon={CompanyAssetsTreeNodeSwitcherIcon}
           icon={CompanyAssetsTreeNodeIcon}
           titleRender={CompanyAssetsTreeNodeTitle}
-          onSelect={(selectedKeys) => handleChangeSelectedAssetId(selectedKeys as string[])}
+          onSelect={handleSelect}
         />
       )}
     </div>

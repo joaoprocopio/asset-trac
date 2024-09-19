@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
-import { useAtom, useAtomValue } from "jotai"
-import { useEffect, useMemo } from "react"
+import { useAtomValue } from "jotai"
+import { useMemo } from "react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Card, CardContent } from "~/components/card"
 import { CompanyConstants } from "~/constants"
 import { Graph } from "~/datastructures"
-import { RESET_SEARCH_PARAM, TSetSearchParamValue, useSearchParam } from "~/hooks"
+import { TSetSearchParamValue, useSearchParam } from "~/hooks"
 import { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
@@ -17,7 +17,6 @@ import { CompanyAssetsTree, CompanyAssetsTreeSkeleton } from "./company-assets-t
 
 export function CompanyAssetsPage() {
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
-  const [selectedAsset, setSelectedAsset] = useAtom(CompanyAtoms.selectedAssetAtom)
 
   const [selectedAssetName, setSelectedAssetName] = useSearchParam<string>({
     paramKey: "an",
@@ -48,12 +47,6 @@ export function CompanyAssetsPage() {
     return buildGraph(locationsQuery.data, assetsQuery.data)
   }, [locationsQuery.data, assetsQuery.data, locationsQuery.isSuccess, assetsQuery.isSuccess])
 
-  const tree = useMemo(() => {
-    if (!graph) return undefined
-
-    return graph.buildTree()
-  }, [graph])
-
   const handleChangeSelectedAssetName: TSetSearchParamValue<string> = (nextAssetQuery) => {
     setSelectedAssetName(nextAssetQuery)
   }
@@ -63,30 +56,6 @@ export function CompanyAssetsPage() {
   ) => {
     setSelectedAssetStatus(nextAssetStatus)
   }
-
-  const handleChangeSelectedAssetId = (assetIds: string[]) => {
-    const nextAssetId = assetIds[0]
-
-    if (!nextAssetId || nextAssetId === selectedAssetId) {
-      return setSelectedAssetId(RESET_SEARCH_PARAM)
-    }
-
-    return setSelectedAssetId(nextAssetId)
-  }
-
-  useEffect(() => {
-    if (!graph) return
-    if (!selectedAssetId) return
-    if (selectedAsset?.id === selectedAssetId) return
-
-    const nextAsset = graph.getNode(selectedAssetId)
-
-    if (!nextAsset) {
-      return setSelectedAssetId(RESET_SEARCH_PARAM)
-    }
-
-    setSelectedAsset(nextAsset as CompanySchemas.TAsset | CompanySchemas.TLocation)
-  }, [graph, selectedAsset, selectedAssetId, setSelectedAsset, setSelectedAssetId])
 
   return (
     <Card className="flex h-full flex-col">
@@ -101,18 +70,18 @@ export function CompanyAssetsPage() {
           handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
         />
 
-        {graph && tree ? (
-          <CompanyAssetsDetails className="row-span-3 border-l" selectedAsset={selectedAsset} />
+        {graph ? (
+          <CompanyAssetsDetails className="row-span-3 border-l" />
         ) : (
           <CompanyAssetsDetailsSkeleton className="row-span-3 border-l" />
         )}
 
-        {graph && tree ? (
+        {graph ? (
           <CompanyAssetsTree
             className="p-6 pr-0"
-            tree={tree}
+            graph={graph}
             selectedAssetId={selectedAssetId}
-            handleChangeSelectedAssetId={handleChangeSelectedAssetId}
+            setSelectedAssetId={setSelectedAssetId}
           />
         ) : (
           <CompanyAssetsTreeSkeleton className="p-6" />
