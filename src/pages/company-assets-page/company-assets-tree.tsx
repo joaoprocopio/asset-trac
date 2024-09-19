@@ -27,7 +27,7 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
   const treeWrapperRef = useRef<HTMLDivElement>(null)
 
-  const [mounted, setMounted] = useState<boolean>(false)
+  const [once, setOnce] = useState<boolean>(false)
 
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -102,24 +102,24 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
   useEffect(() => {
     if (!defaultSelectedKeys[0]?.length) return
-    if (mounted) return
+    if (once) return
 
     handleSelect(defaultSelectedKeys)
-  }, [mounted, defaultSelectedKeys, handleSelect])
+  }, [once, defaultSelectedKeys, handleSelect])
 
   useEffect(() => {
-    setMounted(true)
+    setOnce(true)
   }, [])
 
   return (
     <div ref={treeWrapperRef} {...props}>
-      {!!(mounted && graph && !filteredTree.length) && (
+      {!!(once && graph && !filteredTree.length) && (
         <Typography className="mt-10 pr-6 text-center" variant="h5">
           No results for this search
         </Typography>
       )}
 
-      {!!(mounted && graph && filteredTree.length) && (
+      {!!(once && graph && filteredTree.length) && (
         <Tree
           className="!border-0"
           fieldNames={{
@@ -145,7 +145,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
         />
       )}
 
-      {!(mounted && graph && filteredTree) && <CompanyAssetsTreeSkeleton className="pr-6" />}
+      {!(once && graph && filteredTree) && <CompanyAssetsTreeSkeleton className="pr-6" />}
     </div>
   )
 }

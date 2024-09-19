@@ -12,11 +12,12 @@ import { Skeleton } from "~/components/skeleton"
 import { CompanyServices } from "~/services"
 
 export function AppLayout() {
-  const [mounted, setMounted] = useState(false)
+  const [once, setOnce] = useState(false)
 
   const [selectedCompany, setSelectedCompany] = useAtom(CompanyAtoms.selectedCompanyAtom)
   const [selectedCompanyId, setSelectedCompanyId] = useAtom(CompanyAtoms.selectedCompanyIdAtom)
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
+  const setSelectedAssetId = useSetAtom(CompanyAtoms.selectedAssetIdAtom)
 
   const companies = useQuery({
     queryFn: CompanyServices.getCompanies,
@@ -27,7 +28,11 @@ export function AppLayout() {
     (nextCompanyId: string) => {
       if (!companies.isSuccess || !nextCompanyId) {
         setSelectedCompany(RESET)
-        return setSelectedCompanyId(RESET)
+        setSelectedCompanyId(RESET)
+        setSelectedAsset(RESET)
+        setSelectedAssetId(RESET)
+
+        return
       }
 
       setSelectedCompanyId(nextCompanyId)
@@ -36,29 +41,35 @@ export function AppLayout() {
 
       if (!nextCompany) {
         setSelectedCompany(RESET)
-        return setSelectedCompanyId(RESET)
+        setSelectedCompanyId(RESET)
+        setSelectedAsset(RESET)
+        setSelectedAssetId(RESET)
+
+        return
       }
 
       setSelectedCompany(nextCompany)
       setSelectedAsset(RESET)
+      setSelectedAssetId(RESET)
     },
     [
       companies.data,
       companies.isSuccess,
       setSelectedAsset,
+      setSelectedAssetId,
       setSelectedCompany,
       setSelectedCompanyId,
     ]
   )
 
   useEffect(() => {
-    if (!companies.isSuccess && !selectedCompany) return
-    if (mounted) return
+    if (!companies.isSuccess) return
+    if (selectedCompany) return
+    if (once) return
 
-    setMounted(true)
-
+    setOnce(true)
     handleChangeCompany(selectedCompanyId)
-  }, [mounted, companies.isSuccess, selectedCompanyId, selectedCompany, handleChangeCompany])
+  }, [once, companies.isSuccess, selectedCompanyId, selectedCompany, handleChangeCompany])
 
   return (
     <>
