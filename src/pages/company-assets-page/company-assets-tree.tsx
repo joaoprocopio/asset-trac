@@ -135,10 +135,10 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
           showIcon={true}
           height={treeWrapperRef.current!.offsetHeight - 48}
           itemHeight={28}
-          icon={CompanyAssetsTreeNodeIcon}
-          switcherIcon={CompanyAssetsTreeNodeSwitcherIcon}
+          icon={(props) => <CompanyAssetsTreeNodeIcon {...props} />}
+          switcherIcon={(props) => <CompanyAssetsTreeNodeSwitcherIcon {...props} />}
           titleRender={(props) => (
-            <CompanyAssetsTreeNodeTitle {...props} searchValue={selectedAssetName} />
+            <CompanyAssetsTreeNodeTitle {...props} query={selectedAssetName} />
           )}
           onSelect={handleSelect}
           onExpand={handleExpand}
@@ -199,23 +199,26 @@ function CompanyAssetsTreeNodeTitle(props) {
     "fill-success text-success": props.status === CompanyConstants.AssetStatus.Operating,
   })
 
-  const index = props.name.indexOf(props.searchValue)
-  const beforeStr = props.name.substring(0, index)
-  const afterStr = props.name.slice(index + props.searchValue.length)
+  let title = props.name
 
-  const title =
-    index > -1 ? (
-      <span key={props.id}>
-        {beforeStr}
-        <span className="font-bold">{props.searchValue}</span>
-        {afterStr}
-      </span>
-    ) : (
-      <span key={props.id}>{props.name}</span>
-    )
+  if (props.query) {
+    const index = props.name.indexOf(props.query)
+    const beforeStr = props.name.substring(0, index)
+    const afterStr = props.name.slice(index + props.query.length)
+
+    if (index > -1) {
+      title = (
+        <>
+          {beforeStr}
+          <span className="font-bold">{props.query}</span>
+          {afterStr}
+        </>
+      )
+    }
+  }
 
   return (
-    <>
+    <span key={props.id}>
       {title}
 
       {props.sensorType === CompanyConstants.AssetSensorType.Energy && (
@@ -224,7 +227,7 @@ function CompanyAssetsTreeNodeTitle(props) {
       {props.sensorType === CompanyConstants.AssetSensorType.Vibration && (
         <CircleIcon className={classes} />
       )}
-    </>
+    </span>
   )
 }
 
