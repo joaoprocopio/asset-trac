@@ -1,14 +1,17 @@
 import { InfoIcon, SearchIcon, ZapIcon } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
 import { CompanyConstants } from "~/constants"
+import type { TSetSearchParamValue } from "~/hooks"
+import { RESET_SEARCH_PARAM, useDebouncedFn } from "~/hooks"
 
 export interface ICompanyAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAssetName?: string
   selectedAssetStatus?: CompanyConstants.TAssetStatus
-  handleChangeSelectedAssetName: (nextAssetQuery: string) => void
-  handleChangeSelectedAssetStatus: (nextAssetStatus: CompanyConstants.TAssetStatus) => void
+  handleChangeSelectedAssetName: TSetSearchParamValue<string>
+  handleChangeSelectedAssetStatus: TSetSearchParamValue<CompanyConstants.TAssetStatus>
 }
 
 export function CompanyAssetsFilter({
@@ -18,11 +21,51 @@ export function CompanyAssetsFilter({
   handleChangeSelectedAssetStatus,
   ...props
 }: ICompanyAssetsFilterProps) {
+  // Isso pode parecer redundante, mas é necessário para que o valor do input seja controlado
+  // E a alteração na URL seja debounced, para evitar mudanças desnecessárias na aplicação
+  const [selectedAssetNameControlled, setSelectedAssetNameControlled] = useState<
+    ICompanyAssetsFilterProps["selectedAssetName"]
+  >(selectedAssetName || "")
+
+  const [selectedAssetStatusControlled, setSelectedAssetStatusControlled] =
+    useState<ICompanyAssetsFilterProps["selectedAssetStatus"]>(selectedAssetStatus)
+
+  const debouncedHandleChangeSelectedAssetName = useDebouncedFn(handleChangeSelectedAssetName)
+  const debouncedHandleChangeSelectedAssetStatus = useDebouncedFn(handleChangeSelectedAssetStatus)
+
+  const handleChangeSelectedAssetNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextAssetQuery = event.target.value
+    const normalizedQuery = nextAssetQuery.trim().toLowerCase()
+
+    if (!normalizedQuery.length) {
+      setSelectedAssetNameControlled(undefined)
+      return debouncedHandleChangeSelectedAssetName(RESET_SEARCH_PARAM)
+    }
+
+    setSelectedAssetNameControlled(event.target.value)
+
+    return debouncedHandleChangeSelectedAssetName(normalizedQuery)
+  }
+
+  const handleChangeSelectedAssetStatusInput = (
+    nextAssetStatus: ICompanyAssetsFilterProps["selectedAssetStatus"]
+  ) => {
+    if (selectedAssetStatus === nextAssetStatus) {
+      setSelectedAssetStatusControlled(undefined)
+      return debouncedHandleChangeSelectedAssetStatus(RESET_SEARCH_PARAM)
+    }
+
+    setSelectedAssetStatusControlled(nextAssetStatus)
+    return debouncedHandleChangeSelectedAssetStatus(
+      nextAssetStatus as CompanyConstants.TAssetStatus
+    )
+  }
+
   return (
     <div {...props}>
       <Input
-        value={selectedAssetName || ""}
-        onChange={(event) => handleChangeSelectedAssetName(event.target.value)}
+        value={selectedAssetNameControlled}
+        onChange={handleChangeSelectedAssetNameInput}
         startIcon={SearchIcon}
         placeholder="Search assets"
       />
@@ -31,9 +74,13 @@ export function CompanyAssetsFilter({
         <Button
           className="h-10 gap-2"
           variant={
-            selectedAssetStatus === CompanyConstants.AssetStatus.Operating ? "default" : "outline"
+            selectedAssetStatusControlled === CompanyConstants.AssetStatus.Operating
+              ? "default"
+              : "outline"
           }
-          onClick={() => handleChangeSelectedAssetStatus(CompanyConstants.AssetStatus.Operating)}>
+          onClick={() =>
+            handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Operating)
+          }>
           <ZapIcon className="h-5 w-5" />
           Operating
         </Button>
@@ -41,9 +88,11 @@ export function CompanyAssetsFilter({
         <Button
           className="h-10 gap-2"
           variant={
-            selectedAssetStatus === CompanyConstants.AssetStatus.Alert ? "default" : "outline"
+            selectedAssetStatusControlled === CompanyConstants.AssetStatus.Alert
+              ? "default"
+              : "outline"
           }
-          onClick={() => handleChangeSelectedAssetStatus(CompanyConstants.AssetStatus.Alert)}>
+          onClick={() => handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Alert)}>
           <InfoIcon className="h-5 w-5" />
           Critical
         </Button>

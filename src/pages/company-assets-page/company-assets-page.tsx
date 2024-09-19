@@ -7,7 +7,7 @@ import { Card, CardContent } from "~/components/card"
 import { Separator } from "~/components/separator"
 import { CompanyConstants } from "~/constants"
 import { Graph } from "~/datastructures"
-import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks/use-search-param"
+import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks"
 import { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
@@ -56,21 +56,11 @@ export function CompanyAssetsPage() {
   }, [graph])
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string) => {
-    const normalizedQuery = nextAssetQuery.trim().toLowerCase()
-
-    if (!normalizedQuery.length) {
-      return setSelectedAssetName(RESET_SEARCH_PARAM)
-    }
-
-    return setSelectedAssetName(normalizedQuery)
+    setSelectedAssetName(nextAssetQuery)
   }
 
   const handleChangeSelectedAssetStatus = (nextAssetStatus: CompanyConstants.TAssetStatus) => {
-    if (selectedAssetStatus === nextAssetStatus) {
-      return setSelectedAssetStatus(RESET_SEARCH_PARAM)
-    }
-
-    return setSelectedAssetStatus(nextAssetStatus)
+    setSelectedAssetStatus(nextAssetStatus)
   }
 
   const handleChangeSelectedAssetId = (assetIds: string[]) => {
