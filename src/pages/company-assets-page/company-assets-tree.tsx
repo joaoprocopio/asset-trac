@@ -74,9 +74,7 @@ export function CompanyAssetsTree({
 
   return (
     <div ref={treeWrapperRef} {...props}>
-      {!mounted && <CompanyAssetsTreeSkeleton className="pr-6" />}
-
-      {mounted && (
+      {mounted && graph && tree ? (
         <Tree
           className="!border-0"
           fieldNames={{
@@ -97,6 +95,8 @@ export function CompanyAssetsTree({
           titleRender={CompanyAssetsTreeNodeTitle}
           onSelect={handleSelect}
         />
+      ) : (
+        <CompanyAssetsTreeSkeleton className="pr-6" />
       )}
     </div>
   )
@@ -146,25 +146,23 @@ function CompanyAssetsTreeNodeIcon(props) {
 }
 
 function CompanyAssetsTreeNodeTitle(props) {
-  if (!(props.status && props.sensorType)) return props.name
-
-  const isAlert = props.status === CompanyConstants.AssetStatus.Alert
-  const isOperating = props.status === CompanyConstants.AssetStatus.Operating
-
-  const isEnergyType = props.sensorType === CompanyConstants.AssetSensorType.Energy
-  const isVibrationType = props.sensorType === CompanyConstants.AssetSensorType.Vibration
+  if (!(props.status && props.sensorId)) return props.name
 
   const classes = cn("ml-2 inline-block h-4 w-3", {
-    "fill-destructive text-destructive": isAlert,
-    "fill-success text-success": isOperating,
+    "fill-destructive text-destructive": props.status === CompanyConstants.AssetStatus.Alert,
+    "fill-success text-success": props.status === CompanyConstants.AssetStatus.Operating,
   })
 
   return (
     <>
       {props.name}
 
-      {isEnergyType && <ZapIcon className={classes} />}
-      {isVibrationType && <CircleIcon className={classes} />}
+      {props.sensorType === CompanyConstants.AssetSensorType.Energy && (
+        <ZapIcon className={classes} />
+      )}
+      {props.sensorType === CompanyConstants.AssetSensorType.Vibration && (
+        <CircleIcon className={classes} />
+      )}
     </>
   )
 }
