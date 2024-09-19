@@ -1,17 +1,17 @@
+import { RESET } from "jotai/utils"
 import { InfoIcon, SearchIcon, ZapIcon } from "lucide-react"
 import { useState } from "react"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
 import { CompanyConstants } from "~/constants"
-import type { TSetSearchParamValue } from "~/hooks"
-import { RESET_SEARCH_PARAM, useDebouncedFn } from "~/hooks"
+import { useDebouncedFn } from "~/hooks"
 
 export interface ICompanyAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAssetName?: string
   selectedAssetStatus?: CompanyConstants.TAssetStatus
-  handleChangeSelectedAssetName: TSetSearchParamValue<string>
-  handleChangeSelectedAssetStatus: TSetSearchParamValue<CompanyConstants.TAssetStatus>
+  handleChangeSelectedAssetName: (nextAssetQuery: string) => void
+  handleChangeSelectedAssetStatus: (nextAssetStatus: CompanyConstants.TAssetStatus) => void
 }
 
 export function CompanyAssetsFilter({
@@ -37,7 +37,7 @@ export function CompanyAssetsFilter({
 
     if (!nextAssetQuery.length) {
       setSelectedAssetNameControlled(undefined)
-      return debouncedHandleChangeSelectedAssetName(RESET_SEARCH_PARAM)
+      return debouncedHandleChangeSelectedAssetName(RESET)
     }
 
     setSelectedAssetNameControlled(nextAssetQuery)
@@ -53,7 +53,7 @@ export function CompanyAssetsFilter({
       selectedAssetStatusControlled === nextAssetStatus
     ) {
       setSelectedAssetStatusControlled(undefined)
-      return debouncedHandleChangeSelectedAssetStatus(RESET_SEARCH_PARAM)
+      return debouncedHandleChangeSelectedAssetStatus(RESET)
     }
 
     setSelectedAssetStatusControlled(nextAssetStatus)

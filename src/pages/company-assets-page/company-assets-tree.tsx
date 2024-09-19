@@ -1,4 +1,5 @@
-import { useSetAtom } from "jotai"
+import { useAtom, useSetAtom } from "jotai"
+import { RESET } from "jotai/utils"
 import {
   BoxIcon,
   ChevronDownIcon,
@@ -13,9 +14,8 @@ import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
 import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
-import { CompanyConstants, SearchParamsConstants } from "~/constants"
+import { CompanyConstants } from "~/constants"
 import { Graph } from "~/datastructures"
-import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks"
 import type { CompanySchemas } from "~/schemas"
 import { cn } from "~/utils"
 
@@ -33,15 +33,9 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
   const [autoExpandParent, setAutoExpandParent] = useState(true)
 
-  const [selectedAssetName] = useSearchParam<string>({
-    paramKey: SearchParamsConstants.AssetNameKey,
-  })
-  const [selectedAssetStatus] = useSearchParam<CompanyConstants.TAssetStatus>({
-    paramKey: SearchParamsConstants.AssetStatusKey,
-  })
-  const [selectedAssetId, setSelectedAssetId] = useSearchParam<string>({
-    paramKey: SearchParamsConstants.AssetIdKey,
-  })
+  const [selectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
+  const [selectedAssetStatus] = useAtom(CompanyAtoms.selectedAssetStatusAtom)
+  const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
 
   const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
@@ -82,7 +76,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const handleSelect = useCallback(
     ([selectedNodeId]: React.Key[]) => {
       if (!selectedNodeId) {
-        setSelectedAssetId(RESET_SEARCH_PARAM)
+        setSelectedAssetId(RESET)
         setSelectedAsset(undefined)
         return
       }
@@ -92,7 +86,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
       const asset = graph.getNode(selectedNodeId as string)
 
       if (!asset) {
-        setSelectedAssetId(RESET_SEARCH_PARAM)
+        setSelectedAssetId(RESET)
         setSelectedAsset(undefined)
         return
       }

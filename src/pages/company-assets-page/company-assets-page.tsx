@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
-import { useAtomValue } from "jotai"
+import { useAtom, useAtomValue } from "jotai"
 
 import { CompanyAtoms } from "~/atoms"
 import { Card, CardContent } from "~/components/card"
-import { CompanyConstants, SearchParamsConstants } from "~/constants"
-import { TSetSearchParamValue, useSearchParam } from "~/hooks"
 import { CompanyServices } from "~/services"
 
 import { CompanyAssetsDetails, CompanyAssetsDetailsSkeleton } from "./company-assets-details"
@@ -15,13 +13,10 @@ import { CompanyAssetsTree, CompanyAssetsTreeSkeleton } from "./company-assets-t
 export function CompanyAssetsPage() {
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
 
-  const [selectedAssetName, setSelectedAssetName] = useSearchParam<string>({
-    paramKey: SearchParamsConstants.AssetNameKey,
-  })
-  const [selectedAssetStatus, setSelectedAssetStatus] =
-    useSearchParam<CompanyConstants.TAssetStatus>({
-      paramKey: SearchParamsConstants.AssetStatusKey,
-    })
+  const [selectedAssetName, setSelectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
+  const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(
+    CompanyAtoms.selectedAssetStatusAtom
+  )
 
   const locationsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyLocations(selectedCompany!.id),
@@ -35,13 +30,11 @@ export function CompanyAssetsPage() {
     enabled: typeof selectedCompany?.id === "string",
   })
 
-  const handleChangeSelectedAssetName: TSetSearchParamValue<string> = (nextAssetQuery) => {
+  const handleChangeSelectedAssetName = (nextAssetQuery: string) => {
     setSelectedAssetName(nextAssetQuery)
   }
 
-  const handleChangeSelectedAssetStatus: TSetSearchParamValue<CompanyConstants.TAssetStatus> = (
-    nextAssetStatus
-  ) => {
+  const handleChangeSelectedAssetStatus = (nextAssetStatus: string) => {
     setSelectedAssetStatus(nextAssetStatus)
   }
 
