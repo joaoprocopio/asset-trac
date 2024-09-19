@@ -21,13 +21,15 @@ import { cn } from "~/utils"
 
 // TODO: fazer a filtragem https://ant.design/components/tree#tree-demo-search
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
-  graph: Graph
+  locations: CompanySchemas.TLocations
+  assets: CompanySchemas.TAssets
   selectedAssetId?: string
   setSelectedAssetId: TSetSearchParamValue<string>
 }
 
 export function CompanyAssetsTree({
-  graph,
+  locations,
+  assets,
   selectedAssetId,
   setSelectedAssetId,
   ...props
@@ -36,22 +38,19 @@ export function CompanyAssetsTree({
   const treeWrapperRef = useRef<HTMLDivElement>(null)
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
   const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
-  const tree = useMemo(() => {
-    if (!graph) return undefined
-
-    return graph.buildTree()
-  }, [graph])
+  const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
+  const tree = useMemo(() => graph.buildTree(), [graph])
   const handleSelect = useCallback(
-    ([nodeId]: React.Key[]) => {
-      if (!nodeId) {
+    ([selectedNodeId]: React.Key[]) => {
+      if (!selectedNodeId) {
         setSelectedAssetId(RESET_SEARCH_PARAM)
         setSelectedAsset(undefined)
         return
       }
 
-      setSelectedAssetId(nodeId as string)
+      setSelectedAssetId(selectedNodeId as string)
 
-      const asset = graph.getNode(nodeId as string)
+      const asset = graph.getNode(selectedNodeId as string)
 
       if (!asset) {
         setSelectedAssetId(RESET_SEARCH_PARAM)
@@ -168,4 +167,40 @@ function CompanyAssetsTreeNodeTitle(props) {
       {isVibrationType && <CircleIcon className={classes} />}
     </>
   )
+}
+
+function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
+  const graph = new Graph()
+
+  for (const location of locations) {
+    graph.setNode(location.id, {
+      ...location,
+      type: "location",
+    })
+
+    if (location.parentId) {
+      if (!graph.hasNode(location.parentId)) {
+        graph.setNode(location.parentId)
+      }
+
+      graph.setEdge(location.parentId, location.id)
+    }
+  }
+
+  for (const asset of assets) {
+    graph.setNode(asset.id, {
+      ...asset,
+      type: asset.sensorId ? "component" : "asset",
+    })
+
+    if (asset.parentId) {
+      if (!graph.hasNode(asset.parentId)) {
+        graph.setNode(asset.parentId)
+      }
+
+      graph.setEdge(asset.parentId, asset.id)
+    }
+  }
+
+  return graph
 }

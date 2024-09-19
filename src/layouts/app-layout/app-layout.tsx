@@ -13,7 +13,8 @@ import { CompanyServices } from "~/services"
 export function AppLayout() {
   const { companyId } = useParams()
 
-  const setCompany = useSetAtom(CompanyAtoms.selectedCompanyAtom)
+  const setSelectedCompany = useSetAtom(CompanyAtoms.selectedCompanyAtom)
+  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
   const companies = useQuery({
     queryFn: CompanyServices.getCompanies,
@@ -26,8 +27,9 @@ export function AppLayout() {
 
     const nextCompany = companies.data.find((company) => company.id === companyId)
 
-    setCompany(nextCompany)
-  }, [companies.data, companies.isSuccess, companyId, setCompany])
+    setSelectedCompany(nextCompany)
+    setSelectedAsset(undefined)
+  }, [companies.data, companies.isSuccess, companyId, setSelectedCompany, setSelectedAsset])
 
   return (
     <>
