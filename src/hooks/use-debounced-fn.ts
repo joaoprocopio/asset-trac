@@ -8,13 +8,11 @@ export const useDebouncedFn = <Fn extends (...args: Parameters<Fn>) => void>(
 
   const render = useCallback(
     (...args: Parameters<Fn>) => {
-      // Reset previous animation before start new animation
       cancelAnimationFrame(rafId.current)
 
       const timeStart = performance.now()
 
       const renderFrame = (timeNow: number) => {
-        // Call next rAF if time is not up
         if (timeNow - timeStart < wait) {
           rafId.current = requestAnimationFrame(renderFrame)
           return
@@ -28,7 +26,6 @@ export const useDebouncedFn = <Fn extends (...args: Parameters<Fn>) => void>(
     [fn, wait]
   )
 
-  // Call cancel animation after umount
   useEffect(() => () => cancelAnimationFrame(rafId.current), [])
 
   return render
