@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react"
 
 export const useDebouncedFn = <Fn extends (...args: Parameters<Fn>) => void>(
   fn: Fn,
-  wait = 500
+  wait = 300
 ): ((...args: Parameters<Fn>) => void) => {
   const rafId = useRef(0)
 

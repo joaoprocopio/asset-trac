@@ -26,6 +26,15 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: "/PLEASE_DELETE_ME",
+        lazy: async () => {
+          // TODO: PLEASE_DELETE_ME
+          const { PLEASE_DELETE_ME } = await import("./PLEASE_DELETE_ME")
+
+          return { Component: PLEASE_DELETE_ME }
+        },
+      },
+      {
         path: "*",
         lazy: async () => {
           const { CompanyNotFoundPage } = await import("~/pages/company-not-found-page")
