@@ -50,7 +50,10 @@ export function CompanyAssetsFilter({
   const handleChangeSelectedAssetStatusInput = (
     nextAssetStatus: ICompanyAssetsFilterProps["selectedAssetStatus"]
   ) => {
-    if (selectedAssetStatus === nextAssetStatus) {
+    if (
+      selectedAssetStatus === nextAssetStatus ||
+      selectedAssetStatusControlled === nextAssetStatus
+    ) {
       setSelectedAssetStatusControlled(undefined)
       return debouncedHandleChangeSelectedAssetStatus(RESET_SEARCH_PARAM)
     }
