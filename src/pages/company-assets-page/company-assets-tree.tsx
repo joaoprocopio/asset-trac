@@ -19,7 +19,6 @@ import { Graph } from "~/datastructures"
 import type { CompanySchemas } from "~/schemas"
 import { cn } from "~/utils"
 
-// TODO: fazer a filtragem https://ant.design/components/tree#tree-demo-search
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
   locations: CompanySchemas.TLocations
   assets: CompanySchemas.TAssets
@@ -138,7 +137,9 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
           itemHeight={28}
           icon={CompanyAssetsTreeNodeIcon}
           switcherIcon={CompanyAssetsTreeNodeSwitcherIcon}
-          titleRender={CompanyAssetsTreeNodeTitle}
+          titleRender={(props) => (
+            <CompanyAssetsTreeNodeTitle {...props} searchValue={selectedAssetName} />
+          )}
           onSelect={handleSelect}
           onExpand={handleExpand}
         />
@@ -198,9 +199,24 @@ function CompanyAssetsTreeNodeTitle(props) {
     "fill-success text-success": props.status === CompanyConstants.AssetStatus.Operating,
   })
 
+  const index = props.name.indexOf(props.searchValue)
+  const beforeStr = props.name.substring(0, index)
+  const afterStr = props.name.slice(index + props.searchValue.length)
+
+  const title =
+    index > -1 ? (
+      <span key={props.id}>
+        {beforeStr}
+        <span className="font-bold">{props.searchValue}</span>
+        {afterStr}
+      </span>
+    ) : (
+      <span key={props.id}>{props.name}</span>
+    )
+
   return (
     <>
-      {props.name}
+      {title}
 
       {props.sensorType === CompanyConstants.AssetSensorType.Energy && (
         <ZapIcon className={classes} />
@@ -218,6 +234,7 @@ function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas
   for (const location of locations) {
     graph.setNode(location.id, {
       ...location,
+      name: location.name.toLowerCase(),
       type: "location",
     })
 
@@ -233,6 +250,7 @@ function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas
   for (const asset of assets) {
     graph.setNode(asset.id, {
       ...asset,
+      name: asset.name.toLowerCase(),
       type: asset.sensorId ? "component" : "asset",
     })
 
