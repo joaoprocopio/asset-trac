@@ -8,7 +8,7 @@ import {
   MapPinIcon,
   ZapIcon,
 } from "lucide-react"
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
@@ -102,13 +102,13 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   }, [])
 
   useEffect(() => {
-    if (mounted) return
     if (!defaultSelectedKeys[0]?.length) return
+    if (mounted) return
 
     handleSelect(defaultSelectedKeys)
   }, [mounted, defaultSelectedKeys, handleSelect])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setMounted(true)
   }, [])
 
