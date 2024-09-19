@@ -40,7 +40,7 @@ export function AppLayout() {
       }
 
       setSelectedCompany(nextCompany)
-      setSelectedAsset(undefined)
+      setSelectedAsset(RESET)
     },
     [
       companies.data,

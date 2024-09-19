@@ -1,4 +1,3 @@
-import { atom } from "jotai"
 import { atomWithReset } from "jotai/utils"
 
 import { atomWithHash } from "~/atoms/utils"
@@ -6,7 +5,9 @@ import { CompanySchemas } from "~/schemas"
 
 export const selectedCompanyAtom = atomWithReset<CompanySchemas.TCompany | undefined>(undefined)
 
-export const selectedAssetAtom = atom<CompanySchemas.TLocation | CompanySchemas.TAsset>()
+export const selectedAssetAtom = atomWithReset<
+  CompanySchemas.TLocation | CompanySchemas.TAsset | undefined
+>(undefined)
 
 export const selectedCompanyIdAtom = atomWithHash("ci", "")
 

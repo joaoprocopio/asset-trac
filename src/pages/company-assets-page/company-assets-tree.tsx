@@ -77,7 +77,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     ([selectedNodeId]: React.Key[]) => {
       if (!selectedNodeId) {
         setSelectedAssetId(RESET)
-        setSelectedAsset(undefined)
+        setSelectedAsset(RESET)
         return
       }
 
@@ -87,7 +87,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
       if (!asset) {
         setSelectedAssetId(RESET)
-        setSelectedAsset(undefined)
+        setSelectedAsset(RESET)
         return
       }
 

@@ -9,9 +9,9 @@ import { useDebouncedFn } from "~/hooks"
 
 export interface ICompanyAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAssetName?: string
-  selectedAssetStatus?: CompanyConstants.TAssetStatus
-  handleChangeSelectedAssetName: (nextAssetQuery: string) => void
-  handleChangeSelectedAssetStatus: (nextAssetStatus: CompanyConstants.TAssetStatus) => void
+  selectedAssetStatus?: string
+  handleChangeSelectedAssetName: (nextAssetQuery: string | typeof RESET) => void
+  handleChangeSelectedAssetStatus: (nextAssetStatus: string | typeof RESET) => void
 }
 
 export function CompanyAssetsFilter({

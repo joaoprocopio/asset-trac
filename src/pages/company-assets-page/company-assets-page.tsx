@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAtom, useAtomValue } from "jotai"
+import { RESET } from "jotai/utils"
 import { InboxIcon } from "lucide-react"
 
 import { CompanyAtoms } from "~/atoms"
@@ -32,11 +33,11 @@ export function CompanyAssetsPage() {
     enabled: typeof selectedCompany?.id === "string",
   })
 
-  const handleChangeSelectedAssetName = (nextAssetQuery: string) => {
+  const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
     setSelectedAssetName(nextAssetQuery)
   }
 
-  const handleChangeSelectedAssetStatus = (nextAssetStatus: string) => {
+  const handleChangeSelectedAssetStatus = (nextAssetStatus: string | typeof RESET) => {
     setSelectedAssetStatus(nextAssetStatus)
   }
 
