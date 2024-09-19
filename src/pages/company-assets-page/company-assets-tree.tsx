@@ -37,6 +37,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
 
   const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
+  // TODO: otimizar isso aqui, manter tudo isso de estado consome muita memória
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
   const tree = useMemo(() => graph.buildTree(), [graph])
   const filteredTree = useMemo(() => {
@@ -47,7 +48,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
       const shouldMatchStatus = !!selectedAssetStatus
 
       const matchName = () => node.name.indexOf(selectedAssetName) >= 0
-      const matchStatus = () => node.status === selectedAssetStatus
+      const matchStatus = () => node.type !== "location" && node.status === selectedAssetStatus
 
       if (shouldMatchStatus && shouldMatchName) {
         return matchStatus() && matchName()
@@ -62,7 +63,11 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     })
 
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
-    const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => node.id)
+    const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => {
+      if (!node) return
+
+      return node.id
+    })
 
     setExpandedKeys(nextExpandedKeys)
     setAutoExpandParent(true)
@@ -232,13 +237,17 @@ function CompanyAssetsTreeNodeTitle(props) {
 }
 
 function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
-  const graph = new Graph()
+  const graph = new Graph<
+    | (CompanySchemas.TLocation & { type: "location" })
+    | (CompanySchemas.TAsset & { type: "component" | "asset" })
+  >()
 
   for (const location of locations) {
     graph.setNode(location.id, {
-      ...location,
-      name: location.name.toLowerCase(),
       type: "location",
+      id: location.id,
+      name: location.name.toLowerCase(),
+      parentId: location.parentId,
     })
 
     if (location.parentId) {
@@ -252,9 +261,14 @@ function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas
 
   for (const asset of assets) {
     graph.setNode(asset.id, {
-      ...asset,
-      name: asset.name.toLowerCase(),
       type: asset.sensorId ? "component" : "asset",
+      id: asset.id,
+      name: asset.name.toLowerCase(),
+      parentId: asset.parentId,
+      sensorType: asset.sensorType,
+      status: asset.status,
+      gatewayId: asset.gatewayId,
+      sensorId: asset.sensorId,
     })
 
     if (asset.parentId) {

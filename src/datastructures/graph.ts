@@ -1,5 +1,15 @@
-export class Graph {
-  nodes = new Map<string, Record<string, unknown>>()
+type GraphNode<N> = N & {
+  id: string
+  name: string
+  parentId: string | null
+}
+
+type TreeNode<N> = GraphNode<N> & {
+  children?: TreeNode<N>[]
+}
+
+export class Graph<N> {
+  nodes = new Map<string, GraphNode<N> | undefined>()
   edges = new Map<string, Set<string>>()
 
   constructor() {
@@ -11,13 +21,13 @@ export class Graph {
     return this.nodes.has(id)
   }
 
-  getNode(id: string): Record<string, unknown> | undefined {
+  getNode(id: string): GraphNode<N> | undefined {
     // Deep clone para não usar a referência/ponteiro original
     return structuredClone(this.nodes.get(id))
   }
 
-  setNode(id: string, attributes?: Record<string, unknown>): void {
-    this.nodes.set(id, attributes ?? {})
+  setNode(id: string, attributes?: GraphNode<N>): void {
+    this.nodes.set(id, attributes)
   }
 
   setEdge(parentId: string, childId: string): void {
@@ -42,10 +52,14 @@ export class Graph {
     return this.findNodeRoot(node.parentId)
   }
 
-  filterNodes(predicate: (node: Record<string, unknown>) => boolean) {
-    const filteredNodes = new Map<string, Record<string, unknown>>()
+  filterNodes(predicate: (node: GraphNode<N>) => boolean) {
+    const filteredNodes: typeof this.nodes = new Map()
 
     for (const [nodeId, node] of this.nodes) {
+      if (!node) {
+        continue
+      }
+
       if (!predicate(node)) {
         continue
       }
@@ -56,12 +70,12 @@ export class Graph {
     return filteredNodes
   }
 
-  buildSubtree(nodeId: string) {
-    const node = this.getNode(nodeId)
+  buildSubtree(nodeId: string): TreeNode<N> {
+    const node = this.getNode(nodeId) as TreeNode<N>
     const children = this.edges.get(nodeId)
 
-    if (children) {
-      node!.children = Array.from(children).map(this.buildSubtree)
+    if (node && children) {
+      node.children = Array.from(children).map(this.buildSubtree)
     }
 
     return node
@@ -91,11 +105,15 @@ export class Graph {
     return tree
   }
 
-  buildBacktracedTree(nodes: Map<string, Record<string, unknown>>) {
-    const treeMap = new Map<string, Record<string, unknown>>()
+  buildBacktracedTree(nodes: typeof this.nodes = this.nodes) {
+    const treeMap: typeof this.nodes = new Map()
 
     for (const [nodeId, node] of nodes) {
       if (treeMap.has(nodeId)) {
+        continue
+      }
+
+      if (!node) {
         continue
       }
 
