@@ -31,7 +31,7 @@
 
 @layer base {
   * {
-    @apply border-border transition-all duration-75;
+    @apply border-border transition-none duration-0;
   }
 
   html,

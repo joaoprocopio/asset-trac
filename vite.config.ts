@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react"
+import path from "path"
 import { fileURLToPath, URL } from "url"
 import { defineConfig } from "vite"
 import svgr from "vite-plugin-svgr"
@@ -21,7 +22,7 @@ export default defineConfig(() => {
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes("node_modules")) {
+            if (id.indexOf(path.resolve(__dirname, "node_modules")) === 0) {
               return id.split("node_modules/")[1].split("/")[0]
             }
           },
