@@ -127,9 +127,7 @@ export function CompanyAssetsPage() {
 function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
   const graph = new Graph()
 
-  for (let locationIndex = 0; locationIndex < locations.length; locationIndex++) {
-    const location = locations[locationIndex]
-
+  for (const location of locations) {
     graph.setNode(location.id, {
       ...location,
       type: "location",
@@ -144,9 +142,7 @@ function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas
     }
   }
 
-  for (let assetsIndex = 0; assetsIndex < assets.length; assetsIndex++) {
-    const asset = assets[assetsIndex]
-
+  for (const asset of assets) {
     graph.setNode(asset.id, {
       ...asset,
       type: asset.sensorId ? "component" : "asset",

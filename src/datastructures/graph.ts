@@ -1,5 +1,3 @@
-import { deepClone } from "~/utils"
-
 export class Graph {
   nodes = new Map<string, Record<string, unknown>>()
   edges = new Map<string, Set<string>>()
@@ -14,8 +12,8 @@ export class Graph {
   }
 
   getNode(id: string): Record<string, unknown> | undefined {
-    // `deepClone` para não usar a referência/ponteiro original
-    return deepClone(this.nodes.get(id))
+    // Deep clone para não usar a referência/ponteiro original
+    return structuredClone(this.nodes.get(id))
   }
 
   setNode(id: string, attributes?: Record<string, unknown>): void {
@@ -44,11 +42,15 @@ export class Graph {
   buildTree() {
     const roots = new Set(this.nodes.keys())
 
+    // Para encontrar as raízes da árvore
+    // É necessário remover todos os nós que são filhos de outros nós
     for (const [, children] of this.edges) {
       for (const child of children) {
         roots.delete(child)
       }
     }
+    // No fim, `roots` contém apenas os nós que são raízes da árvore
+    // Podem ou não conter filhos, mas não são filhos de nenhum outro nó
 
     const tree = []
 
