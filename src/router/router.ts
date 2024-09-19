@@ -10,28 +10,11 @@ export const router = createBrowserRouter([
     },
     children: [
       {
-        path: "",
-        lazy: async () => {
-          const { CompanyEmptyPage: CompanyAssetsPage } = await import("~/pages/company-empty-page")
-
-          return { Component: CompanyAssetsPage }
-        },
-      },
-      {
-        path: "/:companyId",
+        index: true,
         lazy: async () => {
           const { CompanyAssetsPage } = await import("~/pages/company-assets-page")
 
           return { Component: CompanyAssetsPage }
-        },
-      },
-      {
-        path: "/PLEASE_DELETE_ME",
-        lazy: async () => {
-          // TODO: PLEASE_DELETE_ME
-          const { PLEASE_DELETE_ME } = await import("./PLEASE_DELETE_ME")
-
-          return { Component: PLEASE_DELETE_ME }
         },
       },
       {

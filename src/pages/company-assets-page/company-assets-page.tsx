@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAtom, useAtomValue } from "jotai"
+import { InboxIcon } from "lucide-react"
 
 import { CompanyAtoms } from "~/atoms"
-import { Card, CardContent } from "~/components/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/card"
 import { CompanyServices } from "~/services"
 
 import { CompanyAssetsDetails, CompanyAssetsDetailsSkeleton } from "./company-assets-details"
@@ -12,6 +13,7 @@ import { CompanyAssetsTree, CompanyAssetsTreeSkeleton } from "./company-assets-t
 
 export function CompanyAssetsPage() {
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
+  const selectedCompanyId = useAtomValue(CompanyAtoms.selectedCompanyIdAtom)
 
   const [selectedAssetName, setSelectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(
@@ -38,7 +40,7 @@ export function CompanyAssetsPage() {
     setSelectedAssetStatus(nextAssetStatus)
   }
 
-  return (
+  return selectedCompanyId ? (
     <Card className="flex h-full flex-col">
       <CompanyAssetsHeader className="border-b px-6 py-4" selectedCompany={selectedCompany} />
 
@@ -67,6 +69,14 @@ export function CompanyAssetsPage() {
           <CompanyAssetsTreeSkeleton className="p-6" />
         )}
       </CardContent>
+    </Card>
+  ) : (
+    <Card>
+      <CardHeader className="text-center">
+        <InboxIcon className="h-14 w-full" />
+        <CardTitle>Unit not found</CardTitle>
+        <CardDescription>Select any available unit to monitor your assets</CardDescription>
+      </CardHeader>
     </Card>
   )
 }

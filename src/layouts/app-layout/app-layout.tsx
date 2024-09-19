@@ -1,19 +1,21 @@
 import { useQuery } from "@tanstack/react-query"
-import { useSetAtom } from "jotai"
+import { useAtom, useSetAtom } from "jotai"
+import { RESET } from "jotai/utils"
 import { Package2Icon } from "lucide-react"
-import { useEffect } from "react"
-import { NavLink, Outlet, useParams } from "react-router-dom"
+import { useCallback, useEffect, useState } from "react"
+import { NavLink, Outlet } from "react-router-dom"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { CompanyAtoms } from "~/atoms"
-import { buttonVariants } from "~/components/button"
+import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { CompanyServices } from "~/services"
 
 export function AppLayout() {
-  const { companyId } = useParams()
+  const [mounted, setMounted] = useState(false)
 
-  const setSelectedCompany = useSetAtom(CompanyAtoms.selectedCompanyAtom)
+  const [selectedCompany, setSelectedCompany] = useAtom(CompanyAtoms.selectedCompanyAtom)
+  const [selectedCompanyId, setSelectedCompanyId] = useAtom(CompanyAtoms.selectedCompanyIdAtom)
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
   const companies = useQuery({
@@ -21,15 +23,42 @@ export function AppLayout() {
     queryKey: [CompanyServices.GetCompaniesKey],
   })
 
+  const handleChangeCompany = useCallback(
+    (nextCompanyId: string) => {
+      if (!companies.isSuccess || !nextCompanyId) {
+        setSelectedCompany(RESET)
+        return setSelectedCompanyId(RESET)
+      }
+
+      setSelectedCompanyId(nextCompanyId)
+
+      const nextCompany = companies.data.find((company) => company.id === nextCompanyId)
+
+      if (!nextCompany) {
+        setSelectedCompany(RESET)
+        return setSelectedCompanyId(RESET)
+      }
+
+      setSelectedCompany(nextCompany)
+      setSelectedAsset(undefined)
+    },
+    [
+      companies.data,
+      companies.isSuccess,
+      setSelectedAsset,
+      setSelectedCompany,
+      setSelectedCompanyId,
+    ]
+  )
+
   useEffect(() => {
-    if (!companyId) return
-    if (!companies.isSuccess) return
+    if (!companies.isSuccess && !selectedCompany) return
+    if (mounted) return
 
-    const nextCompany = companies.data.find((company) => company.id === companyId)
+    setMounted(true)
 
-    setSelectedCompany(nextCompany)
-    setSelectedAsset(undefined)
-  }, [companies.data, companies.isSuccess, companyId, setSelectedCompany, setSelectedAsset])
+    handleChangeCompany(selectedCompanyId)
+  }, [mounted, companies.isSuccess, selectedCompanyId, selectedCompany, handleChangeCompany])
 
   return (
     <>
@@ -50,20 +79,16 @@ export function AppLayout() {
 
             {companies.isSuccess &&
               companies.data.map((company) => (
-                <NavLink
+                <Button
                   key={company.id}
-                  to={company.id}
-                  className={(state) =>
-                    buttonVariants({
-                      size: "sm",
-                      variant: state.isActive ? "default" : "secondary",
-                      className: "gap-2",
-                    })
-                  }>
+                  className="gap-2"
+                  size="sm"
+                  variant={company.id === selectedCompanyId ? "default" : "secondary"}
+                  onClick={() => handleChangeCompany(company.id)}>
                   <Package2Icon className="h-4 w-4" />
 
                   {`${company.name} Unit`}
-                </NavLink>
+                </Button>
               ))}
           </div>
         </div>
