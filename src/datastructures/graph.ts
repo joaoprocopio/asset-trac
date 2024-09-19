@@ -88,8 +88,6 @@ export class Graph {
       tree.push(subTree)
     }
 
-    sortTree(tree)
-
     return tree
   }
 
@@ -122,27 +120,6 @@ export class Graph {
 
     const tree = Array.from(treeMap.values())
 
-    sortTree(tree)
-
     return tree
   }
-}
-
-function sortTree(tree: Record<string, unknown>[]) {
-  const collator = new Intl.Collator("en-US", {
-    numeric: true,
-    sensitivity: "base",
-  })
-
-  tree.sort((currentNode, nextNode) => {
-    if (currentNode.children && !nextNode.children) {
-      return -1
-    }
-
-    if (!currentNode.children && nextNode.children) {
-      return 1
-    }
-
-    return collator.compare(currentNode.name, nextNode.name)
-  })
 }

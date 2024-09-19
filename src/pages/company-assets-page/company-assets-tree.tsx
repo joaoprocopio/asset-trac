@@ -12,6 +12,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
 import { Tree } from "~/components/tree"
+import { Typography } from "~/components/typography"
 import { CompanyConstants, SearchParamsConstants } from "~/constants"
 import { Graph } from "~/datastructures"
 import { RESET_SEARCH_PARAM, useSearchParam } from "~/hooks"
@@ -52,18 +53,17 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
       const shouldMatchName = !!selectedAssetName
       const shouldMatchStatus = !!selectedAssetStatus
 
-      const matchName =
-        shouldMatchName && node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase()) >= 0
-      const matchStatus = shouldMatchStatus && node.status === selectedAssetStatus
+      const matchName = () => node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase()) >= 0
+      const matchStatus = () => node.status === selectedAssetStatus
 
       if (shouldMatchStatus && shouldMatchName) {
-        return matchStatus && matchName
+        return matchStatus() && matchName()
       }
       if (shouldMatchName) {
-        return matchName
+        return matchName()
       }
       if (shouldMatchStatus) {
-        return matchStatus
+        return matchStatus()
       }
       return false
     })
@@ -120,7 +120,13 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
   return (
     <div ref={treeWrapperRef} {...props}>
-      {mounted && graph && filteredTree ? (
+      {!!(mounted && graph && !filteredTree.length) && (
+        <Typography className="mt-10 pr-6 text-center" variant="h5">
+          No results for this search
+        </Typography>
+      )}
+
+      {!!(mounted && graph && filteredTree.length) && (
         <Tree
           className="!border-0"
           fieldNames={{
@@ -142,9 +148,9 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
           onSelect={handleSelect}
           onExpand={handleExpand}
         />
-      ) : (
-        <CompanyAssetsTreeSkeleton className="pr-6" />
       )}
+
+      {!(mounted && graph && filteredTree) && <CompanyAssetsTreeSkeleton className="pr-6" />}
     </div>
   )
 }
