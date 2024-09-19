@@ -73,33 +73,31 @@ export function CompanyAssetsFilter({
         placeholder="Search assets"
       />
 
-      <div className="flex gap-4">
-        <Button
-          className="h-10 gap-2"
-          variant={
-            selectedAssetStatusControlled === CompanyConstants.AssetStatus.Operating
-              ? "default"
-              : "outline"
-          }
-          onClick={() =>
-            handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Operating)
-          }>
-          <ZapIcon className="h-5 w-5" />
-          Operating
-        </Button>
+      <Button
+        className="h-10 gap-2"
+        variant={
+          selectedAssetStatusControlled === CompanyConstants.AssetStatus.Operating
+            ? "default"
+            : "outline"
+        }
+        onClick={() =>
+          handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Operating)
+        }>
+        <ZapIcon className="h-5 w-5" />
+        Operating
+      </Button>
 
-        <Button
-          className="h-10 gap-2"
-          variant={
-            selectedAssetStatusControlled === CompanyConstants.AssetStatus.Alert
-              ? "default"
-              : "outline"
-          }
-          onClick={() => handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Alert)}>
-          <InfoIcon className="h-5 w-5" />
-          Critical
-        </Button>
-      </div>
+      <Button
+        className="h-10 gap-2"
+        variant={
+          selectedAssetStatusControlled === CompanyConstants.AssetStatus.Alert
+            ? "default"
+            : "outline"
+        }
+        onClick={() => handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Alert)}>
+        <InfoIcon className="h-5 w-5" />
+        Critical
+      </Button>
     </div>
   )
 }

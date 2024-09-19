@@ -30,8 +30,8 @@ export function AppLayout() {
   }, [companies.data, companies.isSuccess, companyId, setCompany])
 
   return (
-    <div className="grid h-full grid-rows-[3.5rem_1fr]">
-      <header className="border-b">
+    <>
+      <header className="fixed inset-0 z-10 h-16 border-b bg-background">
         <div className="container mx-auto flex h-full items-center justify-between px-6">
           <NavLink to="/">
             <TractianLogo className="h-4" />
@@ -67,11 +67,11 @@ export function AppLayout() {
         </div>
       </header>
 
-      <main className="grid bg-muted">
-        <div className="container mx-auto px-6 py-8">
+      <main className="h-full pt-16">
+        <div className="container mx-auto h-full px-6 py-8">
           <Outlet />
         </div>
       </main>
-    </div>
+    </>
   )
 }

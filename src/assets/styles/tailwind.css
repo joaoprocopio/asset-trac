@@ -31,16 +31,16 @@
 
 @layer base {
   * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground antialiased;
+    @apply border-border transition-all duration-75;
   }
 
   html,
   body,
   #__react {
-    @apply h-full max-h-full min-h-full;
+    @apply isolate h-full max-h-full min-h-full;
+  }
+
+  body {
+    @apply scroll-smooth bg-muted text-foreground antialiased;
   }
 }

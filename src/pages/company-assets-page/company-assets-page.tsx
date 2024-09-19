@@ -4,17 +4,16 @@ import { useEffect, useMemo } from "react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Card, CardContent } from "~/components/card"
-import { Separator } from "~/components/separator"
 import { CompanyConstants } from "~/constants"
 import { Graph } from "~/datastructures"
 import { RESET_SEARCH_PARAM, TSetSearchParamValue, useSearchParam } from "~/hooks"
 import { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
-import { CompanyAssetsDetails } from "./company-assets-details"
+import { CompanyAssetsDetails, CompanyAssetsDetailsSkeleton } from "./company-assets-details"
 import { CompanyAssetsFilter } from "./company-assets-filter"
 import { CompanyAssetsHeader } from "./company-assets-header"
-import { CompanyAssetsTree } from "./company-assets-tree"
+import { CompanyAssetsTree, CompanyAssetsTreeSkeleton } from "./company-assets-tree"
 
 export function CompanyAssetsPage() {
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
@@ -91,32 +90,33 @@ export function CompanyAssetsPage() {
 
   return (
     <Card className="flex h-full flex-col">
-      <CompanyAssetsHeader className="border-b" selectedCompany={selectedCompany} />
+      <CompanyAssetsHeader className="border-b px-6 py-4" selectedCompany={selectedCompany} />
 
-      <CardContent className="grid flex-grow basis-px grid-cols-[1fr_1px_1fr] overflow-hidden p-0">
-        <div className="flex flex-col">
-          <CompanyAssetsFilter
-            className="sticky inset-0 z-10 flex gap-6 border-b bg-background px-6 py-4"
-            selectedAssetName={selectedAssetName}
-            selectedAssetStatus={selectedAssetStatus}
-            handleChangeSelectedAssetName={handleChangeSelectedAssetName}
-            handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
-          />
+      <CardContent className="grid flex-grow grid-cols-[1fr_0.75fr] grid-rows-[4rem_1fr] overflow-hidden p-0">
+        <CompanyAssetsFilter
+          className="flex items-center gap-4 border-b px-6"
+          selectedAssetName={selectedAssetName}
+          selectedAssetStatus={selectedAssetStatus}
+          handleChangeSelectedAssetName={handleChangeSelectedAssetName}
+          handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
+        />
 
+        {graph && tree ? (
+          <CompanyAssetsDetails className="row-span-3 border-l" selectedAsset={selectedAsset} />
+        ) : (
+          <CompanyAssetsDetailsSkeleton className="row-span-3 border-l" />
+        )}
+
+        {graph && tree ? (
           <CompanyAssetsTree
-            className="flex-grow basis-px p-6 pr-0"
+            className="p-6 pr-0"
             tree={tree}
             selectedAssetId={selectedAssetId}
             handleChangeSelectedAssetId={handleChangeSelectedAssetId}
           />
-        </div>
-
-        <Separator className="h-auto overflow-hidden" orientation="vertical" />
-
-        <CompanyAssetsDetails
-          className="flex flex-col overflow-auto"
-          selectedAsset={selectedAsset}
-        />
+        ) : (
+          <CompanyAssetsTreeSkeleton className="p-6" />
+        )}
       </CardContent>
     </Card>
   )
