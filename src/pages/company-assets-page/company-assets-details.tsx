@@ -1,6 +1,7 @@
-import { InboxIcon, RadioIcon, RouterIcon, UploadCloudIcon } from "lucide-react"
+import { InboxIcon, RadioIcon, RouterIcon, UploadCloudIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 
+import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import type { CompanySchemas } from "~/schemas"
@@ -48,31 +49,43 @@ export function CompanyAssetsDetails({
           </header>
 
           <div>
-            <div className="h-80 border-b p-6">
+            <div className="h-80 border-b">
               {!picture && (
-                <label className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted text-muted-foreground">
-                  <input
-                    className="absolute left-0 z-10 h-px w-px overflow-hidden whitespace-nowrap [clip-path:inset(50%)] [clip:rect(0_0_0_0)]"
-                    type="file"
-                    accept="image/jpg, image/jpeg, image/png, image/webp"
-                    onChange={handleChangePicture}
+                <div className="h-full p-6">
+                  <label className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted text-muted-foreground">
+                    <input
+                      className="absolute left-0 h-px w-px overflow-hidden whitespace-nowrap [clip-path:inset(50%)] [clip:rect(0_0_0_0)]"
+                      type="file"
+                      accept="image/jpg, image/jpeg, image/png, image/webp"
+                      onChange={handleChangePicture}
+                    />
+
+                    <UploadCloudIcon className="h-12 w-12" />
+
+                    <p className="mb-2 text-sm"></p>
+
+                    <Typography variant="h5">Click to upload</Typography>
+
+                    <Typography className="text-xs">JPG, JPEG, PNG or WEBP</Typography>
+                  </label>
+                </div>
+              )}
+
+              {picture && (
+                <div className="relative h-full p-6">
+                  <img
+                    className="h-full w-full rounded-lg border object-cover"
+                    src={URL.createObjectURL(picture)}
                   />
 
-                  <UploadCloudIcon className="h-12 w-12" />
-
-                  <p className="mb-2 text-sm"></p>
-
-                  <Typography variant="h5">Click to upload</Typography>
-
-                  <Typography className="text-xs">JPG, JPEG, PNG or WEBP</Typography>
-                </label>
-              )}
-              {picture && (
-                <img
-                  className="h-full w-full overflow-hidden rounded-lg border object-cover"
-                  src={URL.createObjectURL(picture)}
-                  alt="Asset"
-                />
+                  <Button
+                    className="absolute right-10 top-10 rounded-full"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setPicture(undefined)}>
+                    <XIcon />
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -107,7 +120,9 @@ export function CompanyAssetsDetails({
 
                   <Typography affects="muted" className="flex items-center gap-2">
                     <RadioIcon className="inline-block h-5 w-5" />
-                    {selectedAsset.sensorId} ({selectedAsset.sensorType})
+                    <span>
+                      {selectedAsset.sensorId} ({selectedAsset.sensorType})
+                    </span>
                   </Typography>
                 </div>
               )}
@@ -117,7 +132,7 @@ export function CompanyAssetsDetails({
                   <Typography variant="h5">Gateway</Typography>
                   <Typography affects="muted" className="flex items-center gap-2">
                     <RouterIcon className="inline-block h-4 w-4" />
-                    {selectedAsset.gatewayId}
+                    <span>{selectedAsset.gatewayId}</span>
                   </Typography>
                 </div>
               )}
@@ -136,17 +151,18 @@ export function CompanyAssetsDetailsSkeleton({
   ...props
 }: ICompanyAssetsDetailsSkeletonProps) {
   return (
-    <div className={cn("grid grid-rows-[4rem_24rem_1fr]", className)} {...props}>
+    <div className={cn("grid grid-rows-[4rem_20rem_1fr]", className)} {...props}>
       <div className="flex items-center border-b px-6">
         <Skeleton className="h-10 w-full" />
       </div>
 
-      <div className="h-96 border-b p-6">
+      <div className="border-b p-6">
         <Skeleton className="h-full" />
       </div>
 
-      <div className="p-6">
-        <Skeleton className="h-full" />
+      <div className="space-y-6 p-6">
+        <Skeleton className="h-12" />
+        <Skeleton className="h-12" />
       </div>
     </div>
   )
