@@ -29,18 +29,20 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
-  const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
+  const graph = useMemo(() => {
+    const nextGraph = buildGraph(locations, assets)
+
+    return nextGraph
+  }, [locations, assets])
 
   const flattenedNodes = useMemo(() => {
-    if (!selectedAssetStatus && !selectedAssetName) {
-      const tree = graph.buildTree()
-      const flattenedNodes = flattenTreeNodes(tree, expandedKeys)
-      return flattenedNodes
-    }
+    const shouldMatchName = !!selectedAssetName
+    const shouldMatchStatus = !!selectedAssetStatus
 
     const filteredNodes = graph.filterNodes((node) => {
-      const shouldMatchName = !!selectedAssetName
-      const shouldMatchStatus = !!selectedAssetStatus
+      if (!(shouldMatchName || shouldMatchStatus)) {
+        return true
+      }
 
       const matchName = () => node.name.indexOf(selectedAssetName) >= 0
       const matchStatus = () => node.type !== "location" && node.status === selectedAssetStatus
@@ -58,12 +60,28 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     })
 
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
-    const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => node!.id)
 
-    const flattenedNodes = flattenTreeNodes(filteredTree, nextExpandedKeys)
+    const expandedKeysParents = new Set<string>(expandedKeys)
+
+    if (shouldMatchName || shouldMatchStatus) {
+      for (const [nodeId] of filteredNodes) {
+        if (!expandedKeysParents.has(nodeId)) {
+          expandedKeysParents.add(nodeId)
+        }
+        const parent = graph.getParent(nodeId)
+
+        if (!parent) {
+          continue
+        }
+
+        expandedKeysParents.add(parent.id)
+      }
+    }
+
+    const flattenedNodes = flattenTreeNodes(filteredTree, Array.from(expandedKeysParents))
 
     return flattenedNodes
-  }, [expandedKeys, graph, selectedAssetStatus, selectedAssetName])
+  }, [expandedKeys, selectedAssetStatus, selectedAssetName, graph])
 
   const handleSelect = useCallback(
     (selectedNodeId: string) => {
@@ -279,6 +297,34 @@ function flattenTreeNodes(tree, expandedKeys, level = 0) {
 
   return flattenedNodes
 }
+
+// function flattenTreeNodes(treeNodeList, expandedKeys) {
+//   const expandedKeySet = new Set(expandedKeys || [])
+//   const flattenList = []
+
+//   function dig(list, parent, level) {
+//     return list.map((treeNode, index) => {
+//       const flattenNode = Object.assign(treeNode, {
+//         parent,
+//         hasChildren: treeNode["children"] && treeNode["children"].length > 0,
+//         level: level,
+//       })
+
+//       flattenList.push(flattenNode)
+
+//       if (expandedKeySet.has(treeNode.id)) {
+//         level += 1
+//         flattenNode.children = dig(treeNode["children"] || [], flattenNode, level)
+//       }
+
+//       return flattenNode
+//     })
+//   }
+
+//   dig(treeNodeList, null, 0)
+
+//   return flattenList
+// }
 
 function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
   const graph = new Graph<

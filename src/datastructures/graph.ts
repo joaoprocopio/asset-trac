@@ -26,6 +26,20 @@ export class Graph<N> {
     return structuredClone(this.nodes.get(id))
   }
 
+  getParent(id: string): GraphNode<N> | undefined {
+    const node = this.getNode(id)
+
+    if (!node) {
+      return undefined
+    }
+
+    if (!node.parentId) {
+      return undefined
+    }
+
+    return this.getNode(node.parentId)
+  }
+
   setNode(id: string, attributes?: GraphNode<N>): void {
     this.nodes.set(id, attributes)
   }
