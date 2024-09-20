@@ -1,10 +1,10 @@
-type GraphNode<N> = N & {
+export type GraphNode<N> = N & {
   id: string
   name: string
   parentId: string | null
 }
 
-type TreeNode<N> = GraphNode<N> & {
+export type TreeNode<N> = GraphNode<N> & {
   children?: TreeNode<N>[]
 }
 

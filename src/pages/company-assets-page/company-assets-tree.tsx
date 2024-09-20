@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { useAtom, useSetAtom } from "jotai"
 import { RESET } from "jotai/utils"
-import { BoxIcon, ChevronDownIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
+import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 
@@ -21,8 +21,6 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
   const [mounted, setMounted] = useState<boolean>(false)
-
-  const [expandedKeys, setExpandedKeys] = useState<string[]>([])
 
   const [selectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
   const [selectedAssetStatus] = useAtom(CompanyAtoms.selectedAssetStatusAtom)
@@ -61,7 +59,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
 
-    const expandedKeysParents = new Set<string>(expandedKeys)
+    const expandedKeysParents = new Set<string>()
 
     if (shouldMatchName || shouldMatchStatus) {
       for (const [nodeId] of filteredNodes) {
@@ -78,10 +76,10 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
       }
     }
 
-    const flattenedNodes = flattenTreeNodes(filteredTree, Array.from(expandedKeysParents))
+    const flattenedNodes = flattenTreeNodes(filteredTree, expandedKeysParents)
 
     return flattenedNodes
-  }, [expandedKeys, selectedAssetStatus, selectedAssetName, graph])
+  }, [selectedAssetStatus, selectedAssetName, graph])
 
   const handleSelect = useCallback(
     (selectedNodeId: string) => {
@@ -105,17 +103,6 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     },
     [graph, setSelectedAsset, setSelectedAssetId]
   )
-
-  const handleExpand = (nextExpandedKey: string) => {
-    if (expandedKeys.includes(nextExpandedKey)) {
-      setExpandedKeys((prevExpandedKeys) =>
-        prevExpandedKeys.filter((key) => key !== nextExpandedKey)
-      )
-      return
-    }
-
-    setExpandedKeys((prevExpandedKeys) => [...prevExpandedKeys, nextExpandedKey])
-  }
 
   useEffect(() => {
     if (!selectedAssetId) return
@@ -183,23 +170,6 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
                   ))}
 
                   {/* Expand button or indent */}
-                  {data.hasChildren ? (
-                    <button
-                      className={buttonVariants({
-                        size: "icon",
-                        variant: "ghost",
-                        className: "h-8 w-8",
-                      })}
-                      onClick={() => handleExpand(data.id)}>
-                      <ChevronDownIcon
-                        className={cn("h-4 w-full", {
-                          "-rotate-90": data.expanded,
-                        })}
-                      />
-                    </button>
-                  ) : (
-                    <div className="w-8" />
-                  )}
 
                   <button
                     className={buttonVariants({
@@ -271,60 +241,26 @@ export function CompanyAssetsTreeSkeleton({
   )
 }
 
-function flattenTreeNodes(tree, expandedKeys, level = 0) {
+function flattenTreeNodes(tree, expandedKeysSet, level = 0) {
   let flattenedNodes = []
 
   for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
-    const node = structuredClone(tree[nodeIndex])
-    node.level = level
+    const node = Object.assign(structuredClone(tree[nodeIndex]), { level })
 
     flattenedNodes.push(node)
 
     if (node.children) {
-      node.hasChildren = true
-
-      if (expandedKeys.includes(node.id)) {
-        node.expanded = true
-
-        flattenedNodes = flattenedNodes.concat(
-          flattenTreeNodes(node.children, expandedKeys, level + 1)
-        )
+      if (expandedKeysSet.size && !expandedKeysSet.has(node.id)) {
+        continue
       }
+      flattenedNodes = flattenedNodes.concat(
+        flattenTreeNodes(node.children, expandedKeysSet, level + 1)
+      )
     }
-
-    delete node.children
   }
 
   return flattenedNodes
 }
-
-// function flattenTreeNodes(treeNodeList, expandedKeys) {
-//   const expandedKeySet = new Set(expandedKeys || [])
-//   const flattenList = []
-
-//   function dig(list, parent, level) {
-//     return list.map((treeNode, index) => {
-//       const flattenNode = Object.assign(treeNode, {
-//         parent,
-//         hasChildren: treeNode["children"] && treeNode["children"].length > 0,
-//         level: level,
-//       })
-
-//       flattenList.push(flattenNode)
-
-//       if (expandedKeySet.has(treeNode.id)) {
-//         level += 1
-//         flattenNode.children = dig(treeNode["children"] || [], flattenNode, level)
-//       }
-
-//       return flattenNode
-//     })
-//   }
-
-//   dig(treeNodeList, null, 0)
-
-//   return flattenList
-// }
 
 function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
   const graph = new Graph<
