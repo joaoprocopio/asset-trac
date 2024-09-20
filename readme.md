@@ -23,15 +23,15 @@ npm run dev
 
 ### Jaguar Unit
 
-![](./videos/jaguar-unit.mp4)
+<video src="./videos/jaguar-unit.mp4" width="720" height="450" controls></video>
 
 ### Tobias Unit
 
-![](./videos/tobias-unit.mp4)
+<video src="./videos/tobias-unit.mp4" width="720" height="450" controls></video>
 
 ### Apex Unit
 
-![](./videos/apex-unit.mp4)
+<video src="./videos/apex-unit.mp4" width="720" height="450" controls></video>
 
 ## Quais pontos eu melhoraria se eu tivesse mais tempo?
 
