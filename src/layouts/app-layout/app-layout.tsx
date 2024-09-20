@@ -26,7 +26,7 @@ export function AppLayout() {
 
   const handleChangeCompany = useCallback(
     (nextCompanyId: string) => {
-      if (!companies.isSuccess || !nextCompanyId) {
+      if (!companies.isSuccess) {
         setSelectedCompany(RESET)
         setSelectedCompanyId(RESET)
         setSelectedAsset(RESET)
@@ -49,12 +49,16 @@ export function AppLayout() {
       }
 
       setSelectedCompany(nextCompany)
-      setSelectedAsset(RESET)
-      setSelectedAssetId(RESET)
+
+      if (nextCompanyId !== selectedCompanyId) {
+        setSelectedAsset(RESET)
+        setSelectedAssetId(RESET)
+      }
     },
     [
       companies.data,
       companies.isSuccess,
+      selectedCompanyId,
       setSelectedAsset,
       setSelectedAssetId,
       setSelectedCompany,
@@ -64,7 +68,7 @@ export function AppLayout() {
 
   useEffect(() => {
     if (!companies.isSuccess) return
-    if (selectedCompany) return
+    if (selectedCompany || !selectedCompanyId) return
     if (once) return
 
     setOnce(true)

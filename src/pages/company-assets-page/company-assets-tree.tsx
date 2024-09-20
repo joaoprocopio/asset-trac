@@ -67,7 +67,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
   const handleSelect = useCallback(
     (selectedNodeId: string) => {
-      if (!selectedNodeId || selectedNodeId === selectedAssetId) {
+      if (!selectedNodeId) {
         setSelectedAssetId(RESET)
         setSelectedAsset(RESET)
         return
@@ -85,7 +85,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
       setSelectedAsset(asset as CompanySchemas.TAsset | CompanySchemas.TLocation)
     },
-    [graph, selectedAssetId, setSelectedAsset, setSelectedAssetId]
+    [graph, setSelectedAsset, setSelectedAssetId]
   )
 
   const handleExpand = useCallback((newExpandedKeys: React.Key[]) => {
@@ -94,6 +94,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   }, [])
 
   useEffect(() => {
+    if (!selectedAssetId) return
     if (mounted) return
 
     handleSelect(selectedAssetId)
@@ -176,8 +177,9 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
-                      className: "px-0 pr-2.5 font-normal",
+                      className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
                     })}
+                    data-selected={data.id === selectedAssetId}
                     onClick={() => handleSelect(data.id)}>
                     {data.type === "location" && (
                       <div className="w-8">

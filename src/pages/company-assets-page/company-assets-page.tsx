@@ -5,6 +5,7 @@ import { InboxIcon } from "lucide-react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/card"
+import type { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
 import { CompanyAssetsDetails, CompanyAssetsDetailsSkeleton } from "./company-assets-details"
@@ -13,6 +14,7 @@ import { CompanyAssetsHeader } from "./company-assets-header"
 import { CompanyAssetsTree, CompanyAssetsTreeSkeleton } from "./company-assets-tree"
 
 export function CompanyAssetsPage() {
+  const selectedAsset = useAtomValue(CompanyAtoms.selectedAssetAtom)
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
   const selectedCompanyId = useAtomValue(CompanyAtoms.selectedCompanyIdAtom)
 
@@ -24,13 +26,13 @@ export function CompanyAssetsPage() {
   const locationsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyLocations(selectedCompanyId),
     queryKey: [CompanyServices.GetCompanyLocationsKey, selectedCompanyId],
-    enabled: typeof selectedCompanyId === "string",
+    enabled: typeof selectedCompanyId === "string" && selectedCompanyId.length > 0,
   })
 
   const assetsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyAssets(selectedCompanyId),
     queryKey: [CompanyServices.GetCompanyAssetsKey, selectedCompanyId],
-    enabled: typeof selectedCompanyId === "string",
+    enabled: typeof selectedCompanyId === "string" && selectedCompanyId.length > 0,
   })
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
@@ -79,7 +81,7 @@ export function CompanyAssetsPage() {
         </div>
 
         {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
-          <CompanyAssetsDetails />
+          <CompanyAssetsDetails selectedAsset={selectedAsset as CompanySchemas.TAsset} />
         ) : (
           <CompanyAssetsDetailsSkeleton />
         )}
