@@ -21,7 +21,17 @@ npm run dev
 
 ## Showcase da aplicação
 
-TODO
+### Jaguar Unit
+
+![](./videos/jaguar-unit.mp4)
+
+### Tobias Unit
+
+![](./videos/tobias-unit.mp4)
+
+### Apex Unit
+
+![](./videos/apex-unit.mp4)
 
 ## Quais pontos eu melhoraria se eu tivesse mais tempo?
 
