@@ -155,4 +155,23 @@ export class Graph<N> {
 
     return tree
   }
+
+  // TODO: corrigir a tipagem
+  flattenTreeNodes(tree, level = 0) {
+    let flattenedNodes = []
+
+    for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
+      const node = Object.assign(structuredClone(tree[nodeIndex]), { level })
+
+      flattenedNodes.push(node)
+
+      if (node.children) {
+        flattenedNodes = flattenedNodes.concat(this.flattenTreeNodes(node.children, level + 1))
+      }
+
+      delete node.children
+    }
+
+    return flattenedNodes
+  }
 }

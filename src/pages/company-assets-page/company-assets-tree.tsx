@@ -60,8 +60,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     }
 
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
-
-    const flattenedNodes = flattenTreeNodes(filteredTree)
+    const flattenedNodes = graph.flattenTreeNodes(filteredTree)
 
     return flattenedNodes
   }, [selectedAssetStatus, selectedAssetName, graph])
@@ -222,22 +221,6 @@ export function CompanyAssetsTreeSkeleton({
       <Skeleton className="h-6" />
     </div>
   )
-}
-
-function flattenTreeNodes(tree, level = 0) {
-  let flattenedNodes = []
-
-  for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
-    const node = Object.assign(structuredClone(tree[nodeIndex]), { level })
-
-    flattenedNodes.push(node)
-
-    if (node.children) {
-      flattenedNodes = flattenedNodes.concat(flattenTreeNodes(node.children, level + 1))
-    }
-  }
-
-  return flattenedNodes
 }
 
 function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
