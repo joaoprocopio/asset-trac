@@ -23,15 +23,15 @@ npm run dev
 
 ### Jaguar Unit
 
-<video src="./videos/jaguar-unit.mp4" width="720" height="450" controls></video>
+[![](https://markdown-videos-api.jorgenkh.no/youtube/JqM08jiyGeg)](https://youtu.be/JqM08jiyGeg)
 
 ### Tobias Unit
 
-<video src="./videos/tobias-unit.mp4" width="720" height="450" controls></video>
+[![](https://markdown-videos-api.jorgenkh.no/youtube/VnxO0roXtVc)](https://youtu.be/VnxO0roXtVc)
 
 ### Apex Unit
 
-<video src="./videos/apex-unit.mp4" width="720" height="450" controls></video>
+[![](https://markdown-videos-api.jorgenkh.no/youtube/gK1s5N8ON3E)](https://youtu.be/gK1s5N8ON3E)
 
 ## Quais pontos eu melhoraria se eu tivesse mais tempo?
 
