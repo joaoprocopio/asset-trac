@@ -20,19 +20,22 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 }
 
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
-  const [mounted, setOnce] = useState<boolean>(false)
+  const [mounted, setMounted] = useState<boolean>(false)
 
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
-  const [autoExpandParent, setAutoExpandParent] = useState(true)
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([])
 
   const [selectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
   const [selectedAssetStatus] = useAtom(CompanyAtoms.selectedAssetStatusAtom)
   const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
+  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
-  const tree = useMemo(() => {
+
+  const flattenedNodes = useMemo(() => {
     if (!selectedAssetStatus && !selectedAssetName) {
-      return graph.buildTree()
+      const tree = graph.buildTree()
+      const flattenedNodes = flattenTreeNodes(tree, expandedKeys)
+      return flattenedNodes
     }
 
     const filteredNodes = graph.filterNodes((node) => {
@@ -57,14 +60,10 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
     const nextExpandedKeys = Array.from(filteredNodes.values()).map((node) => node!.id)
 
-    setExpandedKeys(nextExpandedKeys)
-    setAutoExpandParent(true)
+    const flattenedNodes = flattenTreeNodes(filteredTree, nextExpandedKeys)
 
-    return filteredTree
-  }, [graph, selectedAssetStatus, selectedAssetName])
-  const flattenedNodes = useMemo(() => flattenTreeNodes(tree), [tree])
-
-  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
+    return flattenedNodes
+  }, [expandedKeys, graph, selectedAssetStatus, selectedAssetName])
 
   const handleSelect = useCallback(
     (selectedNodeId: string) => {
@@ -89,10 +88,16 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     [graph, setSelectedAsset, setSelectedAssetId]
   )
 
-  const handleExpand = useCallback((newExpandedKeys: React.Key[]) => {
-    setExpandedKeys(newExpandedKeys)
-    setAutoExpandParent(false)
-  }, [])
+  const handleExpand = (nextExpandedKey: string) => {
+    if (expandedKeys.includes(nextExpandedKey)) {
+      setExpandedKeys((prevExpandedKeys) =>
+        prevExpandedKeys.filter((key) => key !== nextExpandedKey)
+      )
+      return
+    }
+
+    setExpandedKeys((prevExpandedKeys) => [...prevExpandedKeys, nextExpandedKey])
+  }
 
   useEffect(() => {
     if (!selectedAssetId) return
@@ -102,7 +107,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   }, [mounted, selectedAssetId, handleSelect])
 
   useEffect(() => {
-    setOnce(true)
+    setMounted(true)
   }, [])
 
   return (
@@ -152,7 +157,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
               return (
                 <div
                   className={clsx("flex items-center", {
-                    "mb-0.5": index < flattenedNodes.length,
+                    "mb-1": index < flattenedNodes.length,
                   })}>
                   {/* Indent */}
                   {Array.from({ length: data.level }).map((_, index) => (
@@ -166,7 +171,8 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
                         size: "icon",
                         variant: "ghost",
                         className: "h-8 w-8",
-                      })}>
+                      })}
+                      onClick={() => handleExpand(data.id)}>
                       <ChevronDownIcon
                         className={cn("h-4 w-full", {
                           "-rotate-90": data.expanded,
@@ -247,7 +253,7 @@ export function CompanyAssetsTreeSkeleton({
   )
 }
 
-function flattenTreeNodes(tree, level = 0) {
+function flattenTreeNodes(tree, expandedKeys, level = 0) {
   let flattenedNodes = []
 
   for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
@@ -258,9 +264,14 @@ function flattenTreeNodes(tree, level = 0) {
 
     if (node.children) {
       node.hasChildren = true
-      // TODO: controlar a logica de expansao
-      node.expanded = !!~~(Math.random() * 2)
-      flattenedNodes = flattenedNodes.concat(...flattenTreeNodes(node.children, level + 1))
+
+      if (expandedKeys.includes(node.id)) {
+        node.expanded = true
+
+        flattenedNodes = flattenedNodes.concat(
+          flattenTreeNodes(node.children, expandedKeys, level + 1)
+        )
+      }
     }
 
     delete node.children
