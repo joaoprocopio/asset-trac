@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { useAtom, useSetAtom } from "jotai"
 import { RESET } from "jotai/utils"
 import { BoxIcon, ChevronDownIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
@@ -149,7 +150,10 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
               }
 
               return (
-                <div className="flex items-center">
+                <div
+                  className={clsx("flex items-center", {
+                    "mb-0.5": index < flattenedNodes.length,
+                  })}>
                   {/* Indent */}
                   {Array.from({ length: data.level }).map((_, index) => (
                     <div key={index} className="w-8" />
