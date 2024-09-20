@@ -22,15 +22,15 @@ export function CompanyAssetsPage() {
   )
 
   const locationsQuery = useQuery({
-    queryFn: () => CompanyServices.getCompanyLocations(selectedCompany!.id),
-    queryKey: [CompanyServices.GetCompanyLocationsKey, selectedCompany?.id],
-    enabled: typeof selectedCompany?.id === "string",
+    queryFn: () => CompanyServices.getCompanyLocations(selectedCompanyId),
+    queryKey: [CompanyServices.GetCompanyLocationsKey, selectedCompanyId],
+    enabled: typeof selectedCompanyId === "string",
   })
 
   const assetsQuery = useQuery({
-    queryFn: () => CompanyServices.getCompanyAssets(selectedCompany!.id),
-    queryKey: [CompanyServices.GetCompanyAssetsKey, selectedCompany?.id],
-    enabled: typeof selectedCompany?.id === "string",
+    queryFn: () => CompanyServices.getCompanyAssets(selectedCompanyId),
+    queryKey: [CompanyServices.GetCompanyAssetsKey, selectedCompanyId],
+    enabled: typeof selectedCompanyId === "string",
   })
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
@@ -41,7 +41,19 @@ export function CompanyAssetsPage() {
     setSelectedAssetStatus(nextAssetStatus)
   }
 
-  return selectedCompanyId ? (
+  if (!selectedCompanyId) {
+    return (
+      <Card>
+        <CardHeader className="text-center">
+          <InboxIcon className="h-14 w-full" />
+          <CardTitle>Unit not found</CardTitle>
+          <CardDescription>Select any available unit to monitor your assets</CardDescription>
+        </CardHeader>
+      </Card>
+    )
+  }
+
+  return (
     <Card className="flex h-full flex-col">
       <CompanyAssetsHeader className="border-b px-6 py-4" selectedCompany={selectedCompany} />
 
@@ -57,12 +69,12 @@ export function CompanyAssetsPage() {
 
           {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
             <CompanyAssetsTree
-              className="p-6 pr-0"
+              className="pl-6"
               locations={locationsQuery.data}
               assets={assetsQuery.data}
             />
           ) : (
-            <CompanyAssetsTreeSkeleton className="p-6" />
+            <CompanyAssetsTreeSkeleton />
           )}
         </div>
 
@@ -72,14 +84,6 @@ export function CompanyAssetsPage() {
           <CompanyAssetsDetailsSkeleton />
         )}
       </CardContent>
-    </Card>
-  ) : (
-    <Card>
-      <CardHeader className="text-center">
-        <InboxIcon className="h-14 w-full" />
-        <CardTitle>Unit not found</CardTitle>
-        <CardDescription>Select any available unit to monitor your assets</CardDescription>
-      </CardHeader>
     </Card>
   )
 }

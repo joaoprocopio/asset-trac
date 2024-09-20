@@ -8,11 +8,11 @@ import {
   MapPinIcon,
   ZapIcon,
 } from "lucide-react"
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { memo, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Virtuoso } from "react-virtuoso"
 
 import { CompanyAtoms } from "~/atoms"
 import { Skeleton } from "~/components/skeleton"
-import { Tree } from "~/components/tree"
 import { Typography } from "~/components/typography"
 import { CompanyConstants } from "~/constants"
 import { Graph } from "~/datastructures"
@@ -37,11 +37,11 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
 
   const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
-  // TODO: otimizar isso aqui, manter tudo isso de estado consome muita memória
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
-  const tree = useMemo(() => graph.buildTree(), [graph])
-  const filteredTree = useMemo(() => {
-    if (!selectedAssetStatus && !selectedAssetName) return tree
+  const tree = useMemo(() => {
+    if (!selectedAssetStatus && !selectedAssetName) {
+      return graph.buildTree()
+    }
 
     const filteredNodes = graph.filterNodes((node) => {
       const shouldMatchName = !!selectedAssetName
@@ -69,7 +69,8 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     setAutoExpandParent(true)
 
     return filteredTree
-  }, [graph, tree, selectedAssetStatus, selectedAssetName])
+  }, [graph, selectedAssetStatus, selectedAssetName])
+  const flattenedNodes = useMemo(() => flattenTreeNodes(tree), [tree])
 
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
@@ -114,44 +115,51 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
   return (
     <div ref={treeWrapperRef} {...props}>
-      {!!(mounted && graph && !filteredTree.length) && (
+      {!!(mounted && graph && !flattenedNodes.length) && (
         <Typography className="mt-10 pr-6 text-center" variant="h5">
           No results for this search
         </Typography>
       )}
 
-      {!(mounted && graph && filteredTree) && <CompanyAssetsTreeSkeleton className="pr-6" />}
+      {!(mounted && graph && flattenedNodes) && <CompanyAssetsTreeSkeleton />}
 
-      {!!(mounted && graph && filteredTree.length) && (
-        <Suspense fallback={<CompanyAssetsTreeSkeleton className="pr-6" />}>
-          <Tree
-            className="!border-0"
-            fieldNames={{
-              key: "id",
-              children: "children",
-              title: "name",
+      {!!(mounted && graph && flattenedNodes.length) && (
+        <Suspense fallback={<CompanyAssetsTreeSkeleton />}>
+          <Virtuoso
+            totalCount={flattenedNodes.length + 2}
+            itemContent={(index) => {
+              if (index === 0 || index === flattenedNodes.length + 1) {
+                return <div className="h-6 w-full bg-background" />
+              }
+
+              return <ItemContent data={flattenedNodes[index - 1]} />
             }}
-            treeData={filteredTree}
-            defaultSelectedKeys={defaultSelectedKeys}
-            expandedKeys={expandedKeys}
-            autoExpandParent={autoExpandParent}
-            showLine={true}
-            showIcon={true}
-            height={treeWrapperRef.current!.offsetHeight - 48}
-            itemHeight={28}
-            icon={(props) => <CompanyAssetsTreeNodeIcon {...props} />}
-            switcherIcon={(props) => <CompanyAssetsTreeNodeSwitcherIcon {...props} />}
-            titleRender={(props) => (
-              <CompanyAssetsTreeNodeTitle {...props} query={selectedAssetName} />
-            )}
-            onSelect={handleSelect}
-            onExpand={handleExpand}
           />
+          {/* defaultSelectedKeys={defaultSelectedKeys}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
+          showLine={true}
+          showIcon={true}
+          height={treeWrapperRef.current!.offsetHeight - 48}
+          itemHeight={28}
+          icon={(props) => <CompanyAssetsTreeNodeIcon {...props} />}
+          switcherIcon={(props) => <CompanyAssetsTreeNodeSwitcherIcon {...props} />}
+          titleRender={(props) => (
+            <CompanyAssetsTreeNodeTitle {...props} query={selectedAssetName} />
+          )}
+          onSelect={handleSelect}
+          onExpand={handleExpand} */}
         </Suspense>
       )}
     </div>
   )
 }
+
+const ItemContent = memo(({ data }: { data: unknown }) => {
+  return <div className="text-sm">{data.name}</div>
+})
+
+ItemContent.displayName = "InnerItem"
 
 export interface ICompanyAssetsTreeSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -160,7 +168,7 @@ export function CompanyAssetsTreeSkeleton({
   ...props
 }: ICompanyAssetsTreeSkeletonProps) {
   return (
-    <div className={cn("space-y-px", className)} {...props}>
+    <div className={cn("space-y-px p-6", className)} {...props}>
       <Skeleton className="h-6" />
       <Skeleton className="h-6" />
       <Skeleton className="h-6" />
@@ -232,6 +240,24 @@ function CompanyAssetsTreeNodeTitle(props) {
       )}
     </>
   )
+}
+
+function flattenTreeNodes(tree) {
+  let flattenedNodes = []
+
+  for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
+    const node = structuredClone(tree[nodeIndex])
+
+    flattenedNodes.push(node)
+
+    if (node.children) {
+      flattenedNodes = flattenedNodes.concat(...flattenTreeNodes(node.children))
+    }
+
+    delete node.children
+  }
+
+  return flattenedNodes
 }
 
 function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
