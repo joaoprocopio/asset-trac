@@ -1,17 +1,11 @@
 import { useAtom, useSetAtom } from "jotai"
 import { RESET } from "jotai/utils"
-import {
-  BoxIcon,
-  ChevronDownIcon,
-  CircleIcon,
-  CodepenIcon,
-  MapPinIcon,
-  ZapIcon,
-} from "lucide-react"
-import { memo, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { BoxIcon, ChevronDownIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 
 import { CompanyAtoms } from "~/atoms"
+import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import { CompanyConstants } from "~/constants"
@@ -25,8 +19,6 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 }
 
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
-  const treeWrapperRef = useRef<HTMLDivElement>(null)
-
   const [mounted, setOnce] = useState<boolean>(false)
 
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
@@ -36,7 +28,6 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const [selectedAssetStatus] = useAtom(CompanyAtoms.selectedAssetStatusAtom)
   const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
 
-  const defaultSelectedKeys = useMemo(() => [selectedAssetId || ""], [selectedAssetId])
   const graph = useMemo(() => buildGraph(locations, assets), [locations, assets])
   const tree = useMemo(() => {
     if (!selectedAssetStatus && !selectedAssetName) {
@@ -75,16 +66,16 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
 
   const handleSelect = useCallback(
-    ([selectedNodeId]: React.Key[]) => {
-      if (!selectedNodeId) {
+    (selectedNodeId: string) => {
+      if (!selectedNodeId || selectedNodeId === selectedAssetId) {
         setSelectedAssetId(RESET)
         setSelectedAsset(RESET)
         return
       }
 
-      setSelectedAssetId(selectedNodeId as string)
+      setSelectedAssetId(selectedNodeId)
 
-      const asset = graph.getNode(selectedNodeId as string)
+      const asset = graph.getNode(selectedNodeId)
 
       if (!asset) {
         setSelectedAssetId(RESET)
@@ -94,7 +85,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
 
       setSelectedAsset(asset as CompanySchemas.TAsset | CompanySchemas.TLocation)
     },
-    [graph, setSelectedAsset, setSelectedAssetId]
+    [graph, selectedAssetId, setSelectedAsset, setSelectedAssetId]
   )
 
   const handleExpand = useCallback((newExpandedKeys: React.Key[]) => {
@@ -103,18 +94,17 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
   }, [])
 
   useEffect(() => {
-    if (!defaultSelectedKeys[0]?.length) return
     if (mounted) return
 
-    handleSelect(defaultSelectedKeys)
-  }, [mounted, defaultSelectedKeys, handleSelect])
+    handleSelect(selectedAssetId)
+  }, [mounted, selectedAssetId, handleSelect])
 
   useEffect(() => {
     setOnce(true)
   }, [])
 
   return (
-    <div ref={treeWrapperRef} {...props}>
+    <div {...props}>
       {!!(mounted && graph && !flattenedNodes.length) && (
         <Typography className="mt-10 pr-6 text-center" variant="h5">
           No results for this search
@@ -132,34 +122,102 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
                 return <div className="h-6 w-full bg-background" />
               }
 
-              return <ItemContent data={flattenedNodes[index - 1]} />
+              const data = flattenedNodes[index - 1]
+              let title = data.name
+
+              const classes = {
+                "fill-destructive text-destructive":
+                  data.status === CompanyConstants.AssetStatus.Alert,
+                "fill-success text-success": data.status === CompanyConstants.AssetStatus.Operating,
+              }
+
+              if (selectedAssetName) {
+                const index = data.name.indexOf(selectedAssetName)
+                const beforeStr = data.name.substring(0, index)
+                const afterStr = data.name.slice(index + selectedAssetName.length)
+
+                if (index > -1) {
+                  title = (
+                    <>
+                      {beforeStr}
+                      <span className="font-bold">{selectedAssetName}</span>
+                      {afterStr}
+                    </>
+                  )
+                }
+              }
+
+              return (
+                <div className="flex items-center">
+                  {/* Indent */}
+                  {Array.from({ length: data.level }).map((_, index) => (
+                    <div key={index} className="w-8" />
+                  ))}
+
+                  {/* Expand button or indent */}
+                  {data.hasChildren ? (
+                    <button
+                      className={buttonVariants({
+                        size: "icon",
+                        variant: "ghost",
+                        className: "h-8 w-8",
+                      })}>
+                      <ChevronDownIcon
+                        className={cn("h-4 w-full", {
+                          "-rotate-90": data.expanded,
+                        })}
+                      />
+                    </button>
+                  ) : (
+                    <div className="w-8" />
+                  )}
+
+                  <button
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "px-0 pr-2.5 font-normal",
+                    })}
+                    onClick={() => handleSelect(data.id)}>
+                    {data.type === "location" && (
+                      <div className="w-8">
+                        <MapPinIcon className="h-4 w-full" />
+                      </div>
+                    )}
+                    {data.type === "asset" && (
+                      <div className="w-8">
+                        <BoxIcon className="h-4 w-full" />
+                      </div>
+                    )}
+                    {data.type === "component" && (
+                      <div className="w-8">
+                        <CodepenIcon className="h-4 w-full" />
+                      </div>
+                    )}
+
+                    <span className="first-letter:uppercase">{title}</span>
+                  </button>
+
+                  {/* End icon */}
+                  {data.sensorType === CompanyConstants.AssetSensorType.Energy && (
+                    <div className="w-8">
+                      <ZapIcon className={cn("h-4 w-full", classes)} />
+                    </div>
+                  )}
+                  {data.sensorType === CompanyConstants.AssetSensorType.Vibration && (
+                    <div className="w-8">
+                      <InfoIcon className={cn("h-3 w-full", classes)} />
+                    </div>
+                  )}
+                </div>
+              )
             }}
           />
-          {/* defaultSelectedKeys={defaultSelectedKeys}
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}
-          showLine={true}
-          showIcon={true}
-          height={treeWrapperRef.current!.offsetHeight - 48}
-          itemHeight={28}
-          icon={(props) => <CompanyAssetsTreeNodeIcon {...props} />}
-          switcherIcon={(props) => <CompanyAssetsTreeNodeSwitcherIcon {...props} />}
-          titleRender={(props) => (
-            <CompanyAssetsTreeNodeTitle {...props} query={selectedAssetName} />
-          )}
-          onSelect={handleSelect}
-          onExpand={handleExpand} */}
         </Suspense>
       )}
     </div>
   )
 }
-
-const ItemContent = memo(({ data }: { data: unknown }) => {
-  return <div className="text-sm">{data.name}</div>
-})
-
-ItemContent.displayName = "InnerItem"
 
 export interface ICompanyAssetsTreeSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -183,75 +241,20 @@ export function CompanyAssetsTreeSkeleton({
   )
 }
 
-function CompanyAssetsTreeNodeSwitcherIcon(props) {
-  return (
-    <ChevronDownIcon
-      className={cn("h-full w-4", {
-        "-rotate-90": props.expanded,
-      })}
-    />
-  )
-}
-
-function CompanyAssetsTreeNodeIcon(props) {
-  switch (props.data.type) {
-    case "location":
-      return <MapPinIcon className="mx-auto h-full w-4" />
-    case "asset":
-      return <BoxIcon className="mx-auto h-full w-4" />
-    case "component":
-      return <CodepenIcon className="mx-auto h-full w-4" />
-  }
-}
-
-function CompanyAssetsTreeNodeTitle(props) {
-  const classes = cn("ml-2 inline-block h-4 w-3", {
-    "fill-destructive text-destructive": props.status === CompanyConstants.AssetStatus.Alert,
-    "fill-success text-success": props.status === CompanyConstants.AssetStatus.Operating,
-  })
-
-  let title = props.name
-
-  if (props.query) {
-    const index = props.name.indexOf(props.query)
-    const beforeStr = props.name.substring(0, index)
-    const afterStr = props.name.slice(index + props.query.length)
-
-    if (index > -1) {
-      title = (
-        <>
-          {beforeStr}
-          <span className="font-bold">{props.query}</span>
-          {afterStr}
-        </>
-      )
-    }
-  }
-
-  return (
-    <>
-      <span className="inline-block first-letter:uppercase">{title}</span>
-
-      {props.sensorType === CompanyConstants.AssetSensorType.Energy && (
-        <ZapIcon className={classes} />
-      )}
-      {props.sensorType === CompanyConstants.AssetSensorType.Vibration && (
-        <CircleIcon className={classes} />
-      )}
-    </>
-  )
-}
-
-function flattenTreeNodes(tree) {
+function flattenTreeNodes(tree, level = 0) {
   let flattenedNodes = []
 
   for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
     const node = structuredClone(tree[nodeIndex])
+    node.level = level
 
     flattenedNodes.push(node)
 
     if (node.children) {
-      flattenedNodes = flattenedNodes.concat(...flattenTreeNodes(node.children))
+      node.hasChildren = true
+      // TODO: controlar a logica de expansao
+      node.expanded = !!~~(Math.random() * 2)
+      flattenedNodes = flattenedNodes.concat(...flattenTreeNodes(node.children, level + 1))
     }
 
     delete node.children
