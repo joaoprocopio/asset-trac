@@ -19,7 +19,9 @@ npm install
 npm run dev
 ```
 
-- Include a video demonstrating the application opening for each company and selecting a filter.
+## Showcase da aplicação
+
+TODO
 
 ## Quais pontos eu melhoraria se eu tivesse mais tempo?
 
@@ -28,13 +30,15 @@ Para que um a boa resposta seja dada para essa pergunta é necessário que se sa
 
 Por exemplo, se o rumo do projeto for ser entregue para usuários internacionais, eu colocaria esforços em fazer a internacionalização das interfaces do projeto.
 
+Mas, mesmo sabendo disso, vou deixar anotado alguns pontos que eu trabalharia no projeto hoje, caso tivesse mais tempo para a entrega.
+
 ### Pontos gerais do projeto
 
 - Esse projeto carece de testes unitários, ter mais testes unitários ajudariam a fazer alterações com mais confiança.
 
-- Testes de [benchmark](https://vitest.dev/api/#bench) utilizando o `Vitest`, como performance é um ponto crítico, principalmente para Apex Unit que necessita exibir cerca de 18 mil objetos, poder construir uma árvore com uma boa performance é de suma importância, e garantir que as métricas de performance não se alterem conforme o tempo é extremamente importante.
+- [Testes de benchmark utilizando o `Vitest`](https://vitest.dev/api/#bench), como performance é um ponto crítico, principalmente para Apex Unit que necessita exibir cerca de 18 mil objetos, poder construir uma árvore com uma boa performance é de suma importância, e garantir que as métricas de performance não se alterem conforme o tempo é extremamente importante.
 
-- Testes E2E com [Playwright](https://playwright.dev/), existem alguns fluxos de navegação que dependem muito da URL e de que algumas peças da tela sejam atualizadas, utilizando essa classe de testes eu consigo montar fluxos testados e garantir que eles sempre estarão funcionando.
+- [Testes E2E com Playwright](https://playwright.dev/), existem alguns fluxos de navegação que dependem muito da URL e de que algumas peças da tela sejam atualizadas, utilizando essa classe de testes eu consigo montar fluxos testados e garantir que eles sempre estarão funcionando.
 
 ### Pontos de usabilidade
 
@@ -73,6 +77,6 @@ Por exemplo ao entrar em Apex Unit e pesquisar por `location 2`, todos os irmão
 
 ### Pontos sobre performance
 
-- Existe bastante espaço para otimização dentro do Grafo que é utilizado para fazer a representação da árvore, principalmente no que tange a filtragem de nós e remontagem da árvore, quando é necessário fazer uma filtragem.
+- Existe bastante espaço para otimização dentro do Grafo que é utilizado para fazer a representação da árvore, principalmente no que tange a filtragem de nós e remontagem da árvore.
 
 - O primeiro loading já exibe a árvore com todos os nós existentes, isso aumenta a quantidade de objetos a serem inseridos em memória e serem renderizados e calculados inicialmente, seria muito bom se a árvore fosse renderizada somente pelas raízes inicialmente, e somente construindo as sub-árvores ao clicar em um botão de expandir, por exemplo.
