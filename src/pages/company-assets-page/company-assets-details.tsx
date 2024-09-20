@@ -1,4 +1,5 @@
-import { InboxIcon, RadioIcon, RouterIcon } from "lucide-react"
+import { InboxIcon, RadioIcon, RouterIcon, UploadCloudIcon } from "lucide-react"
+import { useState } from "react"
 
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
@@ -14,6 +15,18 @@ export function CompanyAssetsDetails({
   className,
   ...props
 }: ICompanyAssetsDetailsProps) {
+  const [picture, setPicture] = useState<Blob | MediaSource>()
+
+  const handleChangePicture = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return
+
+    const file = event.target.files.item(0)
+
+    if (!file) return
+
+    setPicture(file)
+  }
+
   return (
     <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
       {!selectedAsset && (
@@ -35,13 +48,32 @@ export function CompanyAssetsDetails({
           </header>
 
           <div>
-            <div className="border-b p-6">
-              <div className="flex h-48 w-full flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed bg-muted text-muted-foreground">
-                <InboxIcon className="h-12 w-12" />
-                <Typography affects="muted" className="font-medium">
-                  Upload a image
-                </Typography>
-              </div>
+            <div className="h-80 border-b p-6">
+              {!picture && (
+                <label className="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted text-muted-foreground">
+                  <input
+                    className="absolute left-0 z-10 h-px w-px overflow-hidden whitespace-nowrap [clip-path:inset(50%)] [clip:rect(0_0_0_0)]"
+                    type="file"
+                    accept="image/jpg, image/jpeg, image/png, image/webp"
+                    onChange={handleChangePicture}
+                  />
+
+                  <UploadCloudIcon className="h-12 w-12" />
+
+                  <p className="mb-2 text-sm"></p>
+
+                  <Typography variant="h5">Click to upload</Typography>
+
+                  <Typography className="text-xs">JPG, JPEG, PNG or WEBP</Typography>
+                </label>
+              )}
+              {picture && (
+                <img
+                  className="h-full w-full overflow-hidden rounded-lg border object-cover"
+                  src={URL.createObjectURL(picture)}
+                  alt="Asset"
+                />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-y-6 p-6">
@@ -104,9 +136,13 @@ export function CompanyAssetsDetailsSkeleton({
   ...props
 }: ICompanyAssetsDetailsSkeletonProps) {
   return (
-    <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
+    <div className={cn("grid grid-rows-[4rem_24rem_1fr]", className)} {...props}>
       <div className="flex items-center border-b px-6">
         <Skeleton className="h-10 w-full" />
+      </div>
+
+      <div className="h-96 border-b p-6">
+        <Skeleton className="h-full" />
       </div>
 
       <div className="p-6">

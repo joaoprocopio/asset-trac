@@ -9,7 +9,6 @@ export interface ILabelProps
     VariantProps<typeof labelVariants> {}
 
 export const Label = forwardRef<HTMLLabelElement, ILabelProps>(({ className, ...props }, ref) => (
-  // eslint-disable-next-line jsx-a11y/label-has-associated-control
   <label ref={ref} className={cn(labelVariants(), className)} {...props} />
 ))
 Label.displayName = "Label"
