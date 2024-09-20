@@ -37,46 +37,31 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
     const shouldMatchName = !!selectedAssetName
     const shouldMatchStatus = !!selectedAssetStatus
 
-    const filteredNodes = graph.filterNodes((node) => {
-      if (!(shouldMatchName || shouldMatchStatus)) {
-        return true
-      }
+    let filteredNodes
 
-      const matchName = () => node.name.indexOf(selectedAssetName) >= 0
-      const matchStatus = () => node.type !== "location" && node.status === selectedAssetStatus
+    if (!(shouldMatchName || shouldMatchStatus)) {
+      filteredNodes = structuredClone(graph.nodes)
+    } else {
+      filteredNodes = graph.filterNodes((node) => {
+        const matchName = () => node.name.indexOf(selectedAssetName) >= 0
+        const matchStatus = () => node.type !== "location" && node.status === selectedAssetStatus
 
-      if (shouldMatchStatus && shouldMatchName) {
-        return matchStatus() && matchName()
-      }
-      if (shouldMatchName) {
-        return matchName()
-      }
-      if (shouldMatchStatus) {
-        return matchStatus()
-      }
-      return false
-    })
+        if (shouldMatchStatus && shouldMatchName) {
+          return matchStatus() && matchName()
+        }
+        if (shouldMatchName) {
+          return matchName()
+        }
+        if (shouldMatchStatus) {
+          return matchStatus()
+        }
+        return false
+      })
+    }
 
     const filteredTree = graph.buildBacktracedTree(filteredNodes)
 
-    const expandedKeysParents = new Set<string>()
-
-    if (shouldMatchName || shouldMatchStatus) {
-      for (const [nodeId] of filteredNodes) {
-        if (!expandedKeysParents.has(nodeId)) {
-          expandedKeysParents.add(nodeId)
-        }
-        const parent = graph.getParent(nodeId)
-
-        if (!parent) {
-          continue
-        }
-
-        expandedKeysParents.add(parent.id)
-      }
-    }
-
-    const flattenedNodes = flattenTreeNodes(filteredTree, expandedKeysParents)
+    const flattenedNodes = flattenTreeNodes(filteredTree)
 
     return flattenedNodes
   }, [selectedAssetStatus, selectedAssetName, graph])
@@ -169,8 +154,6 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
                     <div key={index} className="w-8" />
                   ))}
 
-                  {/* Expand button or indent */}
-
                   <button
                     className={buttonVariants({
                       variant: "ghost",
@@ -241,7 +224,7 @@ export function CompanyAssetsTreeSkeleton({
   )
 }
 
-function flattenTreeNodes(tree, expandedKeysSet, level = 0) {
+function flattenTreeNodes(tree, level = 0) {
   let flattenedNodes = []
 
   for (let nodeIndex = 0; nodeIndex < tree.length; nodeIndex++) {
@@ -250,12 +233,7 @@ function flattenTreeNodes(tree, expandedKeysSet, level = 0) {
     flattenedNodes.push(node)
 
     if (node.children) {
-      if (expandedKeysSet.size && !expandedKeysSet.has(node.id)) {
-        continue
-      }
-      flattenedNodes = flattenedNodes.concat(
-        flattenTreeNodes(node.children, expandedKeysSet, level + 1)
-      )
+      flattenedNodes = flattenedNodes.concat(flattenTreeNodes(node.children, level + 1))
     }
   }
 

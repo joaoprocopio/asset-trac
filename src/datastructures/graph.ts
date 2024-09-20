@@ -53,7 +53,7 @@ export class Graph<N> {
   }
 
   findNodeRoot(nodeId: string): string | undefined {
-    const node = this.nodes.get(nodeId)
+    const node = this.getNode(nodeId)
 
     if (!node) {
       return undefined
@@ -68,8 +68,9 @@ export class Graph<N> {
 
   filterNodes(predicate: (node: GraphNode<N>) => boolean) {
     const filteredNodes: typeof this.nodes = new Map()
+    const nodes = structuredClone(this.nodes)
 
-    for (const [nodeId, node] of this.nodes) {
+    for (const [nodeId, node] of nodes) {
       if (!node) {
         continue
       }
@@ -119,7 +120,7 @@ export class Graph<N> {
     return tree
   }
 
-  buildBacktracedTree(nodes: typeof this.nodes = this.nodes) {
+  buildBacktracedTree(nodes: typeof this.nodes = structuredClone(this.nodes)) {
     const treeMap: typeof this.nodes = new Map()
 
     for (const [nodeId, node] of nodes) {
