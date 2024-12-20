@@ -1,10 +1,10 @@
 import { CardHeader, CardTitle } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import type { CompanySchemas } from "~/schemas"
+import type { TCompany } from "~/schemas/company-schemas"
 
 export interface ICompanyAssetsHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedCompany?: CompanySchemas.TCompany
+  selectedCompany?: TCompany
 }
 
 export function CompanyAssetsHeader({ selectedCompany, ...props }: ICompanyAssetsHeaderProps) {

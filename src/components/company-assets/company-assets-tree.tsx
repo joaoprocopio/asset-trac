@@ -12,11 +12,11 @@ import { Typography } from "~/components/typography"
 import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import { Graph } from "~/lib/graph"
-import type { CompanySchemas } from "~/schemas"
+import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
 
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
-  locations: CompanySchemas.TLocations
-  assets: CompanySchemas.TAssets
+  locations: TLocations
+  assets: TAssets
 }
 
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
@@ -83,7 +83,7 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
         return
       }
 
-      setSelectedAsset(asset as CompanySchemas.TAsset | CompanySchemas.TLocation)
+      setSelectedAsset(asset as TAsset | TLocation)
     },
     [graph, setSelectedAsset, setSelectedAssetId]
   )
@@ -222,10 +222,9 @@ export function CompanyAssetsTreeSkeleton({
   )
 }
 
-function buildGraph(locations: CompanySchemas.TLocations, assets: CompanySchemas.TAssets) {
+function buildGraph(locations: TLocations, assets: TAssets) {
   const graph = new Graph<
-    | (CompanySchemas.TLocation & { type: "location" })
-    | (CompanySchemas.TAsset & { type: "component" | "asset" })
+    (TLocation & { type: "location" }) | (TAsset & { type: "component" | "asset" })
   >()
 
   for (const location of locations) {

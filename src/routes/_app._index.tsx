@@ -15,7 +15,7 @@ import {
   CompanyAssetsTree,
   CompanyAssetsTreeSkeleton,
 } from "~/components/company-assets/company-assets-tree"
-import type { CompanySchemas } from "~/schemas"
+import type { TAsset } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
 
 export default function CompanyAssetsPage() {
@@ -86,7 +86,7 @@ export default function CompanyAssetsPage() {
         </div>
 
         {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
-          <CompanyAssetsDetails selectedAsset={selectedAsset as CompanySchemas.TAsset} />
+          <CompanyAssetsDetails selectedAsset={selectedAsset as TAsset} />
         ) : (
           <CompanyAssetsDetailsSkeleton />
         )}
