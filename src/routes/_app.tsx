@@ -11,7 +11,7 @@ import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { CompanyServices } from "~/services"
 
-export function AppLayout() {
+export default function AppLayout() {
   const [once, setOnce] = useState(false)
 
   const [selectedCompany, setSelectedCompany] = useAtom(CompanyAtoms.selectedCompanyAtom)

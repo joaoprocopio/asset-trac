@@ -5,15 +5,20 @@ import { InboxIcon } from "lucide-react"
 
 import { CompanyAtoms } from "~/atoms"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/card"
+import {
+  CompanyAssetsDetails,
+  CompanyAssetsDetailsSkeleton,
+} from "~/components/company-assets/company-assets-details"
+import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-filter"
+import { CompanyAssetsHeader } from "~/components/company-assets/company-assets-header"
+import {
+  CompanyAssetsTree,
+  CompanyAssetsTreeSkeleton,
+} from "~/components/company-assets/company-assets-tree"
 import type { CompanySchemas } from "~/schemas"
 import { CompanyServices } from "~/services"
 
-import { CompanyAssetsDetails, CompanyAssetsDetailsSkeleton } from "./company-assets-details"
-import { CompanyAssetsFilter } from "./company-assets-filter"
-import { CompanyAssetsHeader } from "./company-assets-header"
-import { CompanyAssetsTree, CompanyAssetsTreeSkeleton } from "./company-assets-tree"
-
-export function CompanyAssetsPage() {
+export default function CompanyAssetsPage() {
   const selectedAsset = useAtomValue(CompanyAtoms.selectedAssetAtom)
   const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
   const selectedCompanyId = useAtomValue(CompanyAtoms.selectedCompanyIdAtom)
