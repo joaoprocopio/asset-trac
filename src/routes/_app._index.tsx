@@ -16,7 +16,7 @@ import {
   CompanyAssetsTreeSkeleton,
 } from "~/components/company-assets/company-assets-tree"
 import type { CompanySchemas } from "~/schemas"
-import { CompanyServices } from "~/services"
+import { CompanyServices } from "~/services/company-services"
 
 export default function CompanyAssetsPage() {
   const selectedAsset = useAtomValue(CompanyAtoms.selectedAssetAtom)

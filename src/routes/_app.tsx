@@ -9,7 +9,7 @@ import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { CompanyAtoms } from "~/atoms"
 import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import { CompanyServices } from "~/services"
+import { CompanyServices } from "~/services/company-services"
 
 export default function AppLayout() {
   const [once, setOnce] = useState(false)

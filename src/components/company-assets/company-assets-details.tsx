@@ -4,8 +4,8 @@ import { useState } from "react"
 import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import type { CompanySchemas } from "~/schemas"
 import { cn } from "~/lib/cn"
+import type { CompanySchemas } from "~/schemas"
 
 export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAsset?: CompanySchemas.TAsset
