@@ -25,21 +25,6 @@
 
   "overrides": [
     {
-      "files": "./src/**/*",
-      "parserOptions": {
-        "project": "tsconfig.app.json",
-        "tsconfigRootDir": "./",
-      },
-      "settings": {
-        "import/resolver": {
-          "typescript": {
-            "project": "./tsconfig.app.json",
-          },
-        },
-      },
-    },
-
-    {
       "files": ["**/*.{js,jsx,ts,tsx}"],
       "plugins": ["react"],
       "extends": [
