@@ -1,5 +1,7 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 
+import tailwindStylesheet from "~/assets/styles/tailwind.css?url"
+
 import type { Route } from "./+types/root"
 
 export const links: Route.LinksFunction = () => [
@@ -22,6 +24,10 @@ export const links: Route.LinksFunction = () => [
     rel: "shortcut icon",
     type: "image/svg+xml",
     href: "/favicon.svg",
+  },
+  {
+    rel: "stylesheet",
+    href: tailwindStylesheet,
   },
 ]
 
