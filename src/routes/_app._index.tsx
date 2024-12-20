@@ -34,13 +34,13 @@ export default function CompanyAssetsPage() {
 
   const locationsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyLocations(selectedCompanyId),
-    queryKey: [CompanyServices.GetCompanyLocationsKey, selectedCompanyId],
+    queryKey: ["company-locations", selectedCompanyId],
     enabled: typeof selectedCompanyId === "string" && selectedCompanyId.length > 0,
   })
 
   const assetsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyAssets(selectedCompanyId),
-    queryKey: [CompanyServices.GetCompanyAssetsKey, selectedCompanyId],
+    queryKey: ["company-assets", selectedCompanyId],
     enabled: typeof selectedCompanyId === "string" && selectedCompanyId.length > 0,
   })
 

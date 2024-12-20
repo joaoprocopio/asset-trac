@@ -12,7 +12,6 @@ async function getCompanies() {
 
   return companies
 }
-const GetCompaniesKey = "companies" as const
 
 async function getCompanyLocations(companyId: string) {
   const response = await httpClient.get(`/companies/${companyId}/locations`)
@@ -20,7 +19,6 @@ async function getCompanyLocations(companyId: string) {
 
   return locations
 }
-const GetCompanyLocationsKey = "company-locations" as const
 
 async function getCompanyAssets(companyId: string) {
   const response = await httpClient.get(`/companies/${companyId}/assets`)
@@ -28,13 +26,9 @@ async function getCompanyAssets(companyId: string) {
 
   return assets
 }
-const GetCompanyAssetsKey = "company-assets" as const
 
 export const CompanyServices = {
   getCompanies,
-  GetCompaniesKey,
   getCompanyLocations,
-  GetCompanyLocationsKey,
   getCompanyAssets,
-  GetCompanyAssetsKey,
 }

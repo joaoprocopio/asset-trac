@@ -26,7 +26,7 @@ export default function AppLayout() {
 
   const companies = useQuery({
     queryFn: CompanyServices.getCompanies,
-    queryKey: [CompanyServices.GetCompaniesKey],
+    queryKey: ["companies"],
   })
 
   const handleChangeCompany = useCallback(
