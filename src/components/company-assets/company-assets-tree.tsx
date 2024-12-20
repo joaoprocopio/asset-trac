@@ -5,7 +5,12 @@ import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-reac
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 
-import { CompanyAtoms } from "~/atoms"
+import {
+  selectedAssetAtom,
+  selectedAssetIdAtom,
+  selectedAssetNameAtom,
+  selectedAssetStatusAtom,
+} from "~/atoms/company-atoms"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
@@ -22,10 +27,10 @@ export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivEle
 export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAssetsTreeProps) {
   const [mounted, setMounted] = useState<boolean>(false)
 
-  const [selectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
-  const [selectedAssetStatus] = useAtom(CompanyAtoms.selectedAssetStatusAtom)
-  const [selectedAssetId, setSelectedAssetId] = useAtom(CompanyAtoms.selectedAssetIdAtom)
-  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
+  const [selectedAssetName] = useAtom(selectedAssetNameAtom)
+  const [selectedAssetStatus] = useAtom(selectedAssetStatusAtom)
+  const [selectedAssetId, setSelectedAssetId] = useAtom(selectedAssetIdAtom)
+  const setSelectedAsset = useSetAtom(selectedAssetAtom)
 
   const graph = useMemo(() => {
     const nextGraph = buildGraph(locations, assets)

@@ -6,7 +6,12 @@ import { useCallback, useEffect, useState } from "react"
 import { NavLink, Outlet } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
-import { CompanyAtoms } from "~/atoms"
+import {
+  selectedAssetAtom,
+  selectedAssetIdAtom,
+  selectedCompanyAtom,
+  selectedCompanyIdAtom,
+} from "~/atoms/company-atoms"
 import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { CompanyServices } from "~/services/company-services"
@@ -14,10 +19,10 @@ import { CompanyServices } from "~/services/company-services"
 export default function AppLayout() {
   const [once, setOnce] = useState(false)
 
-  const [selectedCompany, setSelectedCompany] = useAtom(CompanyAtoms.selectedCompanyAtom)
-  const [selectedCompanyId, setSelectedCompanyId] = useAtom(CompanyAtoms.selectedCompanyIdAtom)
-  const setSelectedAsset = useSetAtom(CompanyAtoms.selectedAssetAtom)
-  const setSelectedAssetId = useSetAtom(CompanyAtoms.selectedAssetIdAtom)
+  const [selectedCompany, setSelectedCompany] = useAtom(selectedCompanyAtom)
+  const [selectedCompanyId, setSelectedCompanyId] = useAtom(selectedCompanyIdAtom)
+  const setSelectedAsset = useSetAtom(selectedAssetAtom)
+  const setSelectedAssetId = useSetAtom(selectedAssetIdAtom)
 
   const companies = useQuery({
     queryFn: CompanyServices.getCompanies,

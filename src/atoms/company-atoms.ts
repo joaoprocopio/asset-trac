@@ -1,6 +1,6 @@
 import { atomWithReset } from "jotai/utils"
 
-import { atomWithHash } from "~/atoms/utils"
+import { atomWithHash } from "~/atoms/utils/atom-with-hash"
 import type { TAsset, TCompany, TLocation } from "~/schemas/company-schemas"
 
 export const selectedCompanyAtom = atomWithReset<TCompany | undefined>(undefined)

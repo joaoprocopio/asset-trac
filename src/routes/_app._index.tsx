@@ -3,7 +3,13 @@ import { useAtom, useAtomValue } from "jotai"
 import { RESET } from "jotai/utils"
 import { InboxIcon } from "lucide-react"
 
-import { CompanyAtoms } from "~/atoms"
+import {
+  selectedAssetAtom,
+  selectedAssetNameAtom,
+  selectedAssetStatusAtom,
+  selectedCompanyAtom,
+  selectedCompanyIdAtom,
+} from "~/atoms/company-atoms"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/card"
 import {
   CompanyAssetsDetails,
@@ -19,14 +25,12 @@ import type { TAsset } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
 
 export default function CompanyAssetsPage() {
-  const selectedAsset = useAtomValue(CompanyAtoms.selectedAssetAtom)
-  const selectedCompany = useAtomValue(CompanyAtoms.selectedCompanyAtom)
-  const selectedCompanyId = useAtomValue(CompanyAtoms.selectedCompanyIdAtom)
+  const selectedAsset = useAtomValue(selectedAssetAtom)
+  const selectedCompany = useAtomValue(selectedCompanyAtom)
+  const selectedCompanyId = useAtomValue(selectedCompanyIdAtom)
 
-  const [selectedAssetName, setSelectedAssetName] = useAtom(CompanyAtoms.selectedAssetNameAtom)
-  const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(
-    CompanyAtoms.selectedAssetStatusAtom
-  )
+  const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
+  const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
 
   const locationsQuery = useQuery({
     queryFn: () => CompanyServices.getCompanyLocations(selectedCompanyId),
