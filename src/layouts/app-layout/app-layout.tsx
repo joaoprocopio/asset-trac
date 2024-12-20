@@ -3,7 +3,7 @@ import { useAtom, useSetAtom } from "jotai"
 import { RESET } from "jotai/utils"
 import { Package2Icon } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
-import { NavLink, Outlet } from "react-router-dom"
+import { NavLink, Outlet } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { CompanyAtoms } from "~/atoms"
