@@ -5,7 +5,7 @@ import { Button } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import type { CompanySchemas } from "~/schemas"
-import { cn } from "~/utils"
+import { cn } from "~/lib/cn"
 
 export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAsset?: CompanySchemas.TAsset

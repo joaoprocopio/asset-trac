@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
 
-import { cn } from "~/utils"
+import { cn } from "~/lib/cn"
 
 export interface ISkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 

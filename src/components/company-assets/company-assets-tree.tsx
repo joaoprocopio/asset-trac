@@ -10,9 +10,9 @@ import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import { CompanyConstants } from "~/constants"
+import { cn } from "~/lib/cn"
 import { Graph } from "~/lib/graph"
 import type { CompanySchemas } from "~/schemas"
-import { cn } from "~/utils"
 
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
   locations: CompanySchemas.TLocations
