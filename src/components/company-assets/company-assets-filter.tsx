@@ -4,8 +4,9 @@ import { useState } from "react"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
-import { CompanyConstants } from "~/constants"
-import { useDebouncedFn } from "~/hooks"
+import type { TAssetStatus } from "~/constants/company-constants"
+import { AssetStatus } from "~/constants/company-constants"
+import { useDebouncedFn } from "~/hooks/use-debounced-fn"
 
 export interface ICompanyAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedAssetName?: string
@@ -57,9 +58,7 @@ export function CompanyAssetsFilter({
     }
 
     setSelectedAssetStatusControlled(nextAssetStatus)
-    return debouncedHandleChangeSelectedAssetStatus(
-      nextAssetStatus as CompanyConstants.TAssetStatus
-    )
+    return debouncedHandleChangeSelectedAssetStatus(nextAssetStatus as TAssetStatus)
   }
 
   return (
@@ -73,26 +72,16 @@ export function CompanyAssetsFilter({
 
       <Button
         className="h-10 gap-2"
-        variant={
-          selectedAssetStatusControlled === CompanyConstants.AssetStatus.Operating
-            ? "default"
-            : "outline"
-        }
-        onClick={() =>
-          handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Operating)
-        }>
+        variant={selectedAssetStatusControlled === AssetStatus.Operating ? "default" : "outline"}
+        onClick={() => handleChangeSelectedAssetStatusInput(AssetStatus.Operating)}>
         <ZapIcon className="h-5 w-5" />
         Operating
       </Button>
 
       <Button
         className="h-10 gap-2"
-        variant={
-          selectedAssetStatusControlled === CompanyConstants.AssetStatus.Alert
-            ? "default"
-            : "outline"
-        }
-        onClick={() => handleChangeSelectedAssetStatusInput(CompanyConstants.AssetStatus.Alert)}>
+        variant={selectedAssetStatusControlled === AssetStatus.Alert ? "default" : "outline"}
+        onClick={() => handleChangeSelectedAssetStatusInput(AssetStatus.Alert)}>
         <InfoIcon className="h-5 w-5" />
         Critical
       </Button>

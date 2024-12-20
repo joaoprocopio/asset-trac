@@ -9,7 +9,7 @@ import { CompanyAtoms } from "~/atoms"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import { CompanyConstants } from "~/constants"
+import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import { Graph } from "~/lib/graph"
 import type { CompanySchemas } from "~/schemas"
@@ -122,9 +122,8 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
               let title = data.name
 
               const classes = {
-                "fill-destructive text-destructive":
-                  data.status === CompanyConstants.AssetStatus.Alert,
-                "fill-success text-success": data.status === CompanyConstants.AssetStatus.Operating,
+                "fill-destructive text-destructive": data.status === AssetStatus.Alert,
+                "fill-success text-success": data.status === AssetStatus.Operating,
               }
 
               if (selectedAssetName) {
@@ -181,12 +180,12 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
                   </button>
 
                   {/* End icon */}
-                  {data.sensorType === CompanyConstants.AssetSensorType.Energy && (
+                  {data.sensorType === AssetSensorType.Energy && (
                     <div className="w-8">
                       <ZapIcon className={cn("h-4 w-full", classes)} />
                     </div>
                   )}
-                  {data.sensorType === CompanyConstants.AssetSensorType.Vibration && (
+                  {data.sensorType === AssetSensorType.Vibration && (
                     <div className="w-8">
                       <InfoIcon className={cn("h-3 w-full", classes)} />
                     </div>

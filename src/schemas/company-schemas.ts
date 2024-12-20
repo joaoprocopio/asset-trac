@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { CompanyConstants } from "~/constants"
+import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
 
 export type TCompany = z.infer<typeof CompanySchema>
 export type TCompanies = z.infer<typeof CompaniesSchema>
@@ -29,10 +29,10 @@ export const AssetSchema = z.object({
   id: z.string(),
   name: z.string(),
   gatewayId: z.string().optional(),
-  parentId: z.string().nullable(), // locationId e parentId são iguais sempre.
+  parentId: z.string().nullable(), // locationId e parentId são iguais sempre. TODO: eu estava errado, isso me reprovou no teste.
   sensorId: z.string().optional(),
-  sensorType: z.nativeEnum(CompanyConstants.AssetSensorType).nullable(),
-  status: z.nativeEnum(CompanyConstants.AssetStatus).nullable(),
+  sensorType: z.nativeEnum(AssetSensorType).nullable(),
+  status: z.nativeEnum(AssetStatus).nullable(),
 })
 
 export const AssetsSchema = z.array(AssetSchema)
