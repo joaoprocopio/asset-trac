@@ -1,8 +1,10 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 
 import tailwindStylesheet from "~/assets/styles/tailwind.css?url"
+import { Skeleton } from "~/components/skeleton"
 
 import type { Route } from "./+types/root"
+import { Card, CardHeader } from "./components/card"
 
 export const links: Route.LinksFunction = () => [
   {
@@ -62,6 +64,42 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet />
+}
+
+export function HydrateFallback() {
+  return (
+    <div>
+      <header className="fixed inset-0 z-10 h-16 border-b bg-background">
+        <div className="container mx-auto flex h-full items-center justify-between px-6">
+          <Skeleton className="h-4 w-28" />
+
+          <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
+            <>
+              <Skeleton className="h-8" />
+              <Skeleton className="h-8" />
+              <Skeleton className="h-8" />
+            </>
+          </div>
+        </div>
+      </header>
+
+      <main className="h-full pt-16">
+        <div className="container mx-auto h-full px-6 py-8">
+          <Card>
+            <CardHeader>
+              <div className="grid auto-rows-min grid-cols-3 gap-4">
+                <Skeleton className="aspect-video" />
+                <Skeleton className="aspect-video" />
+                <Skeleton className="aspect-video" />
+
+                <Skeleton className="col-span-3 aspect-video" />
+              </div>
+            </CardHeader>
+          </Card>
+        </div>
+      </main>
+    </div>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
