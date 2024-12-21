@@ -57,11 +57,11 @@ export default function CompanyAssetsPage() {
 
   const locationsQuery = useQuery({
     ...locationsOptions(params.companyId!),
-    initialData: loaderData.locations,
+    initialData: () => loaderData.locations,
   })
   const assetsQuery = useQuery({
     ...assetsOptions(params.companyId!),
-    initialData: loaderData.assets,
+    initialData: () => loaderData.assets,
   })
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
