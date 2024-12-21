@@ -7,4 +7,4 @@ export default {
   printWidth: 100,
   quoteProps: "consistent",
   plugins: ["prettier-plugin-tailwindcss"],
-};
+}
