@@ -3,10 +3,8 @@ import { useAtom, useAtomValue } from "jotai"
 import { RESET } from "jotai/utils"
 
 import { Card, CardContent } from "~/components/card"
-import {
-  CompanyAssetsDetails,
-  CompanyAssetsDetailsSkeleton,
-} from "~/components/company-assets/company-assets-details"
+import { CompanyAssetsDetails } from "~/components/company-assets/company-assets-details"
+import { CompanyAssetsDetailsSkeleton } from "~/components/company-assets/company-assets-details-skeleton"
 import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-filter"
 import { CompanyAssetsHeader } from "~/components/company-assets/company-assets-header"
 import {
