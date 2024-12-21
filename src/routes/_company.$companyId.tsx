@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import { useAtom, useAtomValue } from "jotai"
 import { RESET } from "jotai/utils"
-import { useParams } from "react-router"
+import { useLoaderData, useParams } from "react-router"
 
 import { Card, CardContent } from "~/components/card"
 import { CompanyAssetsDetails } from "~/components/company-assets/company-assets-details"
@@ -36,17 +36,18 @@ const assetsOptions = (companyId: string) =>
     queryKey: ["company-assets", companyId],
   })
 
-export const clientLoader = (args: Route.ClientLoaderArgs) => {
+export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   const companyId = args.params.companyId
 
   return {
-    locations: queryClient.ensureQueryData(locationsOptions(companyId)),
-    assets: queryClient.ensureQueryData(assetsOptions(companyId)),
+    locations: await queryClient.ensureQueryData(locationsOptions(companyId)),
+    assets: await queryClient.ensureQueryData(assetsOptions(companyId)),
   }
 }
 
 export default function CompanyAssetsPage() {
   const params = useParams<RouteInfo["params"]>()
+  const loaderData = useLoaderData<typeof clientLoader>()
 
   const selectedAsset = useAtomValue(selectedAssetAtom)
   const selectedCompany = useAtomValue(selectedCompanyAtom)
@@ -54,8 +55,14 @@ export default function CompanyAssetsPage() {
   const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
 
-  const locationsQuery = useQuery(locationsOptions(params.companyId!))
-  const assetsQuery = useQuery(assetsOptions(params.companyId!))
+  const locationsQuery = useQuery({
+    ...locationsOptions(params.companyId!),
+    initialData: loaderData.locations,
+  })
+  const assetsQuery = useQuery({
+    ...assetsOptions(params.companyId!),
+    initialData: loaderData.assets,
+  })
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
     setSelectedAssetName(nextAssetQuery)

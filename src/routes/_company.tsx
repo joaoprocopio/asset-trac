@@ -13,15 +13,17 @@ const companyOptions = queryOptions({
   queryKey: ["companies"],
 })
 
-export const clientLoader = () => {
-  return queryClient.ensureQueryData(companyOptions)
+export const clientLoader = async () => {
+  return {
+    company: await queryClient.ensureQueryData(companyOptions),
+  }
 }
 
 export default function CompanyLayout() {
   const loaderData = useLoaderData<typeof clientLoader>()
   const companies = useQuery({
     ...companyOptions,
-    initialData: loaderData,
+    initialData: loaderData.company,
   })
 
   return (
