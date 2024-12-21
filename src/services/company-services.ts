@@ -6,22 +6,28 @@ const httpClient = axios.create({
   baseURL: "https://fake-api.tractian.com",
 })
 
-async function getCompanies() {
-  const response = await httpClient.get("/companies")
+async function getCompanies(signal?: AbortSignal) {
+  const response = await httpClient.get("/companies", {
+    signal: signal,
+  })
   const companies = CompaniesSchema.parse(response.data)
 
   return companies
 }
 
-async function getCompanyLocations(companyId: string) {
-  const response = await httpClient.get(`/companies/${companyId}/locations`)
+async function getCompanyLocations(companyId: string, signal?: AbortSignal) {
+  const response = await httpClient.get(`/companies/${companyId}/locations`, {
+    signal: signal,
+  })
   const locations = LocationsSchema.parse(response.data)
 
   return locations
 }
 
-async function getCompanyAssets(companyId: string) {
-  const response = await httpClient.get(`/companies/${companyId}/assets`)
+async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
+  const response = await httpClient.get(`/companies/${companyId}/assets`, {
+    signal: signal,
+  })
   const assets = AssetsSchema.parse(response.data)
 
   return assets

@@ -11,7 +11,7 @@ import { CompanyAssetsHeader } from "~/components/company-assets/company-assets-
 import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tree"
 import { CompanyAssetsTreeSkeleton } from "~/components/company-assets/company-assets-tree-skeleton"
 import { queryClient } from "~/lib/query/query-client"
-import { assetsQueryOptions, locationsQueryOptions } from "~/lib/query/query-options"
+import { getAssetsQueryOptions, getLocationsQueryOptions } from "~/lib/query/query-options"
 import type { TAsset } from "~/schemas/company-schemas"
 import {
   selectedAssetAtom,
@@ -26,8 +26,8 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   const companyId = args.params.companyId
 
   return {
-    locations: await queryClient.ensureQueryData(locationsQueryOptions(companyId)),
-    assets: await queryClient.ensureQueryData(assetsQueryOptions(companyId)),
+    locations: await queryClient.ensureQueryData(getLocationsQueryOptions(companyId)),
+    assets: await queryClient.ensureQueryData(getAssetsQueryOptions(companyId)),
   }
 }
 
@@ -42,11 +42,11 @@ export default function CompanyAssetsPage() {
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
 
   const locationsQuery = useQuery({
-    ...locationsQueryOptions(params.companyId!),
+    ...getLocationsQueryOptions(params.companyId!),
     initialData: () => loaderData.locations,
   })
   const assetsQuery = useQuery({
-    ...assetsQueryOptions(params.companyId!),
+    ...getAssetsQueryOptions(params.companyId!),
     initialData: () => loaderData.assets,
   })
 
