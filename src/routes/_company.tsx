@@ -6,18 +6,18 @@ import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { queryClient } from "~/lib/query/query-client"
-import { getCompaniesQueryOptions } from "~/lib/query/query-options"
+import { companiesOptions } from "~/lib/query/query-options"
 
 export const clientLoader = async () => {
   return {
-    company: await queryClient.ensureQueryData(getCompaniesQueryOptions()),
+    company: await queryClient.ensureQueryData(companiesOptions()),
   }
 }
 
 export default function CompanyLayout() {
   const loaderData = useLoaderData<typeof clientLoader>()
   const companies = useQuery({
-    ...getCompaniesQueryOptions(),
+    ...companiesOptions(),
     initialData: () => loaderData.company,
   })
 

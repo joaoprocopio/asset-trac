@@ -1,10 +1,10 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useParams } from "react-router"
+import { useLoaderData, useParams } from "react-router"
 
 import { CardHeader, CardTitle } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import { getSelectedCompanyQueryOptions } from "~/lib/query/query-options"
+import { selectedCompanyOptions } from "~/lib/query/query-options"
 import type { TCompany } from "~/schemas/company-schemas"
 
 export interface ICompanyAssetsHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -13,9 +13,11 @@ export interface ICompanyAssetsHeaderProps extends React.HTMLAttributes<HTMLDivE
 
 export function CompanyAssetsHeader({ ...props }: ICompanyAssetsHeaderProps) {
   const params = useParams()
+  const loaderData = useLoaderData()
   const queryClient = useQueryClient()
   const selectedCompany = useQuery({
-    ...getSelectedCompanyQueryOptions(params.companyId!, queryClient),
+    ...selectedCompanyOptions(params.companyId!, queryClient),
+    initialData: () => loaderData.company,
   })
 
   return (
@@ -28,7 +30,7 @@ export function CompanyAssetsHeader({ ...props }: ICompanyAssetsHeaderProps) {
         <span>
           {selectedCompany.isSuccess && (
             <Typography className="font-normal" affects="muted">
-              / {selectedCompany.data?.name} Unit
+              / {selectedCompany.data.name} Unit
             </Typography>
           )}
         </span>
