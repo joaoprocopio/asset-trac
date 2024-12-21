@@ -2,13 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useAtom, useAtomValue } from "jotai"
 import { RESET } from "jotai/utils"
 
-import {
-  selectedAssetAtom,
-  selectedAssetNameAtom,
-  selectedAssetStatusAtom,
-  selectedCompanyAtom,
-  selectedCompanyIdAtom,
-} from "~/atoms/company-atoms"
 import { Card, CardContent } from "~/components/card"
 import {
   CompanyAssetsDetails,
@@ -22,6 +15,13 @@ import {
 } from "~/components/company-assets/company-assets-tree"
 import type { TAsset } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
+import {
+  selectedAssetAtom,
+  selectedAssetNameAtom,
+  selectedAssetStatusAtom,
+  selectedCompanyAtom,
+  selectedCompanyIdAtom,
+} from "~/stores/company-store"
 
 export default function CompanyAssetsPage() {
   const selectedAsset = useAtomValue(selectedAssetAtom)
