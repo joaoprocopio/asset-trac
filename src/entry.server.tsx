@@ -7,7 +7,7 @@ import { renderToPipeableStream } from "react-dom/server"
 import type { AppLoadContext, EntryContext } from "react-router"
 import { ServerRouter } from "react-router"
 
-const ABORT_DELAY = 5_000
+export const streamTimeout = 5_000
 
 export default function handleRequest(
   request: Request,
@@ -26,7 +26,7 @@ export default function handleRequest(
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? "onAllReady" : "onShellReady"
 
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter context={routerContext} url={request.url} abortDelay={ABORT_DELAY} />,
+      <ServerRouter context={routerContext} url={request.url} />,
       {
         [readyOption]() {
           shellRendered = true
@@ -59,6 +59,8 @@ export default function handleRequest(
       }
     )
 
-    setTimeout(abort, ABORT_DELAY)
+    // Abort the rendering stream after the `streamTimeout` so it has tine to
+    // flush down the rejected boundaries
+    setTimeout(abort, streamTimeout + 1000)
   })
 }
