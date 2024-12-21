@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query"
+import { queryOptions, useQuery } from "@tanstack/react-query"
 import { useAtom, useAtomValue } from "jotai"
 import { RESET } from "jotai/utils"
+import { useParams } from "react-router"
 
 import { Card, CardContent } from "~/components/card"
 import { CompanyAssetsDetails } from "~/components/company-assets/company-assets-details"
@@ -11,6 +12,7 @@ import {
   CompanyAssetsTree,
   CompanyAssetsTreeSkeleton,
 } from "~/components/company-assets/company-assets-tree"
+import { queryClient } from "~/lib/query/query-client"
 import type { TAsset } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
 import {
@@ -18,28 +20,42 @@ import {
   selectedAssetNameAtom,
   selectedAssetStatusAtom,
   selectedCompanyAtom,
-  selectedCompanyIdAtom,
 } from "~/stores/company-store"
 
+import type { Info as RouteInfo, Route } from "./+types/_company.$companyId"
+
+const locationsOptions = (companyId: string) =>
+  queryOptions({
+    queryFn: () => CompanyServices.getCompanyLocations(companyId),
+    queryKey: ["company-locations", companyId],
+  })
+
+const assetsOptions = (companyId: string) =>
+  queryOptions({
+    queryFn: () => CompanyServices.getCompanyAssets(companyId),
+    queryKey: ["company-assets", companyId],
+  })
+
+export const clientLoader = (args: Route.ClientLoaderArgs) => {
+  const companyId = args.params.companyId
+
+  return {
+    locations: queryClient.ensureQueryData(locationsOptions(companyId)),
+    assets: queryClient.ensureQueryData(assetsOptions(companyId)),
+  }
+}
+
 export default function CompanyAssetsPage() {
+  const params = useParams<RouteInfo["params"]>()
+
   const selectedAsset = useAtomValue(selectedAssetAtom)
   const selectedCompany = useAtomValue(selectedCompanyAtom)
-  const selectedCompanyId = useAtomValue(selectedCompanyIdAtom)
 
   const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
 
-  const locationsQuery = useQuery({
-    queryFn: () => CompanyServices.getCompanyLocations(selectedCompanyId),
-    queryKey: ["company-locations", selectedCompanyId],
-    enabled: typeof selectedCompanyId === "string" && selectedCompanyId.length > 0,
-  })
-
-  const assetsQuery = useQuery({
-    queryFn: () => CompanyServices.getCompanyAssets(selectedCompanyId),
-    queryKey: ["company-assets", selectedCompanyId],
-    enabled: typeof selectedCompanyId === "string" && selectedCompanyId.length > 0,
-  })
+  const locationsQuery = useQuery(locationsOptions(params.companyId!))
+  const assetsQuery = useQuery(assetsOptions(params.companyId!))
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
     setSelectedAssetName(nextAssetQuery)
@@ -47,10 +63,6 @@ export default function CompanyAssetsPage() {
 
   const handleChangeSelectedAssetStatus = (nextAssetStatus: string | typeof RESET) => {
     setSelectedAssetStatus(nextAssetStatus)
-  }
-
-  if (!selectedCompanyId) {
-    return <Card>olha, vc ta na outra pagina, so que aqui n tem nada pra vc</Card>
   }
 
   return (
