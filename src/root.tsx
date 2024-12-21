@@ -28,7 +28,8 @@ export const links: Route.LinksFunction = () => [
     href: "/favicon.svg",
   },
   {
-    rel: "stylesheet",
+    as: "style",
+    rel: "stylesheet preload",
     href: tailwindStylesheet,
   },
 ]
