@@ -2,7 +2,7 @@ import { InboxIcon } from "lucide-react"
 
 import { Card, CardDescription, CardHeader, CardTitle } from "~/components/card"
 
-export default function CompanyAssetsPage() {
+export default function CompanyEmptyPage() {
   return (
     <Card>
       <CardHeader className="text-center">

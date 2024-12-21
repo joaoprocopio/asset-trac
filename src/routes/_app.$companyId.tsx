@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAtom, useAtomValue } from "jotai"
 import { RESET } from "jotai/utils"
-import { InboxIcon } from "lucide-react"
 
 import {
   selectedAssetAtom,
@@ -10,7 +9,7 @@ import {
   selectedCompanyAtom,
   selectedCompanyIdAtom,
 } from "~/atoms/company-atoms"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/card"
+import { Card, CardContent } from "~/components/card"
 import {
   CompanyAssetsDetails,
   CompanyAssetsDetailsSkeleton,
@@ -53,15 +52,7 @@ export default function CompanyAssetsPage() {
   }
 
   if (!selectedCompanyId) {
-    return (
-      <Card>
-        <CardHeader className="text-center">
-          <InboxIcon className="h-14 w-full" />
-          <CardTitle>Unit not found</CardTitle>
-          <CardDescription>Select any available unit to monitor your assets</CardDescription>
-        </CardHeader>
-      </Card>
-    )
+    return <Card>olha, vc ta na outra pagina, so que aqui n tem nada pra vc</Card>
   }
 
   return (
