@@ -35,8 +35,7 @@
   }
 
   html,
-  body,
-  #__react {
+  body {
     @apply isolate h-full max-h-full min-h-full;
   }
 

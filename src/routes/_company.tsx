@@ -22,7 +22,7 @@ export default function CompanyLayout() {
   })
 
   return (
-    <div>
+    <div className="h-full">
       <header className="fixed inset-0 z-10 h-16 border-b bg-background">
         <div className="container mx-auto flex h-full items-center justify-between px-6">
           <NavLink to="/">
