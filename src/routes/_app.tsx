@@ -107,7 +107,7 @@ export default function AppLayout() {
                   onClick={() => handleChangeCompany(company.id)}>
                   <Package2Icon className="h-4 w-4" />
 
-                  {`${company.name} Unit`}
+                  <span>{`${company.name} Unit`}</span>
                 </Button>
               ))}
           </div>
