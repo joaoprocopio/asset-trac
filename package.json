@@ -1,11 +1,14 @@
 {
   "name": "assets-trac",
-  "private": true,
   "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.15.1",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.9.0"
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "postinstall": "react-router typegen",
     "dev": "react-router dev",
     "build": "react-router build",
     "preview": "react-router preview",
