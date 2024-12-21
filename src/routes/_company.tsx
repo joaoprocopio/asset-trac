@@ -1,16 +1,27 @@
-import { useQuery } from "@tanstack/react-query"
+import { queryOptions, useQuery } from "@tanstack/react-query"
 import { Package2Icon } from "lucide-react"
-import { NavLink, Outlet } from "react-router"
+import { NavLink, Outlet, useLoaderData } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
+import { queryClient } from "~/lib/query/query-client"
 import { CompanyServices } from "~/services/company-services"
 
+const companyOptions = queryOptions({
+  queryFn: CompanyServices.getCompanies,
+  queryKey: ["companies"],
+})
+
+export const clientLoader = () => {
+  return queryClient.ensureQueryData(companyOptions)
+}
+
 export default function CompanyLayout() {
+  const loaderData = useLoaderData<typeof clientLoader>()
   const companies = useQuery({
-    queryFn: CompanyServices.getCompanies,
-    queryKey: ["companies"],
+    ...companyOptions,
+    initialData: loaderData,
   })
 
   return (
@@ -42,7 +53,7 @@ export default function CompanyLayout() {
                       variant: linkProps.isActive ? "default" : "secondary",
                     })
                   }>
-                  <Package2Icon className="h-4 w-4" />
+                  <Package2Icon className="size-4" />
 
                   <span>{`${company.name} Unit`}</span>
                 </NavLink>
