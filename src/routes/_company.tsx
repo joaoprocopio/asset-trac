@@ -1,4 +1,4 @@
-import { queryOptions, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { LoaderCircle, Package2Icon } from "lucide-react"
 import { NavLink, Outlet, useLoaderData } from "react-router"
 
@@ -6,23 +6,18 @@ import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { queryClient } from "~/lib/query/query-client"
-import { CompanyServices } from "~/services/company-services"
-
-const companyOptions = queryOptions({
-  queryFn: CompanyServices.getCompanies,
-  queryKey: ["companies"],
-})
+import { companiesQueryOptions } from "~/lib/query/query-options"
 
 export const clientLoader = async () => {
   return {
-    company: await queryClient.ensureQueryData(companyOptions),
+    company: await queryClient.ensureQueryData(companiesQueryOptions()),
   }
 }
 
 export default function CompanyLayout() {
   const loaderData = useLoaderData<typeof clientLoader>()
   const companies = useQuery({
-    ...companyOptions,
+    ...companiesQueryOptions(),
     initialData: () => loaderData.company,
   })
 
