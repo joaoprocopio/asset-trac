@@ -17,10 +17,9 @@ import {
   selectedAssetAtom,
   selectedAssetNameAtom,
   selectedAssetStatusAtom,
-  selectedCompanyAtom,
 } from "~/stores/company-store"
 
-import type { Info as RouteInfo, Route } from "./+types/_company.$companyId"
+import type { Route } from "./+types/_company.$companyId"
 
 export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   const companyId = args.params.companyId
@@ -32,11 +31,10 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
 }
 
 export default function CompanyAssetsPage() {
-  const params = useParams<RouteInfo["params"]>()
+  const params = useParams()
   const loaderData = useLoaderData<typeof clientLoader>()
 
   const selectedAsset = useAtomValue(selectedAssetAtom)
-  const selectedCompany = useAtomValue(selectedCompanyAtom)
 
   const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
@@ -60,7 +58,7 @@ export default function CompanyAssetsPage() {
 
   return (
     <Card className="flex h-full flex-col">
-      <CompanyAssetsHeader className="border-b px-6 py-4" selectedCompany={selectedCompany} />
+      <CompanyAssetsHeader className="border-b px-6 py-4" />
 
       <CardContent className="grid flex-grow grid-cols-2 overflow-hidden p-0">
         <div className="grid grid-rows-[4rem_1fr] border-r">

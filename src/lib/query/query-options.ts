@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query"
+import { QueryClient, queryOptions } from "@tanstack/react-query"
 
 import { CompanyServices } from "~/services/company-services"
 
@@ -20,10 +20,13 @@ export const getAssetsQueryOptions = (companyId: string) =>
     queryKey: ["company-assets", companyId],
   })
 
-/* export const getSelectedCompanyQueryOptions = (companyId: string) =>
+export const getSelectedCompanyQueryOptions = (companyId: string, queryClient: QueryClient) =>
   queryOptions({
-    queryFn: (args) => {
-      return
+    queryFn: async () => {
+      const companies = await queryClient.ensureQueryData(getCompaniesQueryOptions())
+      const company = companies.find((company) => company.id === companyId)
+
+      return company
     },
     queryKey: ["company", companyId],
-  }) */
+  })
