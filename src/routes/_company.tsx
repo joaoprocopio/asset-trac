@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import { Package2Icon } from "lucide-react"
-import { NavLink, Outlet, useLoaderData } from "react-router"
+import { LoaderCircle, Package2Icon } from "lucide-react"
+import { NavLink, Outlet, useLoaderData, useParams, useViewTransitionState } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { buttonVariants } from "~/components/button"
@@ -20,6 +20,7 @@ export const clientLoader = async () => {
 }
 
 export default function CompanyLayout() {
+  const params = useParams()
   const loaderData = useLoaderData<typeof clientLoader>()
   const companies = useQuery({
     ...companyOptions,
@@ -54,10 +55,19 @@ export default function CompanyLayout() {
                       size: "sm",
                       variant: linkProps.isActive ? "default" : "secondary",
                     })
-                  }>
-                  <Package2Icon className="size-4" />
+                  }
+                  viewTransition>
+                  {(linkProps) => (
+                    <>
+                      {linkProps.isTransitioning ? (
+                        <LoaderCircle className="size-4 animate-spin" />
+                      ) : (
+                        <Package2Icon className="size-4" />
+                      )}
 
-                  <span>{`${company.name} Unit`}</span>
+                      <span>{`${company.name} Unit`}</span>
+                    </>
+                  )}
                 </NavLink>
               ))}
           </div>
