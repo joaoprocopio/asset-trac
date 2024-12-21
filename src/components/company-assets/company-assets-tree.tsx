@@ -6,7 +6,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 
 import { buttonVariants } from "~/components/button"
-import { Skeleton } from "~/components/skeleton"
+import { CompanyAssetsTreeSkeleton } from "~/components/company-assets/company-assets-tree-skeleton"
 import { Typography } from "~/components/typography"
 import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
@@ -201,28 +201,6 @@ export function CompanyAssetsTree({ locations, assets, ...props }: ICompanyAsset
           />
         </Suspense>
       )}
-    </div>
-  )
-}
-
-export interface ICompanyAssetsTreeSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export function CompanyAssetsTreeSkeleton({
-  className,
-  ...props
-}: ICompanyAssetsTreeSkeletonProps) {
-  return (
-    <div className={cn("space-y-px p-6", className)} {...props}>
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
-      <Skeleton className="h-6" />
     </div>
   )
 }

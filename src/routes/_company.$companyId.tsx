@@ -8,10 +8,8 @@ import { CompanyAssetsDetails } from "~/components/company-assets/company-assets
 import { CompanyAssetsDetailsSkeleton } from "~/components/company-assets/company-assets-details-skeleton"
 import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-filter"
 import { CompanyAssetsHeader } from "~/components/company-assets/company-assets-header"
-import {
-  CompanyAssetsTree,
-  CompanyAssetsTreeSkeleton,
-} from "~/components/company-assets/company-assets-tree"
+import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tree"
+import { CompanyAssetsTreeSkeleton } from "~/components/company-assets/company-assets-tree-skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import type { TAsset } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"

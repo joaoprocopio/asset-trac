@@ -1,12 +1,10 @@
 import { Skeleton } from "~/components/skeleton"
 import { cn } from "~/lib/cn"
 
-export interface ICompanyAssetsDetailsSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
-
 export function CompanyAssetsDetailsSkeleton({
   className,
   ...props
-}: ICompanyAssetsDetailsSkeletonProps) {
+}: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={cn("grid grid-rows-[4rem_20rem_1fr]", className)} {...props}>
       <div className="flex items-center border-b px-6">
