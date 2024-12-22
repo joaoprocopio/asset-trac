@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
 
+import type { Graph } from "~/lib/graph"
 import type { TAssets, TLocations } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
 
@@ -32,4 +33,10 @@ export const assetsGraphOptions = (companyId: string, locations: TLocations, ass
   queryOptions({
     queryKey: ["company-assets-graph", companyId],
     queryFn: () => CompanyServices.buildCompanyAssetsGraph(locations, assets),
+  })
+
+export const assetsTreeOptions = <N>(companyId: string, graph: Graph<N>) =>
+  queryOptions({
+    queryKey: ["company-assets-tree", companyId],
+    queryFn: () => CompanyServices.buildCompanyAssetsTree(graph),
   })

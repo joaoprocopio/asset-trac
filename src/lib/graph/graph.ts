@@ -4,20 +4,26 @@ export type GraphNode<N> = N & {
   parentId: string | null
 }
 
+export type GraphEdges = Set<string>
+
 export class Graph<N> {
   #nodes = new Map<string, GraphNode<N> | undefined>()
-  #edges = new Map<string, Set<string>>()
+  #edges = new Map<string, GraphEdges>()
 
-  hasNode(id: string): boolean {
-    return this.#nodes.has(id)
+  getAllEdges() {
+    return structuredClone(this.#edges)
+  }
+
+  addNode(id: string, attributes?: GraphNode<N>): void {
+    this.#nodes.set(id, attributes)
   }
 
   getNode(id: string): GraphNode<N> | undefined {
     return structuredClone(this.#nodes.get(id))
   }
 
-  addNode(id: string, attributes?: GraphNode<N>): void {
-    this.#nodes.set(id, attributes)
+  hasNode(id: string): boolean {
+    return this.#nodes.has(id)
   }
 
   addEdge(parentId: string, childId: string): void {
@@ -26,5 +32,9 @@ export class Graph<N> {
     }
 
     this.#edges.get(parentId)!.add(childId)
+  }
+
+  getEdge(id: string): GraphEdges | undefined {
+    return structuredClone(this.#edges.get(id))
   }
 }

@@ -3,7 +3,12 @@ import { useParams } from "react-router"
 
 import { AssetIdKey, AssetNameKey, AssetStatusKey } from "~/constants/company-constants"
 import { useSearchParam } from "~/hooks/use-search-param"
-import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
+import {
+  assetsGraphOptions,
+  assetsOptions,
+  assetsTreeOptions,
+  locationsOptions,
+} from "~/lib/query/query-options"
 
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const params = useParams()
@@ -13,6 +18,10 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const assetsGraph = useQuery({
     ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
     enabled: locations.isSuccess && assets.isSuccess,
+  })
+  const assetsTree = useQuery({
+    ...assetsTreeOptions(params.companyId!, assetsGraph.data!),
+    enabled: assetsGraph.isSuccess,
   })
 
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
