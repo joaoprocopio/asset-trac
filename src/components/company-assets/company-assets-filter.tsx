@@ -1,14 +1,16 @@
 import { InfoIcon, SearchIcon, ZapIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useLocation } from "react-router"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
-import type { TAssetStatus } from "~/constants/company-constants"
 import { AssetStatus } from "~/constants/company-constants"
 import { useDebouncedFn } from "~/hooks/use-debounced-fn"
 import { useSearchParam } from "~/hooks/use-search-param"
 
 export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>) {
+  const location = useLocation()
+
   const [assetName, setAssetName] = useSearchParam({
     paramKey: "an",
     paramsNavigateOpts: { preventScrollReset: true },
@@ -34,8 +36,9 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
     }
 
     setAssetNameControlled(nextAssetQuery)
+    setAssetNameDebounced(nextAssetQuery)
 
-    return setAssetNameDebounced(nextAssetQuery)
+    return undefined
   }
 
   const handleChangeAssetStatus = (nextAssetStatus: typeof assetStatus) => {
@@ -47,8 +50,20 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
     }
 
     setAssetStatusControlled(nextAssetStatus)
-    return setAssetStatusDebounced(nextAssetStatus as TAssetStatus)
+    setAssetStatusDebounced(nextAssetStatus)
+
+    return undefined
   }
+
+  useEffect(() => {
+    if (!assetName) {
+      setAssetNameControlled(undefined)
+    }
+
+    if (!assetStatus) {
+      setAssetStatusControlled(undefined)
+    }
+  }, [location.key, assetName, assetStatus])
 
   return (
     <div {...props}>
