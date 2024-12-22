@@ -28,7 +28,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
 
   return (
     <div {...props}>
-      <div className="overflow-y-scroll">
+      <div className="h-full overflow-y-scroll">
         {assetsTree.isSuccess && <pre>{JSON.stringify(assetsTree.data, null, 2)}</pre>}
       </div>
     </div>
