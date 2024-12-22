@@ -35,6 +35,7 @@ async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
   return assets
 }
 
+// Essa função necessita ser async, para não bloquear a thread de renderização e ser usada pelo React Query
 async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   type TLocationNode = TLocation & { type: "location" }
   type TAssetNode = Omit<TAsset, "locationId"> & { type: "component" | "asset" }

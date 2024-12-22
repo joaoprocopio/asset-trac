@@ -1,7 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
 
-import { Graph } from "~/lib/graph"
-import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
+import type { TAssets, TLocations } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
 
 export const companiesOptions = () =>
