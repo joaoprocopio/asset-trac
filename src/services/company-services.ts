@@ -84,9 +84,10 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
 }
 
 async function buildCompanyAssetsTree<N>(graph: Graph<N>) {
-  const roots = new Set(graph.nodes.keys())
+  const roots = graph.getAllNodes()
+  const edges = graph.getAllEdges()
 
-  for (const [, children] of graph.edges) {
+  for (const [, children] of edges) {
     for (const child of children) {
       roots.delete(child)
     }
@@ -97,7 +98,6 @@ async function buildCompanyAssetsTree<N>(graph: Graph<N>) {
   function buildSubtree(nodeId: string) {
     const node = graph.getNode(nodeId)
     const children = graph.getEdge(nodeId)
-    console.log(children)
 
     if (children) {
       node!.children = Array.from(children).map(buildSubtree)

@@ -10,6 +10,10 @@ export class Graph<N> {
   #nodes = new Map<string, GraphNode<N> | undefined>()
   #edges = new Map<string, GraphEdges>()
 
+  getAllNodes() {
+    return structuredClone(this.#nodes)
+  }
+
   getAllEdges() {
     return structuredClone(this.#edges)
   }
@@ -19,7 +23,13 @@ export class Graph<N> {
   }
 
   getNode(id: string): GraphNode<N> | undefined {
-    return structuredClone(this.#nodes.get(id))
+    const node = this.#nodes.get(id)
+
+    if (!node) {
+      return undefined
+    }
+
+    return structuredClone(node)
   }
 
   hasNode(id: string): boolean {
@@ -35,6 +45,12 @@ export class Graph<N> {
   }
 
   getEdge(id: string): GraphEdges | undefined {
-    return structuredClone(this.#edges.get(id))
+    const edge = this.#edges.get(id)
+
+    if (!edge) {
+      return undefined
+    }
+
+    return structuredClone(edge)
   }
 }
