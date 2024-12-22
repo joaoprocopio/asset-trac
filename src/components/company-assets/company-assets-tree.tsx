@@ -14,17 +14,19 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
 
+  const graph = useQuery({
+    queryFn: async () => {
+      const nextGraph = buildGraph(locations.data!, assets.data!)
+
+      return nextGraph
+    },
+    queryKey: ["graph", params.companyId],
+    enabled: locations.isSuccess && assets.isSuccess,
+  })
+
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
   const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
-
-  const graph = useMemo(() => {
-    if (!locations.isSuccess || !assets.isSuccess) return undefined
-
-    const nextGraph = buildGraph(locations.data, assets.data)
-
-    return nextGraph
-  }, [locations.data, locations.isSuccess, assets.data, assets.isSuccess])
 
   return <div {...props}>arvore</div>
 }
