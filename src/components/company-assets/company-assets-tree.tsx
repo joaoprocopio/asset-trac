@@ -73,7 +73,5 @@ function buildGraph(locations: TLocations, assets: TAssets) {
     }
   }
 
-  const abc = graph.roots
-
   return graph
 }
