@@ -1,10 +1,10 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 
 import tailwindStylesheet from "~/assets/styles/tailwind.css?url"
+import { Card, CardHeader } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
 
 import type { Route } from "./+types/root"
-import { Card, CardHeader } from "./components/card"
 
 export const links: Route.LinksFunction = () => [
   {
@@ -47,7 +47,7 @@ export const meta: Route.MetaFunction = () => [
   },
 ]
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en">
       <head>
