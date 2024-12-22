@@ -4,7 +4,6 @@ import { NavLink, Outlet } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { buttonVariants } from "~/components/button"
-import { Skeleton } from "~/components/skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import { companiesOptions } from "~/lib/query/query-options"
 
@@ -24,14 +23,6 @@ export default function CompanyLayout() {
           </NavLink>
 
           <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
-            {companies.isLoading && (
-              <>
-                <Skeleton className="h-8" />
-                <Skeleton className="h-8" />
-                <Skeleton className="h-8" />
-              </>
-            )}
-
             {companies.isSuccess &&
               companies.data.map((company) => (
                 <NavLink
