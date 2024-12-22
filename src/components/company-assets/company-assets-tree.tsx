@@ -30,9 +30,10 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
 }
 
 function buildGraph(locations: TLocations, assets: TAssets) {
-  const graph = new Graph<
-    (TLocation & { type: "location" }) | (TAsset & { type: "component" | "asset" })
-  >()
+  type TLocationNode = TLocation & { type: "location" }
+  type TAssetNode = Omit<TAsset & { type: "component" | "asset" }, "locationId">
+
+  const graph = new Graph<TLocationNode | TAssetNode>()
 
   for (const location of locations) {
     graph.setNode(location.id, {
@@ -56,7 +57,7 @@ function buildGraph(locations: TLocations, assets: TAssets) {
       type: asset.sensorId ? "component" : "asset",
       id: asset.id,
       name: asset.name.toLowerCase(),
-      parentId: asset.parentId,
+      parentId: asset.locationId || asset.parentId,
       sensorType: asset.sensorType,
       status: asset.status,
       gatewayId: asset.gatewayId,

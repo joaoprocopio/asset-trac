@@ -29,7 +29,8 @@ export const AssetSchema = z.object({
   id: z.string(),
   name: z.string(),
   gatewayId: z.string().optional(),
-  parentId: z.string().nullable(), // locationId e parentId são iguais sempre. TODO: eu estava errado, isso me reprovou no teste.
+  locationId: z.string().nullable(),
+  parentId: z.string().nullable(),
   sensorId: z.string().optional(),
   sensorType: z.nativeEnum(AssetSensorType).nullable(),
   status: z.nativeEnum(AssetStatus).nullable(),
