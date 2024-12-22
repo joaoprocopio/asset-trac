@@ -1,20 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
-import { useLoaderData, useParams } from "react-router"
+import { useParams } from "react-router"
 
 import { CardHeader, CardTitle } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import { selectedCompanyOptions } from "~/lib/query/query-options"
-import type { DeepAwaited } from "~/lib/utils"
-import type { clientLoader } from "~/routes/_company.$companyId"
 
 export function CompanyAssetsHeader(props: React.HTMLAttributes<HTMLDivElement>) {
   const params = useParams()
-  const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
-  const selectedCompany = useQuery({
-    ...selectedCompanyOptions(params.companyId!),
-    initialData: () => loaderData.selectedCompany,
-  })
+  const selectedCompany = useQuery(selectedCompanyOptions(params.companyId!))
 
   return (
     <CardHeader {...props}>

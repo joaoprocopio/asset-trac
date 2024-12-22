@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useAtom } from "jotai"
 import { RESET } from "jotai/utils"
-import { useLoaderData, useParams } from "react-router"
+import { useParams } from "react-router"
 
 import { Card, CardContent } from "~/components/card"
 import { CompanyAssetsDetails } from "~/components/company-assets/company-assets-details"
@@ -12,7 +12,6 @@ import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tr
 import { CompanyAssetsTreeSkeleton } from "~/components/company-assets/company-assets-tree-skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import { assetsOptions, locationsOptions, selectedCompanyOptions } from "~/lib/query/query-options"
-import type { DeepAwaited } from "~/lib/utils"
 import { selectedAssetNameAtom, selectedAssetStatusAtom } from "~/stores/company-store"
 
 import type { Route } from "./+types/_company.$companyId"
@@ -20,28 +19,21 @@ import type { Route } from "./+types/_company.$companyId"
 export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   const companyId = args.params.companyId
 
-  return {
-    locations: await queryClient.ensureQueryData(locationsOptions(companyId)),
-    assets: await queryClient.ensureQueryData(assetsOptions(companyId)),
-    selectedCompany: await queryClient.ensureQueryData(selectedCompanyOptions(companyId)),
-  }
+  await Promise.all([
+    queryClient.prefetchQuery(locationsOptions(companyId)),
+    queryClient.prefetchQuery(assetsOptions(companyId)),
+    queryClient.prefetchQuery(selectedCompanyOptions(companyId)),
+  ])
 }
 
 export default function CompanyAssetsPage() {
   const params = useParams()
-  const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
 
   const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
 
-  const locations = useQuery({
-    ...locationsOptions(params.companyId!),
-    initialData: () => loaderData.locations,
-  })
-  const assets = useQuery({
-    ...assetsOptions(params.companyId!),
-    initialData: () => loaderData.assets,
-  })
+  const locations = useQuery(locationsOptions(params.companyId!))
+  const assets = useQuery(assetsOptions(params.companyId!))
 
   const handleChangeSelectedAssetName = (nextAssetQuery: string | typeof RESET) => {
     setSelectedAssetName(nextAssetQuery)

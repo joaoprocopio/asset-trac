@@ -1,26 +1,19 @@
 import { useQuery } from "@tanstack/react-query"
 import { Package2Icon } from "lucide-react"
-import { NavLink, Outlet, useLoaderData } from "react-router"
+import { NavLink, Outlet } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import { companiesOptions } from "~/lib/query/query-options"
-import type { DeepAwaited } from "~/lib/utils"
 
 export const clientLoader = async () => {
-  return {
-    companies: await queryClient.ensureQueryData(companiesOptions()),
-  }
+  await queryClient.prefetchQuery(companiesOptions())
 }
 
 export default function CompanyLayout() {
-  const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
-  const companies = useQuery({
-    ...companiesOptions(),
-    initialData: () => loaderData.companies,
-  })
+  const companies = useQuery(companiesOptions())
 
   return (
     <div className="h-full">
