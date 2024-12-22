@@ -36,7 +36,7 @@ function buildGraph(locations: TLocations, assets: TAssets) {
   const graph = new Graph<TLocationNode | TAssetNode>()
 
   for (const location of locations) {
-    graph.setNode(location.id, {
+    graph.addNode(location.id, {
       type: "location",
       id: location.id,
       name: location.name.toLowerCase(),
@@ -45,15 +45,15 @@ function buildGraph(locations: TLocations, assets: TAssets) {
 
     if (location.parentId) {
       if (!graph.hasNode(location.parentId)) {
-        graph.setNode(location.parentId)
+        graph.addNode(location.parentId)
       }
 
-      graph.setEdge(location.parentId, location.id)
+      graph.addEdge(location.parentId, location.id)
     }
   }
 
   for (const asset of assets) {
-    graph.setNode(asset.id, {
+    graph.addNode(asset.id, {
       type: asset.sensorId ? "component" : "asset",
       id: asset.id,
       name: asset.name.toLowerCase(),
@@ -66,12 +66,14 @@ function buildGraph(locations: TLocations, assets: TAssets) {
 
     if (asset.parentId) {
       if (!graph.hasNode(asset.parentId)) {
-        graph.setNode(asset.parentId)
+        graph.addNode(asset.parentId)
       }
 
-      graph.setEdge(asset.parentId, asset.id)
+      graph.addEdge(asset.parentId, asset.id)
     }
   }
+
+  const abc = graph.roots
 
   return graph
 }
