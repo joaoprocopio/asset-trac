@@ -4,11 +4,13 @@ export type GraphNode<N> = {
   parentId: string | null
 } & N
 
-export type GraphEdges = Set<string>
+export interface GraphLike<N> {
+  getAllNodes(): Map<string, GraphNode<N> | undefined>
+}
 
 export class Graph<N> {
   #nodes = new Map<string, GraphNode<N> | undefined>()
-  #edges = new Map<string, GraphEdges>()
+  #edges = new Map<string, Set<string>>()
 
   getAllNodes() {
     return structuredClone(this.#nodes)
@@ -44,7 +46,7 @@ export class Graph<N> {
     this.#edges.get(parentId)!.add(childId)
   }
 
-  getEdge(id: string): GraphEdges | undefined {
+  getEdge(id: string): Set<string> | undefined {
     const edge = this.#edges.get(id)
 
     if (!edge) {

@@ -84,12 +84,14 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
 }
 
 async function buildCompanyAssetsTree<N>(graph: Graph<N>) {
-  const roots = graph.getAllNodes()
+  const nodes = graph.getAllNodes()
   const edges = graph.getAllEdges()
 
+  const roots = new Set(nodes.keys())
+
   for (const edge of edges.values()) {
-    for (const child of edge) {
-      roots.delete(child)
+    for (const node of edge) {
+      nodes.delete(node)
     }
   }
 
