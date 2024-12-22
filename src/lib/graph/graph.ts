@@ -1,8 +1,8 @@
-export type GraphNode<N> = N & {
+export type GraphNode<N> = {
   id: string
   name: string
   parentId: string | null
-}
+} & N
 
 export type GraphEdges = Set<string>
 
@@ -52,5 +52,9 @@ export class Graph<N> {
     }
 
     return structuredClone(edge)
+  }
+
+  hasEdge(id: string): boolean {
+    return this.#edges.has(id)
   }
 }
