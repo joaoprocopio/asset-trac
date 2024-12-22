@@ -1,5 +1,5 @@
 import { InfoIcon, SearchIcon, ZapIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
@@ -18,8 +18,9 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
     paramsNavigateOpts: { preventScrollReset: true },
   })
 
-  const [assetNameControlled, setAssetNameControlled] = useState(assetName)
-  const [assetStatusControlled, setAssetStatusControlled] = useState(assetStatus)
+  const [assetNameControlled, setAssetNameControlled] = useState<typeof assetName>(assetName)
+  const [assetStatusControlled, setAssetStatusControlled] =
+    useState<typeof assetStatus>(assetStatus)
 
   const setAssetNameDebounced = useDebouncedFn(setAssetName)
   const setAssetStatusDebounced = useDebouncedFn(setAssetStatus)
