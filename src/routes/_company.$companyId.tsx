@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
-import { CompanyAssetsDetails } from "~/components/company-assets/company-assets-details"
 import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-filter"
 import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tree"
 import { Typography } from "~/components/typography"
@@ -24,8 +23,6 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
 export default function CompanyAssetsPage() {
   const params = useParams()
 
-  const locations = useQuery(locationsOptions(params.companyId!))
-  const assets = useQuery(assetsOptions(params.companyId!))
   const selectedCompany = useQuery(selectedCompanyOptions(params.companyId!))
 
   return (
@@ -47,9 +44,7 @@ export default function CompanyAssetsPage() {
         <div className="grid grid-rows-[4rem_1fr] border-r">
           <CompanyAssetsFilter className="flex items-center gap-6 border-b px-6" />
 
-          {/* {locations.isSuccess && assets.isSuccess && (
-            <CompanyAssetsTree className="pl-6" locations={locations.data} assets={assets.data} />
-          )} */}
+          <CompanyAssetsTree className="pl-6" />
         </div>
 
         {/* {locations.isSuccess && assets.isSuccess && <CompanyAssetsDetails />} */}

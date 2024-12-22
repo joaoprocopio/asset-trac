@@ -17,6 +17,10 @@ export class Graph<N> {
     this.buildSubtree = this.buildSubtree.bind(this)
   }
 
+  get roots() {
+    return new Set(this.nodes.keys())
+  }
+
   hasNode(id: string): boolean {
     return this.nodes.has(id)
   }
@@ -97,7 +101,7 @@ export class Graph<N> {
   }
 
   buildTree() {
-    const roots = new Set(this.nodes.keys())
+    const roots = this.roots
 
     // Para encontrar as raízes da árvore
     // É necessário remover todos os nós que são filhos de outros nós

@@ -9,3 +9,9 @@ export const AssetStatus = {
   Operating: "operating",
   Alert: "alert",
 } as const
+
+export const AssetNameKey = "an"
+
+export const AssetStatusKey = "as"
+
+export const AssetIdKey = "ai"

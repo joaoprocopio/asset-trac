@@ -4,21 +4,15 @@ import { useLocation } from "react-router"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
-import { AssetStatus } from "~/constants/company-constants"
+import { AssetNameKey, AssetStatus, AssetStatusKey } from "~/constants/company-constants"
 import { useDebouncedFn } from "~/hooks/use-debounced-fn"
 import { useSearchParam } from "~/hooks/use-search-param"
 
 export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>) {
   const location = useLocation()
 
-  const [assetName, setAssetName] = useSearchParam({
-    paramKey: "an",
-    paramsNavigateOpts: { preventScrollReset: true },
-  })
-  const [assetStatus, setAssetStatus] = useSearchParam({
-    paramKey: "as",
-    paramsNavigateOpts: { preventScrollReset: true },
-  })
+  const [assetName, setAssetName] = useSearchParam({ paramKey: AssetNameKey })
+  const [assetStatus, setAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
 
   const [assetNameControlled, setAssetNameControlled] = useState<typeof assetName>(assetName)
   const [assetStatusControlled, setAssetStatusControlled] =
