@@ -1,4 +1,3 @@
-import { RESET } from "jotai/utils"
 import { InfoIcon, SearchIcon, ZapIcon } from "lucide-react"
 import { useState } from "react"
 
@@ -7,81 +6,66 @@ import { Input } from "~/components/input"
 import type { TAssetStatus } from "~/constants/company-constants"
 import { AssetStatus } from "~/constants/company-constants"
 import { useDebouncedFn } from "~/hooks/use-debounced-fn"
+import { useSearchParam } from "~/hooks/use-search-param"
 
-export interface ICompanyAssetsFilterProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAssetName?: string
-  selectedAssetStatus?: string
-  handleChangeSelectedAssetName: (nextAssetQuery: string | typeof RESET) => void
-  handleChangeSelectedAssetStatus: (nextAssetStatus: string | typeof RESET) => void
-}
+export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>) {
+  const [assetName, setAssetName] = useSearchParam({
+    paramKey: "an",
+    paramsNavigateOpts: { preventScrollReset: true },
+  })
+  const [assetStatus, setAssetStatus] = useSearchParam({
+    paramKey: "as",
+    paramsNavigateOpts: { preventScrollReset: true },
+  })
 
-export function CompanyAssetsFilter({
-  selectedAssetName,
-  selectedAssetStatus,
-  handleChangeSelectedAssetName,
-  handleChangeSelectedAssetStatus,
-  ...props
-}: ICompanyAssetsFilterProps) {
-  // Isso pode parecer redundante, mas é necessário para que o valor do input seja controlado
-  // E a alteração na URL seja debounced, para evitar mudanças desnecessárias na aplicação
-  const [selectedAssetNameControlled, setSelectedAssetNameControlled] =
-    useState<ICompanyAssetsFilterProps["selectedAssetName"]>(selectedAssetName)
+  const [assetNameControlled, setAssetNameControlled] = useState(assetName)
+  const [assetStatusControlled, setAssetStatusControlled] = useState(assetStatus)
 
-  const [selectedAssetStatusControlled, setSelectedAssetStatusControlled] =
-    useState<ICompanyAssetsFilterProps["selectedAssetStatus"]>(selectedAssetStatus)
+  const setAssetNameDebounced = useDebouncedFn(setAssetName)
+  const setAssetStatusDebounced = useDebouncedFn(setAssetStatus)
 
-  const debouncedHandleChangeSelectedAssetName = useDebouncedFn(handleChangeSelectedAssetName)
-  const debouncedHandleChangeSelectedAssetStatus = useDebouncedFn(handleChangeSelectedAssetStatus)
-
-  const handleChangeSelectedAssetNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nextAssetQuery = event.target.value
-
-    if (!nextAssetQuery.length) {
-      setSelectedAssetNameControlled(undefined)
-      return debouncedHandleChangeSelectedAssetName(RESET)
+  const handleChangeAssetName = (nextAssetQuery: typeof assetName) => {
+    if (!nextAssetQuery?.length) {
+      setAssetNameControlled(undefined)
+      return setAssetNameDebounced(undefined)
     }
 
-    setSelectedAssetNameControlled(nextAssetQuery)
+    setAssetNameControlled(nextAssetQuery)
 
-    return debouncedHandleChangeSelectedAssetName(nextAssetQuery)
+    return setAssetNameDebounced(nextAssetQuery)
   }
 
-  const handleChangeSelectedAssetStatusInput = (
-    nextAssetStatus: ICompanyAssetsFilterProps["selectedAssetStatus"]
-  ) => {
-    if (
-      selectedAssetStatus === nextAssetStatus ||
-      selectedAssetStatusControlled === nextAssetStatus
-    ) {
-      setSelectedAssetStatusControlled(undefined)
-      return debouncedHandleChangeSelectedAssetStatus(RESET)
+  const handleChangeAssetStatus = (nextAssetStatus: typeof assetStatus) => {
+    if (assetStatus === nextAssetStatus || assetStatusControlled === nextAssetStatus) {
+      setAssetStatusControlled(undefined)
+      return setAssetStatusDebounced(undefined)
     }
 
-    setSelectedAssetStatusControlled(nextAssetStatus)
-    return debouncedHandleChangeSelectedAssetStatus(nextAssetStatus as TAssetStatus)
+    setAssetStatusControlled(nextAssetStatus)
+    return setAssetStatusDebounced(nextAssetStatus as TAssetStatus)
   }
 
   return (
     <div {...props}>
       <Input
-        value={selectedAssetNameControlled || ""}
-        onChange={handleChangeSelectedAssetNameInput}
+        value={assetNameControlled || ""}
+        onChange={(event) => handleChangeAssetName(event.target.value)}
         startIcon={SearchIcon}
         placeholder="Search assets"
       />
 
       <Button
         className="h-10 gap-2"
-        variant={selectedAssetStatusControlled === AssetStatus.Operating ? "default" : "outline"}
-        onClick={() => handleChangeSelectedAssetStatusInput(AssetStatus.Operating)}>
+        variant={assetStatusControlled === AssetStatus.Operating ? "default" : "outline"}
+        onClick={() => handleChangeAssetStatus(AssetStatus.Operating)}>
         <ZapIcon className="h-5 w-5" />
         Operating
       </Button>
 
       <Button
         className="h-10 gap-2"
-        variant={selectedAssetStatusControlled === AssetStatus.Alert ? "default" : "outline"}
-        onClick={() => handleChangeSelectedAssetStatusInput(AssetStatus.Alert)}>
+        variant={assetStatusControlled === AssetStatus.Alert ? "default" : "outline"}
+        onClick={() => handleChangeAssetStatus(AssetStatus.Alert)}>
         <InfoIcon className="h-5 w-5" />
         Critical
       </Button>

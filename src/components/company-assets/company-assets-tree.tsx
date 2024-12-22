@@ -1,6 +1,4 @@
 import clsx from "clsx"
-import { useAtom, useSetAtom } from "jotai"
-import { RESET } from "jotai/utils"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
@@ -12,12 +10,6 @@ import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import { Graph } from "~/lib/graph"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
-import {
-  selectedAssetAtom,
-  selectedAssetIdAtom,
-  selectedAssetNameAtom,
-  selectedAssetStatusAtom,
-} from "~/stores/company-store"
 
 export interface ICompanyAssetsTreeProps extends React.HTMLAttributes<HTMLDivElement> {
   locations: TLocations
