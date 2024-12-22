@@ -23,7 +23,7 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   return {
     locations: await queryClient.ensureQueryData(locationsOptions(companyId)),
     assets: await queryClient.ensureQueryData(assetsOptions(companyId)),
-    company: await queryClient.ensureQueryData(selectedCompanyOptions(companyId, queryClient)),
+    selectedCompany: await queryClient.ensureQueryData(selectedCompanyOptions(companyId)),
   }
 }
 

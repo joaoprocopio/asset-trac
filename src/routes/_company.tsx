@@ -11,15 +11,15 @@ import type { DeepAwaited } from "~/lib/utils"
 
 export const clientLoader = async () => {
   return {
-    company: await queryClient.ensureQueryData(companiesOptions()),
+    companies: await queryClient.ensureQueryData(companiesOptions()),
   }
 }
 
 export default function CompanyLayout() {
   const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
-  const company = useQuery({
+  const companies = useQuery({
     ...companiesOptions(),
-    initialData: () => loaderData.company,
+    initialData: () => loaderData.companies,
   })
 
   return (
@@ -31,7 +31,7 @@ export default function CompanyLayout() {
           </NavLink>
 
           <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
-            {company.isLoading && (
+            {companies.isLoading && (
               <>
                 <Skeleton className="h-8" />
                 <Skeleton className="h-8" />
@@ -39,8 +39,8 @@ export default function CompanyLayout() {
               </>
             )}
 
-            {company.isSuccess &&
-              company.data.map((company) => (
+            {companies.isSuccess &&
+              companies.data.map((company) => (
                 <NavLink
                   key={company.id}
                   to={company.id}

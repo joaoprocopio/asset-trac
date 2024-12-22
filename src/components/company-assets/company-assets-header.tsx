@@ -1,18 +1,19 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useLoaderData, useParams } from "react-router"
 
 import { CardHeader, CardTitle } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import { selectedCompanyOptions } from "~/lib/query/query-options"
+import type { DeepAwaited } from "~/lib/utils"
+import type { clientLoader } from "~/routes/_company.$companyId"
 
 export function CompanyAssetsHeader(props: React.HTMLAttributes<HTMLDivElement>) {
   const params = useParams()
-  const loaderData = useLoaderData()
-  const queryClient = useQueryClient()
+  const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
   const selectedCompany = useQuery({
-    ...selectedCompanyOptions(params.companyId!, queryClient),
-    initialData: () => loaderData.company,
+    ...selectedCompanyOptions(params.companyId!),
+    initialData: () => loaderData.selectedCompany,
   })
 
   return (
@@ -25,7 +26,7 @@ export function CompanyAssetsHeader(props: React.HTMLAttributes<HTMLDivElement>)
         <span>
           {selectedCompany.isSuccess && (
             <Typography className="font-normal" affects="muted">
-              / {selectedCompany.data.name} Unit
+              / {selectedCompany.data?.name} Unit
             </Typography>
           )}
         </span>
