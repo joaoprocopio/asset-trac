@@ -35,7 +35,6 @@ async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
   return assets
 }
 
-// Essa função necessita ser async, para não bloquear a thread de renderização e ser usada pelo React Query
 async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   type TLocationNode = TLocation & { type: "location" }
   type TAssetNode = Omit<TAsset, "locationId"> & { type: "component" | "asset" }
@@ -60,23 +59,25 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   }
 
   for (const asset of assets) {
+    const parentId = asset.locationId || asset.parentId
+
     graph.addNode(asset.id, {
       type: asset.sensorId ? "component" : "asset",
       id: asset.id,
       name: asset.name.toLowerCase(),
-      parentId: asset.locationId || asset.parentId,
+      parentId: parentId,
       sensorType: asset.sensorType,
       status: asset.status,
       gatewayId: asset.gatewayId,
       sensorId: asset.sensorId,
     })
 
-    if (asset.parentId) {
-      if (!graph.hasNode(asset.parentId)) {
-        graph.addNode(asset.parentId)
+    if (parentId) {
+      if (!graph.hasNode(parentId)) {
+        graph.addNode(parentId)
       }
 
-      graph.addEdge(asset.parentId, asset.id)
+      graph.addEdge(parentId, asset.id)
     }
   }
 

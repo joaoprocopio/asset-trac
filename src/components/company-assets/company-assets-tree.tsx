@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
-import { AssetIdKey, AssetNameKey, AssetStatusKey } from "~/constants/company-constants"
-import { useSearchParam } from "~/hooks/use-search-param"
 import {
   assetsGraphOptions,
   assetsOptions,
@@ -24,9 +22,15 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     enabled: assetsGraph.isSuccess,
   })
 
-  const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
-  const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
-  const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
+  // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
+  // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
+  // const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
-  return <div {...props}>arvore</div>
+  return (
+    <div {...props}>
+      <div className="overflow-y-scroll">
+        {assetsTree.isSuccess && <pre>{JSON.stringify(assetsTree.data, null, 2)}</pre>}
+      </div>
+    </div>
+  )
 }

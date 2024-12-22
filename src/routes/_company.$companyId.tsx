@@ -44,7 +44,7 @@ export default function CompanyAssetsPage() {
         <div className="grid grid-rows-[4rem_1fr] border-r">
           <CompanyAssetsFilter className="flex items-center gap-6 border-b px-6" />
 
-          <CompanyAssetsTree className="pl-6" />
+          <CompanyAssetsTree className="flex-1 pl-6" />
         </div>
 
         {/* {locations.isSuccess && assets.isSuccess && <CompanyAssetsDetails />} */}
