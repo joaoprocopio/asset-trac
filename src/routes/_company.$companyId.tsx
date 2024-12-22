@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { useAtom, useAtomValue } from "jotai"
+import { useAtom } from "jotai"
 import { RESET } from "jotai/utils"
 import { useLoaderData, useParams } from "react-router"
 
@@ -12,12 +12,7 @@ import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tr
 import { CompanyAssetsTreeSkeleton } from "~/components/company-assets/company-assets-tree-skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import { assetsOptions, locationsOptions, selectedCompanyOptions } from "~/lib/query/query-options"
-import type { TAsset } from "~/schemas/company-schemas"
-import {
-  selectedAssetAtom,
-  selectedAssetNameAtom,
-  selectedAssetStatusAtom,
-} from "~/stores/company-store"
+import { selectedAssetNameAtom, selectedAssetStatusAtom } from "~/stores/company-store"
 
 import type { Route } from "./+types/_company.$companyId"
 
@@ -34,8 +29,6 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
 export default function CompanyAssetsPage() {
   const params = useParams()
   const loaderData = useLoaderData<typeof clientLoader>()
-
-  const selectedAsset = useAtomValue(selectedAssetAtom)
 
   const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
@@ -83,7 +76,8 @@ export default function CompanyAssetsPage() {
         </div>
 
         {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
-          <CompanyAssetsDetails selectedAsset={selectedAsset as TAsset} />
+          // TODO: passar o asset
+          <CompanyAssetsDetails />
         ) : (
           <CompanyAssetsDetailsSkeleton />
         )}

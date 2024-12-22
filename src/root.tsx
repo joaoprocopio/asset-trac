@@ -69,7 +69,7 @@ export default function App() {
 
 export function HydrateFallback() {
   return (
-    <div>
+    <div className="h-full">
       <header className="fixed inset-0 z-10 h-16 border-b bg-background">
         <div className="container mx-auto flex h-full items-center justify-between px-6">
           <Skeleton className="h-4 w-28" />
@@ -86,15 +86,9 @@ export function HydrateFallback() {
 
       <main className="h-full pt-16">
         <div className="container mx-auto h-full px-6 py-8">
-          <Card>
-            <CardHeader>
-              <div className="grid auto-rows-min grid-cols-3 gap-4">
-                <Skeleton className="aspect-video" />
-                <Skeleton className="aspect-video" />
-                <Skeleton className="aspect-video" />
-
-                <Skeleton className="col-span-3 aspect-video" />
-              </div>
+          <Card className="h-full">
+            <CardHeader className="h-full">
+              <Skeleton className="h-full w-full" />
             </CardHeader>
           </Card>
         </div>
