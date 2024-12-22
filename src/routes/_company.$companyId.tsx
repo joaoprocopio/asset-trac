@@ -12,6 +12,7 @@ import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tr
 import { CompanyAssetsTreeSkeleton } from "~/components/company-assets/company-assets-tree-skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import { assetsOptions, locationsOptions, selectedCompanyOptions } from "~/lib/query/query-options"
+import type { DeepAwaited } from "~/lib/utils"
 import { selectedAssetNameAtom, selectedAssetStatusAtom } from "~/stores/company-store"
 
 import type { Route } from "./+types/_company.$companyId"
@@ -28,16 +29,16 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
 
 export default function CompanyAssetsPage() {
   const params = useParams()
-  const loaderData = useLoaderData<typeof clientLoader>()
+  const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
 
   const [selectedAssetName, setSelectedAssetName] = useAtom(selectedAssetNameAtom)
   const [selectedAssetStatus, setSelectedAssetStatus] = useAtom(selectedAssetStatusAtom)
 
-  const locationsQuery = useQuery({
+  const locations = useQuery({
     ...locationsOptions(params.companyId!),
     initialData: () => loaderData.locations,
   })
-  const assetsQuery = useQuery({
+  const assets = useQuery({
     ...assetsOptions(params.companyId!),
     initialData: () => loaderData.assets,
   })
@@ -64,18 +65,14 @@ export default function CompanyAssetsPage() {
             handleChangeSelectedAssetStatus={handleChangeSelectedAssetStatus}
           />
 
-          {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
-            <CompanyAssetsTree
-              className="pl-6"
-              locations={locationsQuery.data}
-              assets={assetsQuery.data}
-            />
+          {locations.isSuccess && assets.isSuccess ? (
+            <CompanyAssetsTree className="pl-6" locations={locations.data} assets={assets.data} />
           ) : (
             <CompanyAssetsTreeSkeleton />
           )}
         </div>
 
-        {locationsQuery.isSuccess && assetsQuery.isSuccess ? (
+        {locations.isSuccess && assets.isSuccess ? (
           // TODO: passar o asset
           <CompanyAssetsDetails />
         ) : (

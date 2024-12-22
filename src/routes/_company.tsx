@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { LoaderCircle, Package2Icon } from "lucide-react"
+import { Package2Icon } from "lucide-react"
 import { NavLink, Outlet, useLoaderData } from "react-router"
 
 import TractianLogo from "~/assets/logos/tractian-logo.svg?react"
@@ -7,6 +7,7 @@ import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { queryClient } from "~/lib/query/query-client"
 import { companiesOptions } from "~/lib/query/query-options"
+import type { DeepAwaited } from "~/lib/utils"
 
 export const clientLoader = async () => {
   return {
@@ -15,8 +16,8 @@ export const clientLoader = async () => {
 }
 
 export default function CompanyLayout() {
-  const loaderData = useLoaderData<typeof clientLoader>()
-  const companies = useQuery({
+  const loaderData = useLoaderData() as DeepAwaited<ReturnType<typeof clientLoader>>
+  const company = useQuery({
     ...companiesOptions(),
     initialData: () => loaderData.company,
   })
@@ -30,7 +31,7 @@ export default function CompanyLayout() {
           </NavLink>
 
           <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
-            {companies.isLoading && (
+            {company.isLoading && (
               <>
                 <Skeleton className="h-8" />
                 <Skeleton className="h-8" />
@@ -38,8 +39,8 @@ export default function CompanyLayout() {
               </>
             )}
 
-            {companies.isSuccess &&
-              companies.data.map((company) => (
+            {company.isSuccess &&
+              company.data.map((company) => (
                 <NavLink
                   key={company.id}
                   to={company.id}
@@ -49,19 +50,10 @@ export default function CompanyLayout() {
                       size: "sm",
                       variant: linkProps.isActive ? "default" : "secondary",
                     })
-                  }
-                  viewTransition>
-                  {(linkProps) => (
-                    <>
-                      {linkProps.isTransitioning ? (
-                        <LoaderCircle className="size-4 animate-spin" />
-                      ) : (
-                        <Package2Icon className="size-4" />
-                      )}
+                  }>
+                  <Package2Icon className="size-4" />
 
-                      <span>{`${company.name} Unit`}</span>
-                    </>
-                  )}
+                  <span>{`${company.name} Unit`}</span>
                 </NavLink>
               ))}
           </div>
