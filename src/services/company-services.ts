@@ -92,7 +92,7 @@ async function buildCompanyAssetsTree<N>(graph: Graph<N>) {
 
   for (const edge of edges.values()) {
     for (const node of edge) {
-      nodes.delete(node)
+      roots.delete(node)
     }
   }
 
