@@ -1,5 +1,5 @@
 import { InfoIcon, SearchIcon, ZapIcon } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
@@ -28,7 +28,9 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
   const handleChangeAssetName = (nextAssetQuery: typeof assetName) => {
     if (!nextAssetQuery?.length) {
       setAssetNameControlled(undefined)
-      return setAssetNameDebounced(undefined)
+      setAssetNameDebounced(undefined)
+
+      return undefined
     }
 
     setAssetNameControlled(nextAssetQuery)
@@ -39,7 +41,9 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
   const handleChangeAssetStatus = (nextAssetStatus: typeof assetStatus) => {
     if (assetStatus === nextAssetStatus || assetStatusControlled === nextAssetStatus) {
       setAssetStatusControlled(undefined)
-      return setAssetStatusDebounced(undefined)
+      setAssetStatusDebounced(undefined)
+
+      return undefined
     }
 
     setAssetStatusControlled(nextAssetStatus)
