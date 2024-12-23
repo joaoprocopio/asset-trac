@@ -27,15 +27,16 @@ export function CompanyAssetsDetails({
     ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
     enabled: locations.isSuccess && assets.isSuccess,
   })
-
   const selectedAsset = useQuery({
     ...selectedAssetOptions(selectedAssetId!, assetsGraph.data!),
     enabled: assetsGraph.isSuccess && typeof selectedAssetId === "string",
   })
 
-  return (
-    <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
-      {selectedAsset.isPending && (
+  const hasAsset = Boolean(selectedAsset.isSuccess && selectedAsset.data)
+
+  if (!hasAsset) {
+    return (
+      <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
         <div className="row-span-2 space-y-1.5 self-center text-center">
           <InboxIcon className="h-14 w-full" />
           <Typography variant="h3">Empty</Typography>
@@ -43,9 +44,13 @@ export function CompanyAssetsDetails({
             Select any location, asset or component
           </Typography>
         </div>
-      )}
+      </div>
+    )
+  }
 
-      {Boolean(selectedAsset.isSuccess && selectedAsset.data) && (
+  return (
+    <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
+      {hasAsset && (
         <>
           <header className="flex items-center border-b bg-background px-6">
             <Typography className="align-middle first-letter:uppercase" variant="h3">
