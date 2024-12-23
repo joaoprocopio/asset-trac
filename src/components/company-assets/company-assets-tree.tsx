@@ -26,5 +26,5 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
   // const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
-  return <div {...props}></div>
+  return <pre {...props}>{JSON.stringify(assetsTree.data, null, 1)}</pre>
 }

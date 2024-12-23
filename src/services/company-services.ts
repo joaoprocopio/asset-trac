@@ -1,7 +1,7 @@
 import axios from "axios"
 
 import type { TGraphNode, TGraphNodeId } from "~/lib/graph"
-import { Graph } from "~/lib/graph"
+import { buildSubtree, findRootNodes, Graph } from "~/lib/graph"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
 
@@ -90,39 +90,11 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
 }
 
 async function buildCompanyAssetsTree<Node>(graph: Graph<Node>) {
-  type TreeNode<Node> = TGraphNode<Node> & {
-    children?: TreeNode<Node>[]
-  }
-
-  function findTreeRoots(graph: Graph<Node>) {
-    const roots = new Set(graph.getAllNodes().keys())
-
-    for (const edge of graph.getAllEdges().values()) {
-      for (const node of edge) {
-        roots.delete(node)
-      }
-    }
-
-    return roots
-  }
-
-  const roots = findTreeRoots(graph)
-
-  function buildSubtree(nodeId: TGraphNodeId, graph: Graph<Node>) {
-    const node = graph.getNode(nodeId) as TreeNode<Node>
-
-    if (graph.hasEdge(nodeId)) {
-      const edge = graph.getEdge(nodeId)
-
-      node.children = Array.from(edge!).map((nodeId) => buildSubtree(nodeId, graph))
-    }
-
-    return node
-  }
+  const rootNodes = findRootNodes(graph)
 
   const tree = []
 
-  for (const root of roots) {
+  for (const root of rootNodes) {
     const subTree = buildSubtree(root, graph)
 
     tree.push(subTree)
