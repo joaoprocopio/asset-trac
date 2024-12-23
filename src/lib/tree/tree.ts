@@ -1,4 +1,4 @@
-import type { Graph, TGraphNode, TGraphNodeId } from "./graph"
+import type { Graph, TGraphNode, TGraphNodeId } from "~/lib/graph"
 
 type TTreeNode<Node> = TGraphNode<Node> & {
   children?: TTreeNode<Node>[]
@@ -25,14 +25,6 @@ export function buildTree<Node>(nodeId: TGraphNodeId, graph: Graph<Node>) {
     const edge = graph.getEdge(nodeId)
 
     node.children = Array.from(edge!).map((nodeId) => buildTree(nodeId, graph))
-
-    for (const edgeNodeId in edge) {
-      if (!Array.isArray(node.children)) {
-        node.children = []
-      }
-
-      node.children.push(buildTree(edgeNodeId, graph))
-    }
   }
 
   return node

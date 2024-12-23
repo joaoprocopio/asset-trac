@@ -1,6 +1,7 @@
 import axios from "axios"
 
-import { buildTree, findRootNodes, Graph } from "~/lib/graph"
+import { Graph } from "~/lib/graph"
+import { buildTree, findRootNodes } from "~/lib/tree"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
 
