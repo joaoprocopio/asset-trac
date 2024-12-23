@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import type { TGraphNode } from "~/lib/graph"
+import type { TGraphNode, TGraphNodeId } from "~/lib/graph"
 import { Graph } from "~/lib/graph"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
@@ -104,7 +104,7 @@ async function buildCompanyAssetsTree<Node>(graph: Graph<Node>) {
 
   const tree = []
 
-  function buildSubtree(nodeId: string) {
+  function buildSubtree(nodeId: TGraphNodeId) {
     const node = graph.getNode(nodeId) as TreeNode<Node>
 
     if (graph.hasEdge(nodeId)) {
