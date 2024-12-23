@@ -3,6 +3,7 @@ import { useVirtualizer } from "@tanstack/react-virtual"
 import { useRef } from "react"
 import { useParams } from "react-router"
 
+import { Skeleton } from "~/components/skeleton"
 import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,

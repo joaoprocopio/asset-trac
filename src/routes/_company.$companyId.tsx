@@ -41,8 +41,8 @@ export default function CompanyAssetsPage() {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="grid flex-grow grid-cols-2 p-0">
-        <div className="grid grid-rows-[4rem_1fr] border-r">
+      <CardContent className="grid flex-grow grid-cols-2 overflow-hidden p-0">
+        <div className="grid grid-rows-[4rem_1fr] overflow-hidden border-r">
           <CompanyAssetsFilter className="flex items-center gap-6 border-b px-6" />
 
           <CompanyAssetsTree className="pl-6" />
