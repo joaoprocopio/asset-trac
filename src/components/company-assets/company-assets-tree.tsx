@@ -6,7 +6,7 @@ import { useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
+import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,
@@ -109,21 +109,21 @@ const renderIndent = (level) => {
 }
 
 const renderStartIcon = (node) => {
-  switch (true) {
-    case node.type === "location":
+  switch (node.type) {
+    case AssetType.Location:
       return (
         <div className="w-8">
           <MapPinIcon className="h-4 w-full" />
         </div>
       )
 
-    case node.type === "asset":
+    case AssetType.Asset:
       return (
         <div className="w-8">
           <BoxIcon className="h-4 w-full" />
         </div>
       )
-    case node.type === "component":
+    case AssetType.Component:
       return (
         <div className="w-8">
           <CodepenIcon className="h-4 w-full" />
@@ -135,22 +135,22 @@ const renderStartIcon = (node) => {
 }
 
 const renderEndIcon = (node) => {
-  const endIconClasses = {
+  const classes = {
     "fill-destructive text-destructive": node.status === AssetStatus.Alert,
     "fill-success text-success": node.status === AssetStatus.Operating,
   }
 
-  switch (true) {
-    case node.sensorType === AssetSensorType.Energy:
+  switch (node.sensorType) {
+    case AssetSensorType.Energy:
       return (
         <div className="w-8">
-          <ZapIcon className={cn("h-4 w-full", endIconClasses)} />
+          <ZapIcon className={cn("h-4 w-full", classes)} />
         </div>
       )
-    case node.sensorType === AssetSensorType.Vibration:
+    case AssetSensorType.Vibration:
       return (
         <div className="w-8">
-          <ZapIcon className={cn("h-4 w-full", endIconClasses)} />
+          <ZapIcon className={cn("h-4 w-full", classes)} />
         </div>
       )
     default:
