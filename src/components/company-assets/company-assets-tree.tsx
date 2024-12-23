@@ -81,7 +81,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                 className={cn("flex items-center", {
                   "mb-1": virtualRow.index < assetsFlatTree.data!.length,
                 })}>
-                {renderIndent(node.level)}
+                {renderIndent(node)}
 
                 <button
                   className={buttonVariants({
@@ -104,11 +104,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-const renderIndent = (level) => {
-  return array(level).map((_, index) => <div key={index} className="w-8" />)
+function renderIndent(node) {
+  return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-const renderStartIcon = (node) => {
+function renderStartIcon(node) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -116,7 +116,6 @@ const renderStartIcon = (node) => {
           <MapPinIcon className="h-4 w-full" />
         </div>
       )
-
     case AssetType.Asset:
       return (
         <div className="w-8">
@@ -134,7 +133,7 @@ const renderStartIcon = (node) => {
   }
 }
 
-const renderEndIcon = (node) => {
+function renderEndIcon(node) {
   const classes = {
     "fill-destructive text-destructive": node.status === AssetStatus.Alert,
     "fill-success text-success": node.status === AssetStatus.Operating,
@@ -150,7 +149,7 @@ const renderEndIcon = (node) => {
     case AssetSensorType.Vibration:
       return (
         <div className="w-8">
-          <ZapIcon className={cn("h-4 w-full", classes)} />
+          <InfoIcon className={cn("h-3 w-full", classes)} />
         </div>
       )
     default:

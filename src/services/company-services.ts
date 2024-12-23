@@ -1,5 +1,6 @@
 import axios from "axios"
 
+import { AssetType } from "~/constants/company-constants"
 import { Graph } from "~/lib/graph"
 import { buildFlatTree } from "~/lib/tree"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
@@ -37,8 +38,10 @@ async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
 }
 
 async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
-  type TLocationNode = TLocation & { type: "location" }
-  type TAssetNode = Omit<TAsset, "locationId"> & { type: "component" | "asset" }
+  type TLocationNode = TLocation & { type: (typeof AssetType)["Location"] }
+  type TAssetNode = Omit<TAsset, "locationId"> & {
+    type: (typeof AssetType)["Component"] | (typeof AssetType)["Asset"]
+  }
 
   const graph = new Graph<TLocationNode | TAssetNode>()
 
@@ -47,7 +50,7 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
     const parentId = location.parentId
 
     graph.addNode(nodeId, {
-      type: "location",
+      type: AssetType.Location,
       id: nodeId,
       name: location.name.toLowerCase(),
       parentId: parentId,
@@ -68,7 +71,7 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
     const parentId = asset.locationId || asset.parentId
 
     graph.addNode(nodeId, {
-      type: asset.sensorId ? "component" : "asset",
+      type: asset.sensorId ? AssetType.Component : AssetType.Asset,
       id: nodeId,
       name: asset.name.toLowerCase(),
       parentId: parentId,
