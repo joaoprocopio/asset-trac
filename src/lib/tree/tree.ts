@@ -9,10 +9,6 @@ export function findRootNodes<Node>(graph: Graph<Node>): Set<TGraphNodeId> {
   const roots: Set<TGraphNodeId> = new Set()
 
   for (const [nodeId, nodeAttributes] of nodes) {
-    if (roots.has(nodeId)) {
-      continue
-    }
-
     if (nodeAttributes && nodeAttributes.parentId == null) {
       roots.add(nodeId)
     }
