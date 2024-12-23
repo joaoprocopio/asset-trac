@@ -6,7 +6,14 @@ import { useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import { AssetIdKey, AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
+import {
+  AssetIdKey,
+  AssetNameKey,
+  AssetSensorType,
+  AssetStatus,
+  AssetStatusKey,
+  AssetType,
+} from "~/constants/company-constants"
 import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
 import {
@@ -30,6 +37,10 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
 
   const params = useParams()
 
+  const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
+  const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
+  const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
+
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
   const assetsGraph = useQuery({
@@ -48,18 +59,14 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     estimateSize: () => PADDED_NODE_HEIGHT,
   })
 
-  // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
-  // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
-  const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
-
-  const handleClick = (node: TFlatAssetNode) => {
-    if (selectedAssetId === node.id) {
+  const handleClick = (nodeId: string) => {
+    if (selectedAssetId === nodeId) {
       setSelectedAssetId(undefined)
 
       return undefined
     }
 
-    setSelectedAssetId(node.id)
+    setSelectedAssetId(nodeId)
   }
 
   if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
@@ -102,7 +109,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                     className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
                   })}
                   data-selected={node.id === selectedAssetId}
-                  onClick={() => handleClick(node)}>
+                  onClick={() => handleClick(node.id)}>
                   {renderStartIcon(node)}
 
                   <span className="first-letter:uppercase">{node.name}</span>
