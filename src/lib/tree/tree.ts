@@ -33,15 +33,15 @@ export function buildTree<Node>(
   if (graph.hasEdge(nodeId)) {
     const edge = graph.getEdge(nodeId)!
 
-    for (const childId of edge.values()) {
-      const childNode = graph.getNode(childId)
+    for (const edgeNodeId of edge.values()) {
+      const childNode = graph.getNode(edgeNodeId)
 
-      if (!visited.has(childId) && childNode?.parentId === nodeId) {
+      if (!visited.has(edgeNodeId) && childNode?.parentId === nodeId) {
         if (!node.children) {
           node.children = []
         }
 
-        node.children.push(buildTree(childId, graph, visited))
+        node.children.push(buildTree(edgeNodeId, graph, visited))
       }
     }
   }
