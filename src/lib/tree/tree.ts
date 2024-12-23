@@ -1,17 +1,20 @@
-import type { Graph, TGraphNode, TGraphNodeId } from "~/lib/graph"
+import type { Graph, TGraphNode, TGraphNodeId, TGraphNodeMap } from "~/lib/graph"
 
 type TTreeNode<Node> = TGraphNode<Node> & {
   children?: TTreeNode<Node>[]
 }
 
-export function findRootNodes<Node>(graph: Graph<Node>) {
-  const nodes = graph.getAllNodes()
-  const edges = graph.getAllEdges()
-  const roots = new Set(nodes.keys())
+export function findRootNodes<Node>(graph: Graph<Node>): Set<TGraphNodeId> {
+  const nodes: TGraphNodeMap<Node> = graph.getAllNodes()
+  const roots: Set<TGraphNodeId> = new Set()
 
-  for (const edge of edges.values()) {
-    for (const nodeId of edge) {
-      roots.delete(nodeId)
+  for (const [nodeId, nodeAttributes] of nodes) {
+    if (roots.has(nodeId)) {
+      continue
+    }
+
+    if (nodeAttributes && nodeAttributes.parentId == null) {
+      roots.add(nodeId)
     }
   }
 

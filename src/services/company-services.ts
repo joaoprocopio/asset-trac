@@ -59,7 +59,7 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
       }
 
       graph.addEdge(parentId, nodeId)
-      // graph.addEdge(nodeId, parentId)
+      graph.addEdge(nodeId, parentId)
     }
   }
 
@@ -84,7 +84,7 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
       }
 
       graph.addEdge(parentId, nodeId)
-      // graph.addEdge(nodeId, parentId)
+      graph.addEdge(nodeId, parentId)
     }
   }
 
@@ -92,11 +92,11 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
 }
 
 async function buildCompanyAssetsTree<Node>(graph: Graph<Node>) {
-  const rootNodes = findRootNodes(graph)
+  const roots = findRootNodes(graph)
 
   const tree = []
 
-  for (const root of rootNodes) {
+  for (const root of roots) {
     const subTree = buildTree(root, graph)
 
     tree.push(subTree)
