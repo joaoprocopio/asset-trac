@@ -8,7 +8,7 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
   const flatTree: TFlatNode<Node>[] = []
   const visited = new Set<TGraphNodeId>()
 
-  function traverse(nodeId: TGraphNodeId, level: number): void {
+  function traverse(nodeId: TGraphNodeId, level: number = 0): void {
     if (visited.has(nodeId)) {
       return undefined
     }
@@ -32,7 +32,7 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
   }
 
   for (const root of graph.getAllRoots()) {
-    traverse(root, 0)
+    traverse(root)
   }
 
   return flatTree
