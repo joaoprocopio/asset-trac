@@ -1,5 +1,6 @@
 import axios from "axios"
 
+import type { TGraphNode } from "~/lib/graph"
 import { Graph } from "~/lib/graph"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
@@ -88,7 +89,11 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   return graph
 }
 
-async function buildCompanyAssetsTree<N>(graph: Graph<N>) {
+async function buildCompanyAssetsTree<Node>(graph: Graph<Node>) {
+  type TreeNode<Node> = TGraphNode<Node> & {
+    children?: TreeNode<Node>[]
+  }
+
   const roots = new Set(graph.getAllNodes().keys())
 
   for (const edge of graph.getAllEdges().values()) {
@@ -100,11 +105,12 @@ async function buildCompanyAssetsTree<N>(graph: Graph<N>) {
   const tree = []
 
   function buildSubtree(nodeId: string) {
-    const node = graph.getNode(nodeId)
+    const node = graph.getNode(nodeId) as TreeNode<Node>
 
     if (graph.hasEdge(nodeId)) {
       const edge = graph.getEdge(nodeId)
-      node!.children = Array.from(edge).map(buildSubtree)
+
+      node.children = Array.from(edge!).map(buildSubtree)
     }
 
     return node
