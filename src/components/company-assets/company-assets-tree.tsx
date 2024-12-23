@@ -135,6 +135,10 @@ function renderStartIcon(node: TAssetFlatNode) {
 }
 
 function renderEndIcon(node: TAssetFlatNode) {
+  if (!(node.type === "asset" || node.type === "component")) {
+    return undefined
+  }
+
   const classes = {
     "fill-destructive text-destructive": node.status === AssetStatus.Alert,
     "fill-success text-success": node.status === AssetStatus.Operating,
