@@ -79,12 +79,9 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
               }}>
               <div
                 className={cn("flex items-center", {
-                  "mb-1": virtualRow.index < assetsFlatTree.data.length,
+                  "mb-1": virtualRow.index < assetsFlatTree.data!.length,
                 })}>
-                {/* Indent */}
-                {array(node.level).map((_, index) => (
-                  <div key={index} className="w-8" />
-                ))}
+                {renderIndent(node.level)}
 
                 <button
                   className={buttonVariants({
@@ -92,26 +89,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                     size: "sm",
                     className: "px-0 pr-2.5 font-normal",
                   })}>
-                  {node.type === "location" && (
-                    <div className="w-8">
-                      <MapPinIcon className="h-4 w-full" />
-                    </div>
-                  )}
-                  {node.type === "asset" && (
-                    <div className="w-8">
-                      <BoxIcon className="h-4 w-full" />
-                    </div>
-                  )}
-                  {node.type === "component" && (
-                    <div className="w-8">
-                      <CodepenIcon className="h-4 w-full" />
-                    </div>
-                  )}
+                  {renderStartIcon(node)}
 
                   <span className="first-letter:uppercase">{node.name}</span>
                 </button>
 
-                {/* End icon */}
                 {renderEndIcon(node)}
               </div>
             </div>
@@ -122,8 +104,38 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
+const renderIndent = (level) => {
+  return array(level).map((_, index) => <div key={index} className="w-8" />)
+}
+
+const renderStartIcon = (node) => {
+  switch (true) {
+    case node.type === "location":
+      return (
+        <div className="w-8">
+          <MapPinIcon className="h-4 w-full" />
+        </div>
+      )
+
+    case node.type === "asset":
+      return (
+        <div className="w-8">
+          <BoxIcon className="h-4 w-full" />
+        </div>
+      )
+    case node.type === "component":
+      return (
+        <div className="w-8">
+          <CodepenIcon className="h-4 w-full" />
+        </div>
+      )
+    default:
+      return undefined
+  }
+}
+
 const renderEndIcon = (node) => {
-  const classes = {
+  const endIconClasses = {
     "fill-destructive text-destructive": node.status === AssetStatus.Alert,
     "fill-success text-success": node.status === AssetStatus.Operating,
   }
@@ -132,13 +144,13 @@ const renderEndIcon = (node) => {
     case node.sensorType === AssetSensorType.Energy:
       return (
         <div className="w-8">
-          <ZapIcon className={cn("h-4 w-full", classes)} />
+          <ZapIcon className={cn("h-4 w-full", endIconClasses)} />
         </div>
       )
     case node.sensorType === AssetSensorType.Vibration:
       return (
         <div className="w-8">
-          <ZapIcon className={cn("h-4 w-full", classes)} />
+          <ZapIcon className={cn("h-4 w-full", endIconClasses)} />
         </div>
       )
     default:
