@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
 import {
+  assetsFlatTreeOptions,
   assetsGraphOptions,
   assetsOptions,
-  assetsTreeOptions,
   locationsOptions,
 } from "~/lib/query/query-options"
 
@@ -17,8 +17,8 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
     enabled: locations.isSuccess && assets.isSuccess,
   })
-  const assetsTree = useQuery({
-    ...assetsTreeOptions(params.companyId!, assetsGraph.data!),
+  const assetsFlatTree = useQuery({
+    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!),
     enabled: assetsGraph.isSuccess,
   })
 
@@ -26,5 +26,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
   // const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
-  return <pre {...props}>{assetsTree.isSuccess && JSON.stringify(assetsTree.data, null, 2)}</pre>
+  return (
+    <pre {...props}>{assetsFlatTree.isSuccess && JSON.stringify(assetsFlatTree.data, null, 2)}</pre>
+  )
 }

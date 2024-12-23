@@ -1,7 +1,7 @@
 import type { Graph, TGraphNode, TGraphNodeId, TGraphNodeMap } from "~/lib/graph"
 
-export type TTreeNode<Node> = TGraphNode<Node> & {
-  children?: TTreeNode<Node>[]
+export type TFlatNode<Node> = TGraphNode<Node> & {
+  level: number
 }
 
 export function findRootNodes<Node>(graph: Graph<Node>): Set<TGraphNodeId> {
@@ -21,30 +21,37 @@ export function findRootNodes<Node>(graph: Graph<Node>): Set<TGraphNodeId> {
   return roots
 }
 
-export function buildTree<Node>(
-  nodeId: TGraphNodeId,
-  graph: Graph<Node>,
-  visited: Set<TGraphNodeId> = new Set()
-) {
-  visited.add(nodeId)
+export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
+  const flatTree: TFlatNode<Node>[] = []
+  const visited = new Set<TGraphNodeId>()
 
-  const node: TTreeNode<Node> = graph.getNode(nodeId) as TTreeNode<Node>
+  function traverse(nodeId: TGraphNodeId, level: number): void {
+    if (visited.has(nodeId)) return
+    visited.add(nodeId)
 
-  if (graph.hasEdge(nodeId)) {
-    const edge = graph.getEdge(nodeId)!
+    const node = graph.getNode(nodeId)
+    if (!node) return
 
-    for (const edgeNodeId of edge.values()) {
-      const childNode = graph.getNode(edgeNodeId)
+    flatTree.push({ ...node, level })
 
-      if (!visited.has(edgeNodeId) && childNode?.parentId === nodeId) {
-        if (!node.children) {
-          node.children = []
+    if (graph.hasEdge(nodeId)) {
+      const edge = graph.getEdge(nodeId)!
+      const edgeIterator = edge.values()
+
+      for (const childId of edgeIterator) {
+        const childNode = graph.getNode(childId)
+        if (!visited.has(childId) && childNode?.parentId === nodeId) {
+          traverse(childId, level + 1)
         }
-
-        node.children.push(buildTree(edgeNodeId, graph, visited))
       }
     }
   }
 
-  return node
+  const rootNodes = findRootNodes(graph)
+
+  for (const root of rootNodes) {
+    traverse(root, 0)
+  }
+
+  return flatTree
 }

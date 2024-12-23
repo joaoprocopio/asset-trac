@@ -1,7 +1,7 @@
 import axios from "axios"
 
 import { Graph } from "~/lib/graph"
-import { buildTree, findRootNodes } from "~/lib/tree"
+import { buildFlatTree } from "~/lib/tree"
 import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
 
@@ -91,18 +91,10 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   return graph
 }
 
-async function buildCompanyAssetsTree<Node>(graph: Graph<Node>) {
-  const roots = findRootNodes(graph)
+async function buildCompanyAssetsFlatTree<Node>(graph: Graph<Node>) {
+  const flatTree = buildFlatTree(graph)
 
-  const tree = []
-
-  for (const root of roots) {
-    const subTree = buildTree(root, graph)
-
-    tree.push(subTree)
-  }
-
-  return tree
+  return flatTree
 }
 
 export const CompanyServices = {
@@ -110,5 +102,5 @@ export const CompanyServices = {
   getCompanyLocations,
   getCompanyAssets,
   buildCompanyAssetsGraph,
-  buildCompanyAssetsTree,
+  buildCompanyAssetsFlatTree,
 }
