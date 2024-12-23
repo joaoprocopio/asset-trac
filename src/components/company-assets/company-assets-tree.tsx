@@ -22,8 +22,6 @@ const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
-type TAssetFlatNode = TFlatNode<TLocationNode | TAssetNode>
-
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
@@ -105,11 +103,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-function renderIndent(node: TAssetFlatNode) {
+function renderIndent(node: TFlatNode<TLocationNode | TAssetNode>) {
   return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-function renderStartIcon(node: TAssetFlatNode) {
+function renderStartIcon(node: TFlatNode<TLocationNode | TAssetNode>) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -134,7 +132,7 @@ function renderStartIcon(node: TAssetFlatNode) {
   }
 }
 
-function renderEndIcon(node: TAssetFlatNode) {
+function renderEndIcon(node: TFlatNode<TLocationNode | TAssetNode>) {
   if (!(node.type === AssetType.Asset || node.type === AssetType.Component)) {
     return undefined
   }
