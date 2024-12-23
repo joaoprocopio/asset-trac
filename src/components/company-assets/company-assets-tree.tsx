@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import { useVirtualizer } from "@tanstack/react-virtual"
+import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
 import { useRef } from "react"
 import { useParams } from "react-router"
 
+import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
+import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
+import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,
   assetsGraphOptions,
@@ -46,7 +50,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     return (
       <div {...props}>
         <div className="space-y-px pr-6">
-          {array(15).map((_, index) => (
+          {array(10).map((_, index) => (
             <Skeleton key={index} className="w-full" style={{ height: NODE_HEIGHT }} />
           ))}
         </div>
@@ -63,7 +67,12 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
         }}>
         {assetsFlatTree.isSuccess &&
           rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const node = assetsFlatTree.data![virtualRow.index]
+            const data = assetsFlatTree.data![virtualRow.index]
+
+            const classes = {
+              "fill-destructive text-destructive": data.status === AssetStatus.Alert,
+              "fill-success text-success": data.status === AssetStatus.Operating,
+            }
 
             return (
               <div
@@ -73,7 +82,55 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                   height: virtualRow.size,
                   transform: `translateY(${virtualRow.start}px)`,
                 }}>
-                {node.name}
+                <div
+                  className={cn("flex items-center", {
+                    "mb-1": virtualRow.index < assetsFlatTree.data.length,
+                  })}>
+                  {/* Indent */}
+                  {array(data.level).map((_, index) => (
+                    <div key={index} className="w-8" />
+                  ))}
+
+                  <button
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
+                    })}
+                    // data-selected={data.id === selectedAssetId}
+                    // onClick={() => handleSelect(data.id)}
+                  >
+                    {data.type === "location" && (
+                      <div className="w-8">
+                        <MapPinIcon className="h-4 w-full" />
+                      </div>
+                    )}
+                    {data.type === "asset" && (
+                      <div className="w-8">
+                        <BoxIcon className="h-4 w-full" />
+                      </div>
+                    )}
+                    {data.type === "component" && (
+                      <div className="w-8">
+                        <CodepenIcon className="h-4 w-full" />
+                      </div>
+                    )}
+
+                    <span className="first-letter:uppercase">{data.name}</span>
+                  </button>
+
+                  {/* End icon */}
+                  {data.sensorType === AssetSensorType.Energy && (
+                    <div className="w-8">
+                      <ZapIcon className={cn("h-4 w-full", classes)} />
+                    </div>
+                  )}
+                  {data.sensorType === AssetSensorType.Vibration && (
+                    <div className="w-8">
+                      <InfoIcon className={cn("h-3 w-full", classes)} />
+                    </div>
+                  )}
+                </div>
               </div>
             )
           })}
