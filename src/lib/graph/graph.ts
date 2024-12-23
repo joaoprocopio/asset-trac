@@ -1,31 +1,32 @@
-export type GraphNode<N> = {
-  id: string
-  name: string
-  parentId: string | null
-} & N
+export type TGraphNodeId = string
+export type TGraphNodeParentId = string | null
 
-export interface GraphLike<N> {
-  getAllNodes(): Map<string, GraphNode<N> | undefined>
-}
+export type TGraphNode<Node> = {
+  id: TGraphNodeId
+  parentId: TGraphNodeParentId
+} & Node
 
-export class Graph<N> {
-  #nodes = new Map<string, GraphNode<N> | undefined>()
-  #edges = new Map<string, Set<string>>()
+export type TGraphNodeMap<Node> = Map<TGraphNodeId, TGraphNode<Node> | undefined>
+export type TGraphEdgeMap = Map<TGraphNodeId, Set<TGraphNodeId>>
 
-  getAllNodes() {
+export class Graph<Node> {
+  #nodes: TGraphNodeMap<Node> = new Map()
+  #edges: TGraphEdgeMap = new Map()
+
+  getAllNodes(): TGraphNodeMap<Node> {
     return structuredClone(this.#nodes)
   }
 
-  getAllEdges() {
+  getAllEdges(): TGraphEdgeMap {
     return structuredClone(this.#edges)
   }
 
-  addNode(id: string, attributes?: GraphNode<N>): void {
-    this.#nodes.set(id, attributes)
+  addNode(nodeId: TGraphNodeId, nodeAttributes?: TGraphNode<Node>): void {
+    this.#nodes.set(nodeId, nodeAttributes)
   }
 
-  getNode(id: string): GraphNode<N> | undefined {
-    const node = this.#nodes.get(id)
+  getNode(nodeId: TGraphNodeId): TGraphNode<Node> | undefined {
+    const node = this.#nodes.get(nodeId)
 
     if (!node) {
       return undefined
@@ -34,20 +35,20 @@ export class Graph<N> {
     return structuredClone(node)
   }
 
-  hasNode(id: string): boolean {
-    return this.#nodes.has(id)
+  hasNode(nodeId: TGraphNodeId): boolean {
+    return this.#nodes.has(nodeId)
   }
 
-  addEdge(parentId: string, childId: string): void {
-    if (!this.#edges.has(parentId)) {
-      this.#edges.set(parentId, new Set())
+  addEdge(edgeId: TGraphNodeId, nodeId: TGraphNodeId): void {
+    if (!this.#edges.has(edgeId)) {
+      this.#edges.set(edgeId, new Set())
     }
 
-    this.#edges.get(parentId)!.add(childId)
+    this.#edges.get(edgeId)!.add(nodeId)
   }
 
-  getEdge(id: string): Set<string> | undefined {
-    const edge = this.#edges.get(id)
+  getEdge(edgeId: TGraphNodeId): Set<TGraphNodeId> | undefined {
+    const edge = this.#edges.get(edgeId)
 
     if (!edge) {
       return undefined
@@ -56,7 +57,7 @@ export class Graph<N> {
     return structuredClone(edge)
   }
 
-  hasEdge(id: string): boolean {
-    return this.#edges.has(id)
+  hasEdge(edgeId: string): boolean {
+    return this.#edges.has(edgeId)
   }
 }
