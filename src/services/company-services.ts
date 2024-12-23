@@ -94,30 +94,36 @@ async function buildCompanyAssetsTree<Node>(graph: Graph<Node>) {
     children?: TreeNode<Node>[]
   }
 
-  const roots = new Set(graph.getAllNodes().keys())
+  function findTreeRoots(graph: Graph<Node>) {
+    const roots = new Set(graph.getAllNodes().keys())
 
-  for (const edge of graph.getAllEdges().values()) {
-    for (const node of edge) {
-      roots.delete(node)
+    for (const edge of graph.getAllEdges().values()) {
+      for (const node of edge) {
+        roots.delete(node)
+      }
     }
+
+    return roots
   }
 
-  const tree = []
+  const roots = findTreeRoots(graph)
 
-  function buildSubtree(nodeId: TGraphNodeId) {
+  function buildSubtree(nodeId: TGraphNodeId, graph: Graph<Node>) {
     const node = graph.getNode(nodeId) as TreeNode<Node>
 
     if (graph.hasEdge(nodeId)) {
       const edge = graph.getEdge(nodeId)
 
-      node.children = Array.from(edge!).map(buildSubtree)
+      node.children = Array.from(edge!).map((nodeId) => buildSubtree(nodeId, graph))
     }
 
     return node
   }
 
+  const tree = []
+
   for (const root of roots) {
-    const subTree = buildSubtree(root)
+    const subTree = buildSubtree(root, graph)
 
     tree.push(subTree)
   }
