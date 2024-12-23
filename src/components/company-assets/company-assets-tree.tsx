@@ -16,7 +16,9 @@ import {
 } from "~/lib/query/query-options"
 import { array } from "~/lib/utils"
 
-const NODE_HEIGHT = 32 as const
+const NODE_PADDING = 4
+const NODE_HEIGHT = 32
+const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
@@ -39,7 +41,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     count: assetsFlatTree.data?.length as number,
     overscan: 5,
     getScrollElement: () => scrollableRef.current,
-    estimateSize: () => NODE_HEIGHT,
+    estimateSize: () => PADDED_NODE_HEIGHT,
   })
 
   // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
@@ -61,7 +63,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div ref={scrollableRef} {...props}>
       <div
-        className="relative h-full"
+        className="relative my-2 h-full"
         style={{
           height: rowVirtualizer.getTotalSize(),
         }}>
@@ -95,11 +97,8 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                     className={buttonVariants({
                       variant: "ghost",
                       size: "sm",
-                      className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
-                    })}
-                    // data-selected={data.id === selectedAssetId}
-                    // onClick={() => handleSelect(data.id)}
-                  >
+                      className: "px-0 pr-2.5 font-normal",
+                    })}>
                     {data.type === "location" && (
                       <div className="w-8">
                         <MapPinIcon className="h-4 w-full" />
