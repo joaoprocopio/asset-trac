@@ -58,6 +58,8 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
 
       graph.addEdge(parentId, nodeId)
       graph.addEdge(nodeId, parentId)
+    } else {
+      graph.addRoot(nodeId)
     }
   }
 
@@ -83,6 +85,8 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
 
       graph.addEdge(parentId, nodeId)
       graph.addEdge(nodeId, parentId)
+    } else {
+      graph.addRoot(nodeId)
     }
   }
 

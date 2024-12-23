@@ -1,20 +1,7 @@
-import type { Graph, TGraphNode, TGraphNodeId, TGraphNodeMap } from "~/lib/graph"
+import type { Graph, TGraphNode, TGraphNodeId } from "~/lib/graph"
 
 export type TFlatNode<Node> = TGraphNode<Node> & {
   level: number
-}
-
-export function findRootNodes<Node>(graph: Graph<Node>): Set<TGraphNodeId> {
-  const nodes: TGraphNodeMap<Node> = graph.getAllNodes()
-  const roots: Set<TGraphNodeId> = new Set()
-
-  for (const [nodeId, nodeAttributes] of nodes) {
-    if (nodeAttributes && nodeAttributes.parentId == null) {
-      roots.add(nodeId)
-    }
-  }
-
-  return roots
 }
 
 export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
@@ -44,9 +31,7 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
     }
   }
 
-  const rootNodes = findRootNodes(graph)
-
-  for (const root of rootNodes) {
+  for (const root of graph.getAllRoots()) {
     traverse(root, 0)
   }
 

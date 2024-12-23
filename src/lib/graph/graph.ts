@@ -8,10 +8,16 @@ export type TGraphNode<Node> = {
 
 export type TGraphNodeMap<Node> = Map<TGraphNodeId, TGraphNode<Node> | undefined>
 export type TGraphEdgeMap = Map<TGraphNodeId, Set<TGraphNodeId>>
+export type TGraphRootSet = Set<TGraphNodeId>
 
 export class Graph<Node> {
   #nodes: TGraphNodeMap<Node> = new Map()
   #edges: TGraphEdgeMap = new Map()
+  #roots: TGraphRootSet = new Set()
+
+  getAllRoots(): TGraphRootSet {
+    return structuredClone(this.#roots)
+  }
 
   getAllNodes(): TGraphNodeMap<Node> {
     return structuredClone(this.#nodes)
@@ -19,6 +25,10 @@ export class Graph<Node> {
 
   getAllEdges(): TGraphEdgeMap {
     return structuredClone(this.#edges)
+  }
+
+  addRoot(nodeId: TGraphNodeId): void {
+    this.#roots.add(nodeId)
   }
 
   addNode(nodeId: TGraphNodeId, nodeAttributes?: TGraphNode<Node>): void {
