@@ -77,10 +77,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                 height: virtualRow.size,
                 transform: `translateY(${virtualRow.start}px)`,
               }}>
-              <div
-                className={cn("flex items-center", {
-                  "mb-1": virtualRow.index < assetsFlatTree.data!.length,
-                })}>
+              <div className="flex items-center">
                 {renderIndent(node)}
 
                 <button
