@@ -67,12 +67,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
           height: rowVirtualizer.getTotalSize(),
         }}>
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const data = assetsFlatTree.data![virtualRow.index]
-
-          const classes = {
-            "fill-destructive text-destructive": data.status === AssetStatus.Alert,
-            "fill-success text-success": data.status === AssetStatus.Operating,
-          }
+          const node = assetsFlatTree.data![virtualRow.index]
 
           return (
             <div
@@ -87,7 +82,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                   "mb-1": virtualRow.index < assetsFlatTree.data.length,
                 })}>
                 {/* Indent */}
-                {array(data.level).map((_, index) => (
+                {array(node.level).map((_, index) => (
                   <div key={index} className="w-8" />
                 ))}
 
@@ -97,36 +92,27 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                     size: "sm",
                     className: "px-0 pr-2.5 font-normal",
                   })}>
-                  {data.type === "location" && (
+                  {node.type === "location" && (
                     <div className="w-8">
                       <MapPinIcon className="h-4 w-full" />
                     </div>
                   )}
-                  {data.type === "asset" && (
+                  {node.type === "asset" && (
                     <div className="w-8">
                       <BoxIcon className="h-4 w-full" />
                     </div>
                   )}
-                  {data.type === "component" && (
+                  {node.type === "component" && (
                     <div className="w-8">
                       <CodepenIcon className="h-4 w-full" />
                     </div>
                   )}
 
-                  <span className="first-letter:uppercase">{data.name}</span>
+                  <span className="first-letter:uppercase">{node.name}</span>
                 </button>
 
                 {/* End icon */}
-                {data.sensorType === AssetSensorType.Energy && (
-                  <div className="w-8">
-                    <ZapIcon className={cn("h-4 w-full", classes)} />
-                  </div>
-                )}
-                {data.sensorType === AssetSensorType.Vibration && (
-                  <div className="w-8">
-                    <InfoIcon className={cn("h-3 w-full", classes)} />
-                  </div>
-                )}
+                {renderEndIcon(node)}
               </div>
             </div>
           )
@@ -134,4 +120,28 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
       </div>
     </div>
   )
+}
+
+const renderEndIcon = (node) => {
+  const classes = {
+    "fill-destructive text-destructive": node.status === AssetStatus.Alert,
+    "fill-success text-success": node.status === AssetStatus.Operating,
+  }
+
+  switch (true) {
+    case node.sensorType === AssetSensorType.Energy:
+      return (
+        <div className="w-8">
+          <ZapIcon className={cn("h-4 w-full", classes)} />
+        </div>
+      )
+    case node.sensorType === AssetSensorType.Vibration:
+      return (
+        <div className="w-8">
+          <ZapIcon className={cn("h-4 w-full", classes)} />
+        </div>
+      )
+    default:
+      return undefined
+  }
 }
