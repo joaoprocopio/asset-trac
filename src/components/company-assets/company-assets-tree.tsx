@@ -135,7 +135,7 @@ function renderStartIcon(node: TAssetFlatNode) {
 }
 
 function renderEndIcon(node: TAssetFlatNode) {
-  if (!(node.type === "asset" || node.type === "component")) {
+  if (!(node.type === AssetType.Asset || node.type === AssetType.Component)) {
     return undefined
   }
 
