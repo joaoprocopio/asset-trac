@@ -30,8 +30,8 @@ export function CompanyAssetsTree({ className }: React.HTMLAttributes<HTMLDivEle
   const rowVirtualizer = useVirtualizer({
     enabled: assetsFlatTree.isSuccess,
     count: assetsFlatTree.data?.length as number,
-    getScrollElement: () => scrollableRef.current,
     overscan: 5,
+    getScrollElement: () => scrollableRef.current,
     estimateSize: () => 24,
   })
 
@@ -40,9 +40,9 @@ export function CompanyAssetsTree({ className }: React.HTMLAttributes<HTMLDivEle
   // const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
   return (
-    <div ref={scrollableRef} className={cn("max-h-96 overflow-y-scroll", className)}>
+    <div ref={scrollableRef} className={cn("overflow-y-scroll", className)}>
       <div
-        className="relative h-full bg-blue-500"
+        className="relative h-full"
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
         }}>
