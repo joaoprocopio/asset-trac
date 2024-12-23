@@ -35,7 +35,7 @@ export const assetsGraphOptions = (companyId: string, locations: TLocations, ass
     queryFn: () => CompanyServices.buildCompanyAssetsGraph(locations, assets),
   })
 
-export const assetsTreeOptions = <N>(companyId: string, graph: Graph<N>) =>
+export const assetsTreeOptions = <Node>(companyId: string, graph: Graph<Node>) =>
   queryOptions({
     queryKey: ["company-assets-tree", companyId],
     queryFn: () => CompanyServices.buildCompanyAssetsTree(graph),
