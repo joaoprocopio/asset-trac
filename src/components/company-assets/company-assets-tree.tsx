@@ -6,14 +6,7 @@ import { useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import {
-  AssetIdKey,
-  AssetNameKey,
-  AssetSensorType,
-  AssetStatus,
-  AssetStatusKey,
-  AssetType,
-} from "~/constants/company-constants"
+import { AssetIdKey, AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
 import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
 import {
@@ -37,8 +30,8 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
 
   const params = useParams()
 
-  const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
-  const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
+  // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
+  // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
   const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
   const locations = useQuery(locationsOptions(params.companyId!))

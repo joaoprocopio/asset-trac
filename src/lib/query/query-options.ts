@@ -7,7 +7,7 @@ import { CompanyServices } from "~/services/company-services"
 export const companiesOptions = () =>
   queryOptions({
     queryKey: ["companies"],
-    queryFn: (args) => CompanyServices.getCompanies(args.signal),
+    queryFn: async (args) => CompanyServices.getCompanies(args.signal),
   })
 
 export const selectedCompanyOptions = (companyId: string) =>
@@ -20,23 +20,29 @@ export const selectedCompanyOptions = (companyId: string) =>
 export const locationsOptions = (companyId: string) =>
   queryOptions({
     queryKey: ["company-locations", companyId],
-    queryFn: (args) => CompanyServices.getCompanyLocations(companyId, args.signal),
+    queryFn: async (args) => CompanyServices.getCompanyLocations(companyId, args.signal),
   })
 
 export const assetsOptions = (companyId: string) =>
   queryOptions({
     queryKey: ["company-assets", companyId],
-    queryFn: (args) => CompanyServices.getCompanyAssets(companyId, args.signal),
+    queryFn: async (args) => CompanyServices.getCompanyAssets(companyId, args.signal),
   })
 
 export const assetsGraphOptions = (companyId: string, locations: TLocations, assets: TAssets) =>
   queryOptions({
     queryKey: ["company-assets-graph", companyId],
-    queryFn: () => CompanyServices.buildCompanyAssetsGraph(locations, assets),
+    queryFn: async () => CompanyServices.buildCompanyAssetsGraph(locations, assets),
   })
 
 export const assetsFlatTreeOptions = <Node>(companyId: string, graph: Graph<Node>) =>
   queryOptions({
     queryKey: ["company-assets-flat-tree", companyId],
-    queryFn: () => CompanyServices.buildCompanyAssetsFlatTree(graph),
+    queryFn: async () => CompanyServices.buildCompanyAssetsFlatTree(graph),
+  })
+
+export const selectedAssetOptions = <Node>(assetId: string, graph: Graph<Node>) =>
+  queryOptions({
+    queryKey: ["asset", assetId],
+    queryFn: async () => graph.getNode(assetId),
   })
