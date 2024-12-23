@@ -42,28 +42,32 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   const graph = new Graph<TLocationNode | TAssetNode>()
 
   for (const location of locations) {
-    graph.addNode(location.id, {
+    const nodeId = location.id
+    const parentId = location.parentId
+
+    graph.addNode(nodeId, {
       type: "location",
-      id: location.id,
+      id: nodeId,
       name: location.name.toLowerCase(),
-      parentId: location.parentId,
+      parentId: parentId,
     })
 
-    if (location.parentId) {
-      if (!graph.hasNode(location.parentId)) {
-        graph.addNode(location.parentId)
+    if (parentId) {
+      if (!graph.hasNode(parentId)) {
+        graph.addNode(parentId)
       }
 
-      graph.addEdge(location.parentId, location.id)
+      graph.addEdge(parentId, nodeId)
     }
   }
 
   for (const asset of assets) {
+    const nodeId = asset.id
     const parentId = asset.locationId || asset.parentId
 
-    graph.addNode(asset.id, {
+    graph.addNode(nodeId, {
       type: asset.sensorId ? "component" : "asset",
-      id: asset.id,
+      id: nodeId,
       name: asset.name.toLowerCase(),
       parentId: parentId,
       sensorType: asset.sensorType,
@@ -77,7 +81,7 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
         graph.addNode(parentId)
       }
 
-      graph.addEdge(parentId, asset.id)
+      graph.addEdge(parentId, nodeId)
     }
   }
 
