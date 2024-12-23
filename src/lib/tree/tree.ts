@@ -33,13 +33,12 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
 
     if (graph.hasEdge(nodeId)) {
       const edge = graph.getEdge(nodeId)!
-      const edgeIterator = edge.values()
 
-      for (const childId of edgeIterator) {
-        const childNode = graph.getNode(childId)
+      for (const edgeNodeId of edge.values()) {
+        const edgeNode = graph.getNode(edgeNodeId)
 
-        if (!visited.has(childId) && childNode?.parentId === nodeId) {
-          traverse(childId, level + 1)
+        if (!visited.has(edgeNodeId) && edgeNode?.parentId === nodeId) {
+          traverse(edgeNodeId, level + 1)
         }
       }
     }
