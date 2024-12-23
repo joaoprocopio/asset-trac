@@ -6,7 +6,8 @@ import { useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
+import { AssetIdKey, AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
+import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,
@@ -21,6 +22,8 @@ import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
+
+type TFlatAssetNode = TFlatNode<TLocationNode | TAssetNode>
 
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
@@ -47,7 +50,17 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
 
   // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
-  // const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
+  const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
+
+  const handleClick = (node: TFlatAssetNode) => {
+    if (selectedAssetId === node.id) {
+      setSelectedAssetId(undefined)
+
+      return undefined
+    }
+
+    setSelectedAssetId(node.id)
+  }
 
   if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
     return (
@@ -86,8 +99,10 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                   className={buttonVariants({
                     variant: "ghost",
                     size: "sm",
-                    className: "px-0 pr-2.5 font-normal",
-                  })}>
+                    className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
+                  })}
+                  data-selected={node.id === selectedAssetId}
+                  onClick={() => handleClick(node)}>
                   {renderStartIcon(node)}
 
                   <span className="first-letter:uppercase">{node.name}</span>
@@ -103,11 +118,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-function renderIndent(node: TFlatNode<TLocationNode | TAssetNode>) {
+function renderIndent(node: TFlatAssetNode) {
   return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-function renderStartIcon(node: TFlatNode<TLocationNode | TAssetNode>) {
+function renderStartIcon(node: TFlatAssetNode) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -132,7 +147,7 @@ function renderStartIcon(node: TFlatNode<TLocationNode | TAssetNode>) {
   }
 }
 
-function renderEndIcon(node: TFlatNode<TLocationNode | TAssetNode>) {
+function renderEndIcon(node: TFlatAssetNode) {
   if (!(node.type === AssetType.Asset || node.type === AssetType.Component)) {
     return undefined
   }
