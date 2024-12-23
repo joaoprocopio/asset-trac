@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
+import { useVirtualizer } from "@tanstack/react-virtual"
+import { useRef } from "react"
 import { useParams } from "react-router"
 
+import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,
   assetsGraphOptions,
@@ -8,7 +11,9 @@ import {
   locationsOptions,
 } from "~/lib/query/query-options"
 
-export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
+export function CompanyAssetsTree({ className }: React.HTMLAttributes<HTMLDivElement>) {
+  const scrollableRef = useRef<HTMLDivElement>(null)
+
   const params = useParams()
 
   const locations = useQuery(locationsOptions(params.companyId!))
@@ -22,11 +27,41 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     enabled: assetsGraph.isSuccess,
   })
 
+  const rowVirtualizer = useVirtualizer({
+    enabled: assetsFlatTree.isSuccess,
+    count: assetsFlatTree.data?.length as number,
+    getScrollElement: () => scrollableRef.current,
+    overscan: 5,
+    estimateSize: () => 24,
+  })
+
   // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
   // const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
   return (
-    <pre {...props}>{assetsFlatTree.isSuccess && JSON.stringify(assetsFlatTree.data, null, 2)}</pre>
+    <div ref={scrollableRef} className={cn("max-h-96 overflow-y-scroll", className)}>
+      <div
+        className="relative h-full bg-blue-500"
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+        }}>
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+          const node = assetsFlatTree.data![virtualRow.index]
+
+          return (
+            <div
+              key={virtualRow.index}
+              className="absolute left-0 top-0 w-full"
+              style={{
+                height: `${virtualRow.size}px`,
+                transform: `translateY(${virtualRow.start}px)`,
+              }}>
+              {node.name}
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
