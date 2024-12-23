@@ -14,11 +14,15 @@ import {
   assetsOptions,
   locationsOptions,
 } from "~/lib/query/query-options"
+import type { TFlatNode } from "~/lib/tree"
 import { array } from "~/lib/utils"
+import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
+
+type TAssetFlatNode = TFlatNode<TLocationNode | TAssetNode>
 
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
@@ -101,11 +105,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-function renderIndent(node) {
+function renderIndent(node: TAssetFlatNode) {
   return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-function renderStartIcon(node) {
+function renderStartIcon(node: TAssetFlatNode) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -130,7 +134,7 @@ function renderStartIcon(node) {
   }
 }
 
-function renderEndIcon(node) {
+function renderEndIcon(node: TAssetFlatNode) {
   const classes = {
     "fill-destructive text-destructive": node.status === AssetStatus.Alert,
     "fill-success text-success": node.status === AssetStatus.Operating,

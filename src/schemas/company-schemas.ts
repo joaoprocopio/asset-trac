@@ -1,6 +1,13 @@
 import { z } from "zod"
 
-import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
+import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
+
+export type TLocationNode = TLocation & {
+  type: (typeof AssetType)["Location"]
+}
+export type TAssetNode = Omit<TAsset, "locationId"> & {
+  type: (typeof AssetType)["Component"] | (typeof AssetType)["Asset"]
+}
 
 export type TCompany = z.infer<typeof CompanySchema>
 export type TCompanies = z.infer<typeof CompaniesSchema>

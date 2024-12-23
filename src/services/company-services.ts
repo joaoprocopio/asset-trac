@@ -3,7 +3,7 @@ import axios from "axios"
 import { AssetType } from "~/constants/company-constants"
 import { Graph } from "~/lib/graph"
 import { buildFlatTree } from "~/lib/tree"
-import type { TAsset, TAssets, TLocation, TLocations } from "~/schemas/company-schemas"
+import type { TAssetNode, TAssets, TLocationNode, TLocations } from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
 
 const httpClient = axios.create({
@@ -38,11 +38,6 @@ async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
 }
 
 async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
-  type TLocationNode = TLocation & { type: (typeof AssetType)["Location"] }
-  type TAssetNode = Omit<TAsset, "locationId"> & {
-    type: (typeof AssetType)["Component"] | (typeof AssetType)["Asset"]
-  }
-
   const graph = new Graph<TLocationNode | TAssetNode>()
 
   for (const location of locations) {
