@@ -2,17 +2,13 @@ import { InboxIcon, RadioIcon, RouterIcon } from "lucide-react"
 
 import { Typography } from "~/components/typography"
 import { cn } from "~/lib/cn"
-import type { TAsset } from "~/schemas/company-schemas"
-
-export interface ICompanyAssetsDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
-  selectedAsset?: TAsset
-}
 
 export function CompanyAssetsDetails({
-  selectedAsset,
   className,
   ...props
-}: ICompanyAssetsDetailsProps) {
+}: React.HTMLAttributes<HTMLDivElement>) {
+  let selectedAsset
+
   return (
     <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
       {!selectedAsset && (
