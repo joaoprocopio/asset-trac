@@ -32,8 +32,7 @@ export function CompanyAssetsDetails({
     enabled: assetsGraph.isSuccess && typeof selectedAssetId === "string",
   })
 
-  console.log()
-  const hasAsset = Boolean(selectedAsset.data)
+  const hasAsset = typeof selectedAssetId === "string" && selectedAsset.data != null
 
   if (!hasAsset) {
     return (
@@ -54,16 +53,16 @@ export function CompanyAssetsDetails({
     <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
       <header className="flex items-center border-b bg-background px-6">
         <Typography className="align-middle first-letter:uppercase" variant="h3">
-          {selectedAsset.data!.name}
+          {selectedAsset.data?.name}
         </Typography>
       </header>
 
       <div className="grid h-fit grid-cols-2 gap-y-6 p-6">
         {!(
-          selectedAsset.data.status ||
-          selectedAsset.data.gatewayId ||
-          selectedAsset.data.sensorId ||
-          selectedAsset.data.sensorType
+          selectedAsset.data?.status ||
+          selectedAsset.data?.gatewayId ||
+          selectedAsset.data?.sensorId ||
+          selectedAsset.data?.sensorType
         ) && (
           <div className="col-span-2 space-y-0.5 text-center">
             <Typography variant="h3">Details not available</Typography>
@@ -73,35 +72,35 @@ export function CompanyAssetsDetails({
           </div>
         )}
 
-        {selectedAsset.data.status && (
+        {selectedAsset.data?.status && (
           <div className="col-span-2 space-y-0.5">
             <Typography variant="h5">Status</Typography>
 
             <Typography affects="muted" className="flex items-center gap-2">
-              <span className="first-letter:uppercase">{selectedAsset.data.status}</span>
+              <span className="first-letter:uppercase">{selectedAsset.data?.status}</span>
             </Typography>
           </div>
         )}
 
-        {selectedAsset.data.sensorId && (
+        {selectedAsset.data?.sensorId && (
           <div className="space-y-0.5">
             <Typography variant="h5">Sensor</Typography>
 
             <Typography affects="muted" className="flex items-center gap-2">
               <RadioIcon className="inline-block h-5 w-5" />
               <span>
-                {selectedAsset.data.sensorId} ({selectedAsset.data.sensorType})
+                {selectedAsset.data?.sensorId} ({selectedAsset.data?.sensorType})
               </span>
             </Typography>
           </div>
         )}
 
-        {selectedAsset.data.gatewayId && (
+        {selectedAsset.data?.gatewayId && (
           <div className="space-y-0.5">
             <Typography variant="h5">Gateway</Typography>
             <Typography affects="muted" className="flex items-center gap-2">
               <RouterIcon className="inline-block h-4 w-4" />
-              <span>{selectedAsset.data.gatewayId}</span>
+              <span>{selectedAsset.data?.gatewayId}</span>
             </Typography>
           </div>
         )}
