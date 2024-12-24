@@ -1,6 +1,7 @@
 import { z } from "zod"
 
-import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
+import type { AssetType } from "~/constants/company-constants"
+import { AssetSensorType, AssetStatus } from "~/constants/company-constants"
 
 export type TLocationNode = TLocation & {
   type: (typeof AssetType)["Location"]

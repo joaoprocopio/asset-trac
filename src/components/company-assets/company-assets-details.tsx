@@ -76,7 +76,5 @@ function CompanyAssetsDetailsSwitch({
       return AssetType.Component
     case AssetType.Location:
       return AssetType.Location
-    default:
-      return undefined
   }
 }

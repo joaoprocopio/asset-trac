@@ -23,8 +23,6 @@ const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
-type TFlatAssetNode = TFlatNode<TLocationNode | TAssetNode>
-
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
@@ -93,7 +91,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                 transform: `translateY(${virtualRow.start}px)`,
               }}>
               <div className="flex items-center">
-                {renderIndent(node)}
+                <Indent node={node} />
 
                 <button
                   className={buttonVariants({
@@ -103,12 +101,12 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                   })}
                   data-selected={node.id === selectedAssetId}
                   onClick={() => handleClick(node.id)}>
-                  {renderStartIcon(node)}
+                  <StartIcon node={node} />
 
                   <span className="first-letter:uppercase">{node.name}</span>
                 </button>
 
-                {renderEndIcon(node)}
+                <EndIcon node={node} />
               </div>
             </div>
           )
@@ -118,11 +116,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-function renderIndent(node: TFlatAssetNode) {
+function Indent({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
   return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-function renderStartIcon(node: TFlatAssetNode) {
+function StartIcon({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -142,12 +140,10 @@ function renderStartIcon(node: TFlatAssetNode) {
           <CodepenIcon className="h-4 w-full" />
         </div>
       )
-    default:
-      return undefined
   }
 }
 
-function renderEndIcon(node: TFlatAssetNode) {
+function EndIcon({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
   if (!(node.type === AssetType.Asset || node.type === AssetType.Component)) {
     return undefined
   }
@@ -170,7 +166,5 @@ function renderEndIcon(node: TFlatAssetNode) {
           <InfoIcon className={cn("h-3 w-full", classes)} />
         </div>
       )
-    default:
-      return undefined
   }
 }
