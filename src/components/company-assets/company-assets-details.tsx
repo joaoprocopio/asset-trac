@@ -3,15 +3,17 @@ import { InboxIcon, RadioIcon, RouterIcon } from "lucide-react"
 import { useParams } from "react-router"
 
 import { Typography } from "~/components/typography"
-import { AssetIdKey } from "~/constants/company-constants"
+import { AssetIdKey, AssetType } from "~/constants/company-constants"
 import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
+import type { TGraphNode } from "~/lib/graph"
 import {
   assetsGraphOptions,
   assetsOptions,
   locationsOptions,
   selectedAssetOptions,
 } from "~/lib/query/query-options"
+import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 export function CompanyAssetsDetails({
   className,
@@ -32,9 +34,7 @@ export function CompanyAssetsDetails({
     enabled: assetsGraph.isSuccess && typeof selectedAssetId === "string",
   })
 
-  const hasAsset = typeof selectedAssetId === "string" && selectedAsset.data != null
-
-  if (!hasAsset) {
+  if (!selectedAsset.data) {
     return (
       <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
         <div className="row-span-2 space-y-1.5 self-center text-center">
@@ -58,53 +58,25 @@ export function CompanyAssetsDetails({
       </header>
 
       <div className="grid h-fit grid-cols-2 gap-y-6 p-6">
-        {!(
-          selectedAsset.data?.status ||
-          selectedAsset.data?.gatewayId ||
-          selectedAsset.data?.sensorId ||
-          selectedAsset.data?.sensorType
-        ) && (
-          <div className="col-span-2 space-y-0.5 text-center">
-            <Typography variant="h3">Details not available</Typography>
-            <Typography variant="p" affects="muted">
-              There is no detailed information available for your selection
-            </Typography>
-          </div>
-        )}
-
-        {selectedAsset.data?.status && (
-          <div className="col-span-2 space-y-0.5">
-            <Typography variant="h5">Status</Typography>
-
-            <Typography affects="muted" className="flex items-center gap-2">
-              <span className="first-letter:uppercase">{selectedAsset.data?.status}</span>
-            </Typography>
-          </div>
-        )}
-
-        {selectedAsset.data?.sensorId && (
-          <div className="space-y-0.5">
-            <Typography variant="h5">Sensor</Typography>
-
-            <Typography affects="muted" className="flex items-center gap-2">
-              <RadioIcon className="inline-block h-5 w-5" />
-              <span>
-                {selectedAsset.data?.sensorId} ({selectedAsset.data?.sensorType})
-              </span>
-            </Typography>
-          </div>
-        )}
-
-        {selectedAsset.data?.gatewayId && (
-          <div className="space-y-0.5">
-            <Typography variant="h5">Gateway</Typography>
-            <Typography affects="muted" className="flex items-center gap-2">
-              <RouterIcon className="inline-block h-4 w-4" />
-              <span>{selectedAsset.data?.gatewayId}</span>
-            </Typography>
-          </div>
-        )}
+        <CompanyAssetsDetailsSwitch selectedAsset={selectedAsset.data!} />
       </div>
     </div>
   )
+}
+
+function CompanyAssetsDetailsSwitch({
+  selectedAsset,
+}: {
+  selectedAsset: TGraphNode<TLocationNode | TAssetNode>
+}) {
+  switch (selectedAsset?.type) {
+    case AssetType.Asset:
+      return AssetType.Asset
+    case AssetType.Component:
+      return AssetType.Component
+    case AssetType.Location:
+      return AssetType.Location
+    default:
+      return undefined
+  }
 }
