@@ -16,7 +16,7 @@ const httpClient = axios.create({
   baseURL: "https://fake-api.tractian.com",
 })
 
-async function getCompanies(signal?: AbortSignal): Promise<TCompanies> {
+async function getCompanies(signal: AbortSignal): Promise<TCompanies> {
   const response = await httpClient.get("/companies", {
     signal: signal,
   })
@@ -25,7 +25,7 @@ async function getCompanies(signal?: AbortSignal): Promise<TCompanies> {
   return companies
 }
 
-async function getCompanyLocations(companyId: string, signal?: AbortSignal): Promise<TLocations> {
+async function getCompanyLocations(companyId: string, signal: AbortSignal): Promise<TLocations> {
   const response = await httpClient.get(`/companies/${companyId}/locations`, {
     signal: signal,
   })
@@ -34,7 +34,7 @@ async function getCompanyLocations(companyId: string, signal?: AbortSignal): Pro
   return locations
 }
 
-async function getCompanyAssets(companyId: string, signal?: AbortSignal): Promise<TAssets> {
+async function getCompanyAssets(companyId: string, signal: AbortSignal): Promise<TAssets> {
   const response = await httpClient.get(`/companies/${companyId}/assets`, {
     signal: signal,
   })
