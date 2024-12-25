@@ -2,15 +2,21 @@ import axios from "axios"
 
 import { AssetType } from "~/constants/company-constants"
 import { Graph } from "~/lib/graph"
-import { buildFlatTree } from "~/lib/tree"
-import type { TAssetNode, TAssets, TLocationNode, TLocations } from "~/schemas/company-schemas"
+import { buildFlatTree, type TFlatTreeNode } from "~/lib/tree"
+import type {
+  TAssetNode,
+  TAssets,
+  TCompanies,
+  TLocationNode,
+  TLocations,
+} from "~/schemas/company-schemas"
 import { AssetsSchema, CompaniesSchema, LocationsSchema } from "~/schemas/company-schemas"
 
 const httpClient = axios.create({
   baseURL: "https://fake-api.tractian.com",
 })
 
-async function getCompanies(signal?: AbortSignal) {
+async function getCompanies(signal?: AbortSignal): Promise<TCompanies> {
   const response = await httpClient.get("/companies", {
     signal: signal,
   })
@@ -19,7 +25,7 @@ async function getCompanies(signal?: AbortSignal) {
   return companies
 }
 
-async function getCompanyLocations(companyId: string, signal?: AbortSignal) {
+async function getCompanyLocations(companyId: string, signal?: AbortSignal): Promise<TLocations> {
   const response = await httpClient.get(`/companies/${companyId}/locations`, {
     signal: signal,
   })
@@ -28,7 +34,7 @@ async function getCompanyLocations(companyId: string, signal?: AbortSignal) {
   return locations
 }
 
-async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
+async function getCompanyAssets(companyId: string, signal?: AbortSignal): Promise<TAssets> {
   const response = await httpClient.get(`/companies/${companyId}/assets`, {
     signal: signal,
   })
@@ -37,7 +43,10 @@ async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
   return assets
 }
 
-async function buildCompanyAssetsGraphAsync(locations: TLocations, assets: TAssets) {
+async function buildCompanyAssetsGraph(
+  locations: TLocations,
+  assets: TAssets
+): Promise<Graph<TLocationNode | TAssetNode>> {
   const graph = new Graph<TLocationNode | TAssetNode>()
 
   for (const location of locations) {
@@ -93,7 +102,9 @@ async function buildCompanyAssetsGraphAsync(locations: TLocations, assets: TAsse
   return graph
 }
 
-async function buildCompanyAssetsFlatTreeAsync<Node>(graph: Graph<Node>) {
+async function buildCompanyAssetsFlatTree<Node>(
+  graph: Graph<Node>
+): Promise<TFlatTreeNode<Node>[]> {
   const flatTree = buildFlatTree(graph)
 
   return flatTree
@@ -103,6 +114,6 @@ export const CompanyServices = {
   getCompanies,
   getCompanyLocations,
   getCompanyAssets,
-  buildCompanyAssetsGraphAsync,
-  buildCompanyAssetsFlatTreeAsync,
+  buildCompanyAssetsGraph,
+  buildCompanyAssetsFlatTree,
 }
