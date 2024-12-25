@@ -15,7 +15,7 @@ import {
   assetsOptions,
   locationsOptions,
 } from "~/lib/query/query-options"
-import type { TFlatNode } from "~/lib/tree"
+import type { TFlatTreeNode } from "~/lib/tree"
 import { array } from "~/lib/utils"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
@@ -116,11 +116,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   )
 }
 
-function Indent({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
+function Indent({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
   return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-function StartIcon({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
+function StartIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -143,27 +143,32 @@ function StartIcon({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
   }
 }
 
-function EndIcon({ node }: { node: TFlatNode<TLocationNode | TAssetNode> }) {
+function EndIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
   if (!(node.type === AssetType.Asset || node.type === AssetType.Component)) {
     return undefined
-  }
-
-  const classes = {
-    "fill-destructive text-destructive": node.status === AssetStatus.Alert,
-    "fill-success text-success": node.status === AssetStatus.Operating,
   }
 
   switch (node.sensorType) {
     case AssetSensorType.Energy:
       return (
         <div className="w-8">
-          <ZapIcon className={cn("h-4 w-full", classes)} />
+          <ZapIcon
+            className={cn("h-4 w-full", {
+              "fill-destructive text-destructive": node.status === AssetStatus.Alert,
+              "fill-success text-success": node.status === AssetStatus.Operating,
+            })}
+          />
         </div>
       )
     case AssetSensorType.Vibration:
       return (
         <div className="w-8">
-          <InfoIcon className={cn("h-3 w-full", classes)} />
+          <InfoIcon
+            className={cn("h-3 w-full", {
+              "fill-destructive text-destructive": node.status === AssetStatus.Alert,
+              "fill-success text-success": node.status === AssetStatus.Operating,
+            })}
+          />
         </div>
       )
   }

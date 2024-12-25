@@ -1,11 +1,11 @@
 import type { Graph, TGraphNode, TGraphNodeId } from "~/lib/graph"
 
-export type TFlatNode<Node> = TGraphNode<Node> & {
+export type TFlatTreeNode<Node> = TGraphNode<Node> & {
   level: number
 }
 
-export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
-  const flatTree: TFlatNode<Node>[] = []
+export function buildFlatTree<Node>(graph: Graph<Node>): TFlatTreeNode<Node>[] {
+  const flatTree: TFlatTreeNode<Node>[] = []
   const visited = new Set<TGraphNodeId>()
 
   function traverse(nodeId: TGraphNodeId, level: number = 0): void {
@@ -14,7 +14,7 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatNode<Node>[] {
     }
     visited.add(nodeId)
 
-    const node = graph.getNode(nodeId)! as TFlatNode<Node>
+    const node = graph.getNode(nodeId)! as TFlatTreeNode<Node>
     node.level = level
     flatTree.push(node)
 

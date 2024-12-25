@@ -69,6 +69,8 @@ function CompanyAssetsDetailsSwitch({
 }: {
   selectedAsset: TGraphNode<TLocationNode | TAssetNode>
 }) {
+  // Não acredito que vale a pena usar os hooks do react query aqui, esse componente é puramente exibicional.
+  // Gostaria de deixar ele somente com a responsabilidade de exibir corretamente.
   switch (selectedAsset?.type) {
     case AssetType.Asset:
       return AssetType.Asset
