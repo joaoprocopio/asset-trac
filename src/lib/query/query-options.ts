@@ -10,13 +10,6 @@ export const companiesOptions = () =>
     queryFn: async (args) => CompanyServices.getCompanies(args.signal),
   })
 
-export const selectedCompanyOptions = (companyId: string) =>
-  queryOptions({
-    ...companiesOptions(),
-    queryKey: ["company", companyId],
-    select: (companies) => companies.find((company) => company.id === companyId),
-  })
-
 export const locationsOptions = (companyId: string) =>
   queryOptions({
     queryKey: ["company-locations", companyId],
@@ -43,6 +36,6 @@ export const assetsFlatTreeOptions = <Node>(companyId: string, graph: Graph<Node
 
 export const selectedAssetOptions = <Node>(assetId: string, graph: Graph<Node>) =>
   queryOptions({
-    queryKey: ["asset", assetId],
+    queryKey: ["company-asset", assetId],
     queryFn: async () => graph.getNode(assetId),
   })

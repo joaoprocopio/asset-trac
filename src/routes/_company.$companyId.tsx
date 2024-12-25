@@ -7,7 +7,8 @@ import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-
 import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tree"
 import { Typography } from "~/components/typography"
 import { queryClient } from "~/lib/query/query-client"
-import { assetsOptions, locationsOptions, selectedCompanyOptions } from "~/lib/query/query-options"
+import { assetsOptions, companiesOptions, locationsOptions } from "~/lib/query/query-options"
+import type { TCompanies } from "~/schemas/company-schemas"
 
 import type { Route } from "./+types/_company.$companyId"
 
@@ -17,14 +18,16 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   await Promise.all([
     queryClient.prefetchQuery(locationsOptions(companyId)),
     queryClient.prefetchQuery(assetsOptions(companyId)),
-    queryClient.prefetchQuery(selectedCompanyOptions(companyId)),
   ])
 }
 
 export default function CompanyAssetsPage() {
   const params = useParams()
 
-  const selectedCompany = useQuery(selectedCompanyOptions(params.companyId!))
+  const company = useQuery({
+    ...companiesOptions(),
+    select: findCompanyById(params.companyId!),
+  })
 
   return (
     <Card className="flex h-full flex-col">
@@ -32,9 +35,9 @@ export default function CompanyAssetsPage() {
         <CardTitle className="inline-flex items-end gap-1">
           <span>Assets</span>
           <span>
-            {selectedCompany.isSuccess && (
+            {company.isSuccess && (
               <Typography className="font-normal" affects="muted">
-                / {selectedCompany.data?.name} Unit
+                / {company.data!.name} Unit
               </Typography>
             )}
           </span>
@@ -53,3 +56,6 @@ export default function CompanyAssetsPage() {
     </Card>
   )
 }
+
+const findCompanyById = (companyId: string) => (companies: TCompanies) =>
+  companies.find((company) => company.id === companyId)
