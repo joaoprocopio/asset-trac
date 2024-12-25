@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { InboxIcon, RadioIcon, RouterIcon } from "lucide-react"
+import { InboxIcon } from "lucide-react"
 import { useParams } from "react-router"
 
 import { Typography } from "~/components/typography"
@@ -7,12 +7,7 @@ import { AssetIdKey, AssetType } from "~/constants/company-constants"
 import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
 import type { TGraphNode } from "~/lib/graph"
-import {
-  assetsGraphOptions,
-  assetsOptions,
-  locationsOptions,
-  selectedAssetOptions,
-} from "~/lib/query/query-options"
+import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 export function CompanyAssetsDetails({
@@ -25,13 +20,10 @@ export function CompanyAssetsDetails({
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
-  const assetsGraph = useQuery({
-    ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
-    enabled: locations.isSuccess && assets.isSuccess,
-  })
   const selectedAsset = useQuery({
-    ...selectedAssetOptions(selectedAssetId!, assetsGraph.data!),
-    enabled: assetsGraph.isSuccess && typeof selectedAssetId === "string",
+    ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
+    enabled: locations.isSuccess && assets.isSuccess && typeof selectedAssetId === "string",
+    select: (graph) => graph.getNode(selectedAssetId!),
   })
 
   if (!selectedAsset.data) {

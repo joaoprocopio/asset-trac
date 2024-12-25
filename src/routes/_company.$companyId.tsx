@@ -24,7 +24,7 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
 export default function CompanyAssetsPage() {
   const params = useParams()
 
-  const company = useQuery({
+  const selectedCompany = useQuery({
     ...companiesOptions(),
     select: findCompanyById(params.companyId!),
   })
@@ -35,9 +35,9 @@ export default function CompanyAssetsPage() {
         <CardTitle className="inline-flex items-end gap-1">
           <span>Assets</span>
           <span>
-            {company.isSuccess && (
+            {selectedCompany.isSuccess && (
               <Typography className="font-normal" affects="muted">
-                / {company.data!.name} Unit
+                / {selectedCompany.data!.name} Unit
               </Typography>
             )}
           </span>

@@ -33,9 +33,3 @@ export const assetsFlatTreeOptions = <Node>(companyId: string, graph: Graph<Node
     queryKey: ["company-assets-flat-tree", companyId],
     queryFn: async () => CompanyServices.buildCompanyAssetsFlatTree(graph),
   })
-
-export const selectedAssetOptions = <Node>(assetId: string, graph: Graph<Node>) =>
-  queryOptions({
-    queryKey: ["company-asset", assetId],
-    queryFn: async () => graph.getNode(assetId),
-  })
