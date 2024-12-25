@@ -37,7 +37,7 @@ async function getCompanyAssets(companyId: string, signal?: AbortSignal) {
   return assets
 }
 
-async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
+async function buildCompanyAssetsGraphAsync(locations: TLocations, assets: TAssets) {
   const graph = new Graph<TLocationNode | TAssetNode>()
 
   for (const location of locations) {
@@ -93,7 +93,7 @@ async function buildCompanyAssetsGraph(locations: TLocations, assets: TAssets) {
   return graph
 }
 
-async function buildCompanyAssetsFlatTree<Node>(graph: Graph<Node>) {
+async function buildCompanyAssetsFlatTreeAsync<Node>(graph: Graph<Node>) {
   const flatTree = buildFlatTree(graph)
 
   return flatTree
@@ -103,6 +103,6 @@ export const CompanyServices = {
   getCompanies,
   getCompanyLocations,
   getCompanyAssets,
-  buildCompanyAssetsGraph,
-  buildCompanyAssetsFlatTree,
+  buildCompanyAssetsGraphAsync,
+  buildCompanyAssetsFlatTreeAsync,
 }
