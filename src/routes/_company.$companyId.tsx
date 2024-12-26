@@ -15,6 +15,7 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   const companyId = args.params.companyId
 
   await Promise.all([
+    queryClient.prefetchQuery(companiesOptions()),
     queryClient.prefetchQuery(locationsOptions(companyId)),
     queryClient.prefetchQuery(assetsOptions(companyId)),
   ])
