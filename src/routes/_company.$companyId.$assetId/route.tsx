@@ -34,24 +34,28 @@ export default function AssetDetails() {
     select: getAssetNode(params.assetId!),
   })
 
-  const isLoading = selectedAsset.isPending || selectedAsset.isFetching
+  if (selectedAsset.isPending || selectedAsset.isFetching) {
+    return (
+      <div>
+        <div className="border-b px-6 py-4">
+          <Skeleton className="h-8 w-36" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-6 px-6 py-4">
+          <AssetDetailsLoading />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
       <div className="border-b px-6 py-4">
-        {!isLoading ? (
-          <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
-        ) : (
-          <Skeleton className="h-8 w-36" />
-        )}
+        <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
       </div>
 
       <div className="grid grid-cols-2 gap-6 px-6 py-4">
-        {!isLoading ? (
-          <AssetDetailsViewSwitch selectedAsset={selectedAsset.data!} />
-        ) : (
-          <AssetDetailsLoading />
-        )}
+        <AssetDetailsViewSwitch selectedAsset={selectedAsset.data!} />
       </div>
     </div>
   )
