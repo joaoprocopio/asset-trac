@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router"
+import { Outlet, useParams } from "react-router"
 
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
-import { CompanyAssetsDetails } from "~/components/company-assets/company-assets-details"
 import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-filter"
 import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tree"
 import { Typography } from "~/components/typography"
@@ -51,7 +50,7 @@ export default function CompanyAssetsPage() {
           <CompanyAssetsTree className="overflow-y-scroll pl-6" />
         </div>
 
-        <CompanyAssetsDetails />
+        <Outlet />
       </CardContent>
     </Card>
   )

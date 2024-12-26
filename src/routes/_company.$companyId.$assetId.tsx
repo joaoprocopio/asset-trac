@@ -3,27 +3,24 @@ import { InboxIcon } from "lucide-react"
 import { useParams } from "react-router"
 
 import { Typography } from "~/components/typography"
-import { AssetIdKey, AssetType } from "~/constants/company-constants"
-import { useSearchParam } from "~/hooks/use-search-param"
+import { AssetType } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import type { TGraphNode } from "~/lib/graph"
 import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
-export function CompanyAssetsDetails({
+export default function CompanyAssetsDetails({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const params = useParams()
 
-  const [selectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
-
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
   const selectedAsset = useQuery({
     ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
-    enabled: locations.isSuccess && assets.isSuccess && typeof selectedAssetId === "string",
-    select: (graph) => graph.getNode(selectedAssetId!),
+    enabled: locations.isSuccess && assets.isSuccess && typeof params.assetId === "string",
+    select: (graph) => graph.getNode(params.assetId!),
   })
 
   if (!selectedAsset.data) {

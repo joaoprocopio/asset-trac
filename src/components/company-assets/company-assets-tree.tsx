@@ -2,12 +2,11 @@ import { useQuery } from "@tanstack/react-query"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
 import { useRef } from "react"
-import { useParams } from "react-router"
+import { Link, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import { AssetIdKey, AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
-import { useSearchParam } from "~/hooks/use-search-param"
+import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,
@@ -32,7 +31,6 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   // TODO: fazer a parte de filtragem da árvore
   // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
-  const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
@@ -51,16 +49,6 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     getScrollElement: () => scrollableRef.current,
     estimateSize: () => PADDED_NODE_HEIGHT,
   })
-
-  const handleClick = (nodeId: string) => {
-    if (selectedAssetId === nodeId) {
-      setSelectedAssetId(undefined)
-
-      return undefined
-    }
-
-    setSelectedAssetId(nodeId)
-  }
 
   if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
     return (
@@ -95,18 +83,18 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
               <div className="flex items-center">
                 <Indent node={node} />
 
-                <button
+                <Link
                   className={buttonVariants({
                     variant: "ghost",
                     size: "sm",
                     className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
                   })}
-                  data-selected={node.id === selectedAssetId}
-                  onClick={() => handleClick(node.id)}>
+                  to={node.id}
+                  data-selected={node.id === params?.assetId}>
                   <StartIcon node={node} />
 
                   <span className="first-letter:uppercase">{node.name}</span>
-                </button>
+                </Link>
 
                 <EndIcon node={node} />
               </div>

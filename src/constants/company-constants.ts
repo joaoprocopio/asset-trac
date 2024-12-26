@@ -20,5 +20,3 @@ export const AssetStatus = {
 export const AssetNameKey = "an"
 
 export const AssetStatusKey = "as"
-
-export const AssetIdKey = "ai"
