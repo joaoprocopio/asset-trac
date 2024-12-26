@@ -3,17 +3,13 @@ import { useParams } from "react-router"
 
 import { Typography } from "~/components/typography"
 import { AssetType } from "~/constants/company-constants"
-import { cn } from "~/lib/cn"
 import type { TGraphNode } from "~/lib/graph"
 import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 export const clientLoader = () => {}
 
-export default function CompanyAssetsDetails({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export default function CompanyAssetsDetails() {
   const params = useParams()
 
   const locations = useQuery(locationsOptions(params.companyId!))
@@ -25,7 +21,7 @@ export default function CompanyAssetsDetails({
   })
 
   return (
-    <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
+    <div className="grid grid-rows-[4rem_1fr]">
       <header className="flex items-center border-b bg-background px-6">
         <Typography className="align-middle first-letter:uppercase" variant="h3">
           {selectedAsset.data?.name}
