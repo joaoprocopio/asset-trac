@@ -114,34 +114,32 @@ async function buildCompanyAssetsFlatTree<Node extends TLocationNode | TAssetNod
   let flatTree: TFlatTree<Node>
 
   if (filter?.name || filter?.status) {
-    const shouldMatchName = Boolean(filter.name)
-    const shouldMatchStatus = Boolean(filter.status)
+    const canMatchName: boolean = Boolean(filter.name)
+    const canMatchStatus: boolean = Boolean(filter.status)
 
     buildFilteredFlatTree(graph, (node) => {
-      const filterCase: number = (shouldMatchName ? 1 : 0) | (shouldMatchStatus ? 2 : 0)
+      const filterCase: number = (canMatchName ? 1 : 0) | (canMatchStatus ? 2 : 0)
 
-      console.log(filterCase)
-      const nameMatch: boolean = shouldMatchName ? node.name.indexOf(filter.name!) >= 0 : false
+      const nameMatch: boolean = canMatchName ? node.name.indexOf(filter.name!) >= 0 : false
       const statusMatch: boolean =
-        shouldMatchStatus && node.type !== "location" ? node.status === filter.status : false
+        canMatchStatus && node.type !== "location" ? node.status === filter.status : false
 
       switch (filterCase) {
+        default:
+          return false
         case 1:
-          // Somente o filtro de nome
           return nameMatch
         case 2:
-          // Somente o filtro de status
           return statusMatch
         case 3:
           return nameMatch && statusMatch
-        default:
-          // Sem filtros ou não filtrável
-          return false
       }
     })
-  }
 
-  flatTree = buildFlatTree(graph)
+    flatTree = buildFlatTree(graph)
+  } else {
+    flatTree = buildFlatTree(graph)
+  }
 
   return flatTree
 }
