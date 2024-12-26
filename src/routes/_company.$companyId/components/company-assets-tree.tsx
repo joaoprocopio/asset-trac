@@ -18,6 +18,7 @@ import type { TFlatTreeNode } from "~/lib/tree"
 import { array } from "~/lib/utils"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
+const OVERSCAN = 5
 const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
@@ -46,6 +47,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const rowVirtualizer = useVirtualizer({
     enabled: assetsFlatTree.isSuccess,
     count: assetsFlatTree.data?.length as number,
+    overscan: OVERSCAN,
     getScrollElement: () => scrollableRef.current,
     estimateSize: () => PADDED_NODE_HEIGHT,
   })
