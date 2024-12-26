@@ -7,7 +7,7 @@ export type TFlatTreeNode<Node> = TGraphNode<Node> & {
 export type TFlatTree<Node> = TFlatTreeNode<Node>[]
 
 export function buildFlatTree<Node>(graph: Graph<Node>): TFlatTree<Node> {
-  const flatTree: TFlatTreeNode<Node>[] = []
+  const flatTree: TFlatTree<Node> = []
   const visited = new Set<TGraphNodeId>()
 
   function traverse(nodeId: TGraphNodeId, level: number = 0): void {
@@ -42,8 +42,9 @@ export function buildFilteredFlatTree<Node>(
   predicate: (node: Node) => boolean
 ): TFlatTree<Node> {
   const filteredNodes = graph.filterNodes(predicate)
-  const flatTree: TFlatTreeNode<Node>[] = []
-  const visited = new Set<TGraphNodeId>()
 
-  console.log(filteredNodes)
+  const flatTree: TFlatTree<Node> = []
+  const visited: Set<TGraphNodeId> = new Set()
+
+  return flatTree
 }
