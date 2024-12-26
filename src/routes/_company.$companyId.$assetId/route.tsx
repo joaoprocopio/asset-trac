@@ -83,8 +83,15 @@ function AssetDetailsSwitch({
         </div>
       )
     case AssetType.Asset:
-      return AssetType.Asset
-    case AssetType.Component:
-      return AssetType.Component
+      return (
+        <div className="col-span-2 space-y-0.5">
+          <Typography variant="h4">Details not available</Typography>
+          <Typography variant="p" affects="muted">
+            There is no detailed information available for your selection
+          </Typography>
+        </div>
+      )
+    // case AssetType.Component:
+    //   return AssetType.Component
   }
 }
