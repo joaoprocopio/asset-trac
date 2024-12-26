@@ -38,12 +38,16 @@ export default function AssetDetails() {
   return (
     <div>
       <Typography className="border-b px-6 py-4 align-middle first-letter:uppercase" variant="h3">
-        {!isLoading ? selectedAsset.data?.name : <Skeleton className="h-8 w-36" />}
+        {!isLoading ? (
+          <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
+        ) : (
+          <Skeleton className="h-8 w-36" />
+        )}
       </Typography>
 
       <div className="grid grid-cols-2 gap-6 px-6 py-4">
         {!isLoading ? (
-          <AssetDetailsSwitch selectedAsset={selectedAsset.data!} />
+          <AssetDetailsViewSwitch selectedAsset={selectedAsset.data!} />
         ) : (
           <AssetDetailsLoading />
         )}
@@ -68,13 +72,30 @@ function AssetDetailsLoading() {
   )
 }
 
-function AssetDetailsSwitch({
+function AssetDetailsTitleSwitch({
   selectedAsset,
 }: {
   selectedAsset: TGraphNode<TLocationNode | TAssetNode>
 }) {
-  // Não acredito que vale a pena usar os hooks do react query aqui, esse componente é puramente exibicional.
-  // Gostaria de deixar ele somente com a responsabilidade de exibir corretamente.
+  switch (selectedAsset.type) {
+    case AssetType.Asset:
+    case AssetType.Location:
+      return selectedAsset.name
+    case AssetType.Component:
+      return (
+        <>
+          <span>{selectedAsset.name}</span>
+          <span></span>
+        </>
+      )
+  }
+}
+
+function AssetDetailsViewSwitch({
+  selectedAsset,
+}: {
+  selectedAsset: TGraphNode<TLocationNode | TAssetNode>
+}) {
   switch (selectedAsset.type) {
     case AssetType.Asset:
     case AssetType.Location:

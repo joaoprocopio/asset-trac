@@ -134,7 +134,7 @@ function StartIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }
 }
 
 function EndIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
-  if (!(node.type === AssetType.Asset || node.type === AssetType.Component)) {
+  if (node.type !== AssetType.Component) {
     return undefined
   }
 
