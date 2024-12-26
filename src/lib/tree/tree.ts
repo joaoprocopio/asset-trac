@@ -42,9 +42,64 @@ export function buildFilteredFlatTree<Node>(
   predicate: (node: Node) => boolean
 ): TFlatTree<Node> {
   const filteredNodes = graph.filterNodes(predicate)
-
   const flatTree: TFlatTree<Node> = []
-  const visited: Set<TGraphNodeId> = new Set()
+  const visited = new Set<TGraphNodeId>()
+
+  function findNearestFilteredAncestor(nodeId: TGraphNodeId): TGraphNodeId | null {
+    let currentNode = graph.getNode(nodeId)
+
+    while (currentNode?.parentId) {
+      if (filteredNodes.has(currentNode.parentId)) {
+        return currentNode.parentId
+      }
+      currentNode = graph.getNode(currentNode.parentId)
+    }
+
+    return null
+  }
+
+  function calculateEffectiveLevel(nodeId: TGraphNodeId): number {
+    let level = 0
+    let currentNodeId = nodeId
+
+    while (true) {
+      const nearestFilteredAncestor = findNearestFilteredAncestor(currentNodeId)
+      if (!nearestFilteredAncestor) break
+      level++
+      currentNodeId = nearestFilteredAncestor
+    }
+
+    return level
+  }
+
+  function traverse(nodeId: TGraphNodeId): void {
+    if (visited.has(nodeId)) return
+    visited.add(nodeId)
+
+    const node = graph.getNode(nodeId)
+    if (!node) return
+
+    if (filteredNodes.has(nodeId)) {
+      const flatNode = { ...node, level: calculateEffectiveLevel(nodeId) } as TFlatTreeNode<Node>
+      flatTree.push(flatNode)
+    }
+
+    if (graph.hasEdge(nodeId)) {
+      const edge = graph.getEdge(nodeId)!
+
+      for (const childId of edge.values()) {
+        const childNode = graph.getNode(childId)
+        if (childNode?.parentId === nodeId) {
+          traverse(childId)
+        }
+      }
+    }
+  }
+
+  // Start traversal from all roots
+  for (const root of graph.getAllRoots()) {
+    traverse(root)
+  }
 
   return flatTree
 }

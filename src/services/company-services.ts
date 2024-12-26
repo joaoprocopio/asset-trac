@@ -139,8 +139,6 @@ async function buildCompanyAssetsFlatTree<Node extends TLocationNode | TAssetNod
           return nameMatch && statusMatch
       }
     })
-
-    flatTree = buildFlatTree(graph)
   } else {
     flatTree = buildFlatTree(graph)
   }
