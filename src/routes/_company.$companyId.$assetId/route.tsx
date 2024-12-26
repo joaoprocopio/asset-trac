@@ -3,7 +3,7 @@ import { useParams } from "react-router"
 
 import { Typography } from "~/components/typography"
 import { AssetType } from "~/constants/company-constants"
-import type { TGraphNode } from "~/lib/graph"
+import type { Graph, TGraphNode } from "~/lib/graph"
 import { queryClient } from "~/lib/query/query-client"
 import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
@@ -24,23 +24,28 @@ export default function AssetDetails() {
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
+
   const selectedAsset = useQuery({
     ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
     enabled: locations.isSuccess && assets.isSuccess && typeof params.assetId === "string",
-    select: (graph) => graph.getNode(params.assetId!),
+    select: getAssetNode(params.assetId!),
   })
 
   return (
-    <>
-      <header className="flex items-center border-b bg-background px-6">
-        <Typography className="align-middle first-letter:uppercase" variant="h3">
-          {selectedAsset.data?.name}
-        </Typography>
-      </header>
+    <div>
+      <Typography className="border-b px-6 py-4 align-middle first-letter:uppercase" variant="h3">
+        {selectedAsset.data?.name}
+      </Typography>
 
       <DetailsView selectedAsset={selectedAsset.data!} />
-    </>
+    </div>
   )
+}
+
+function getAssetNode(assetId: string) {
+  return function <Node>(graph: Graph<Node>) {
+    return graph.getNode(assetId)
+  }
 }
 
 function DetailsView({ selectedAsset }: { selectedAsset: TGraphNode<TLocationNode | TAssetNode> }) {

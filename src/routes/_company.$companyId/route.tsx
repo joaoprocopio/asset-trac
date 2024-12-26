@@ -44,16 +44,12 @@ export default function CompanyDetails() {
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="grid flex-grow grid-cols-2 overflow-hidden p-0">
-        <div className="grid grid-rows-[4rem_1fr] overflow-hidden border-r">
-          <CompanyAssetsFilter className="flex items-center gap-6 border-b px-6" />
+      <CardContent className="grid flex-grow grid-cols-2 grid-rows-[4rem_1fr] overflow-hidden p-0">
+        <CompanyAssetsFilter className="col-span-2 flex items-center gap-6 border-b px-6" />
 
-          <CompanyAssetsTree className="overflow-y-scroll pl-6" />
-        </div>
+        <CompanyAssetsTree className="col-span-1 overflow-y-scroll border-r pl-6" />
 
-        <div className="grid grid-rows-[4rem_1fr]">
-          <Outlet />
-        </div>
+        <Outlet />
       </CardContent>
     </Card>
   )
