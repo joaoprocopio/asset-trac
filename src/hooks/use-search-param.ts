@@ -6,16 +6,16 @@ type TSeachParamProps = {
   paramsDefaultInit?: URLSearchParamsInit
 }
 
-type TSeachParam = string | undefined
-type TSetSearchParam = (nextSearchParam: TSeachParam) => void
+type TSetSearchParam = <TSeachParam extends string>(nextSearchParam: TSeachParam) => void
 
-export function useSearchParam({
+export function useSearchParam<TSeachParam extends string>({
   paramKey,
   paramsDefaultInit,
-}: TSeachParamProps): [TSeachParam, TSetSearchParam] {
+}: TSeachParamProps): [TSeachParam | undefined, TSetSearchParam] {
   const [searchParams, setSearchParams] = useSearchParams(paramsDefaultInit)
 
-  const searchParam: TSeachParam = searchParams.get(paramKey) ?? undefined
+  const searchParam: TSeachParam | undefined =
+    (searchParams.get(paramKey) as TSeachParam) ?? undefined
 
   const setSearchParam: TSetSearchParam = (nextValue) => {
     setSearchParams(

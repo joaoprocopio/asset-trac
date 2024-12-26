@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { AssetType } from "~/constants/company-constants"
+import { AssetType, type TAssetStatus } from "~/constants/company-constants"
 import { Graph } from "~/lib/graph"
 import { buildFlatTree, type TFlatTreeNode } from "~/lib/tree"
 import type {
@@ -103,8 +103,13 @@ async function buildCompanyAssetsGraph(
 }
 
 async function buildCompanyAssetsFlatTree<Node>(
-  graph: Graph<Node>
+  graph: Graph<Node>,
+  filter?: {
+    name?: string
+    status?: TAssetStatus
+  }
 ): Promise<TFlatTreeNode<Node>[]> {
+  // TODO: fazer a filtragem
   const flatTree = buildFlatTree(graph)
 
   return flatTree

@@ -12,6 +12,7 @@ import {
   AssetStatus,
   AssetStatusKey,
   AssetType,
+  type TAssetStatus,
 } from "~/constants/company-constants"
 import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
@@ -27,7 +28,8 @@ import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 const OVERSCAN = 5
 const NODE_PADDING = 4
-const NODE_HEIGHT = 32
+const NODE_HEIGHT = 34
+const CONTAINER_PADDING = NODE_PADDING * 2
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
@@ -36,7 +38,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const params = useParams()
 
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
-  const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
+  const [selectedAssetStatus] = useSearchParam<TAssetStatus>({ paramKey: AssetStatusKey })
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
@@ -45,8 +47,12 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
     enabled: locations.isSuccess && assets.isSuccess,
   })
   const assetsFlatTree = useQuery({
-    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!),
+    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!, {
+      name: selectedAssetName,
+      status: selectedAssetStatus,
+    }),
     enabled: assetsGraph.isSuccess,
+    gcTime: 30_000, // 30s
   })
 
   const rowVirtualizer = useVirtualizer({
@@ -60,7 +66,12 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
     return (
       <div {...props}>
-        <div className="my-2 space-y-1 pr-6">
+        <div
+          className="space-y-1 pr-6"
+          style={{
+            marginTop: CONTAINER_PADDING,
+            marginBottom: CONTAINER_PADDING,
+          }}>
           {array(10).map((_, index) => (
             <Skeleton key={index} className="h-8 w-full" style={{ height: NODE_HEIGHT }} />
           ))}
@@ -72,9 +83,11 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div ref={scrollableRef} {...props}>
       <div
-        className="relative my-2 h-full"
+        className="relative h-full"
         style={{
           height: rowVirtualizer.getTotalSize(),
+          marginTop: CONTAINER_PADDING,
+          marginBottom: CONTAINER_PADDING,
         }}>
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
           const node = assetsFlatTree.data![virtualRow.index]
@@ -96,6 +109,9 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
                     size: "sm",
                     className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
                   })}
+                  style={{
+                    height: NODE_HEIGHT,
+                  }}
                   to={node.id}
                   data-selected={node.id === params?.assetId}>
                   <StartIcon node={node} />
@@ -145,27 +161,22 @@ function EndIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) 
     return undefined
   }
 
+  const colors = {
+    "fill-destructive text-destructive": node.status === AssetStatus.Alert,
+    "fill-success text-success": node.status === AssetStatus.Operating,
+  }
+
   switch (node.sensorType) {
     case AssetSensorType.Energy:
       return (
         <div className="w-8">
-          <ZapIcon
-            className={cn("h-4 w-full", {
-              "fill-destructive text-destructive": node.status === AssetStatus.Alert,
-              "fill-success text-success": node.status === AssetStatus.Operating,
-            })}
-          />
+          <ZapIcon className={cn("h-4 w-full", colors)} />
         </div>
       )
     case AssetSensorType.Vibration:
       return (
         <div className="w-8">
-          <InfoIcon
-            className={cn("h-3 w-full", {
-              "fill-destructive text-destructive": node.status === AssetStatus.Alert,
-              "fill-success text-success": node.status === AssetStatus.Operating,
-            })}
-          />
+          <InfoIcon className={cn("h-3 w-full", colors)} />
         </div>
       )
   }
