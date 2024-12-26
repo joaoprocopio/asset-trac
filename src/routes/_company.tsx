@@ -11,7 +11,7 @@ export const clientLoader = async () => {
   await queryClient.prefetchQuery(companiesOptions())
 }
 
-export default function CompanyLayout() {
+export default function Company() {
   const companies = useQuery(companiesOptions())
 
   return (

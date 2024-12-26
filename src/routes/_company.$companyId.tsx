@@ -20,7 +20,7 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   ])
 }
 
-export default function CompanyAssetsPage() {
+export default function CompanyDetails() {
   const params = useParams()
 
   const selectedCompany = useQuery({

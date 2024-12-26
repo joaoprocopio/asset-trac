@@ -9,7 +9,7 @@ import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 export const clientLoader = () => {}
 
-export default function CompanyAssetsDetails() {
+export default function AssetDetails() {
   const params = useParams()
 
   const locations = useQuery(locationsOptions(params.companyId!))
