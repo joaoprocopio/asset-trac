@@ -4,10 +4,20 @@ import { useParams } from "react-router"
 import { Typography } from "~/components/typography"
 import { AssetType } from "~/constants/company-constants"
 import type { TGraphNode } from "~/lib/graph"
+import { queryClient } from "~/lib/query/query-client"
 import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
-export const clientLoader = () => {}
+import type { Route } from "./+types/_company.$companyId._asset.$assetId"
+
+export const clientLoader = async (args: Route.ClientLoaderArgs) => {
+  const companyId = args.params.companyId
+
+  await Promise.all([
+    queryClient.prefetchQuery(locationsOptions(companyId)),
+    queryClient.prefetchQuery(assetsOptions(companyId)),
+  ])
+}
 
 export default function AssetDetails() {
   const params = useParams()
