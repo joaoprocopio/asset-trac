@@ -1,10 +1,25 @@
 import { useQuery } from "@tanstack/react-query"
-import { InboxIcon, RadioIcon, RouterIcon, UploadCloudIcon, XIcon } from "lucide-react"
+import {
+  InboxIcon,
+  InfoIcon,
+  RadioIcon,
+  RouterIcon,
+  UploadCloudIcon,
+  XIcon,
+  ZapIcon,
+} from "lucide-react"
 import { useParams } from "react-router"
 
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import { AssetType } from "~/constants/company-constants"
+import {
+  AssetSensorType,
+  AssetStatus,
+  AssetType,
+  type TAssetSensorType,
+  type TAssetStatus,
+} from "~/constants/company-constants"
+import { cn } from "~/lib/cn"
 import type { Graph, TGraphNode } from "~/lib/graph"
 import { queryClient } from "~/lib/query/query-client"
 import { assetsGraphOptions, assetsOptions, locationsOptions } from "~/lib/query/query-options"
@@ -37,13 +52,11 @@ export default function AssetDetails() {
 
   return (
     <div>
-      <Typography className="border-b px-6 py-4 align-middle first-letter:uppercase" variant="h3">
-        {!isLoading ? (
-          <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
-        ) : (
-          <Skeleton className="h-8 w-36" />
-        )}
-      </Typography>
+      {!isLoading ? (
+        <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
+      ) : (
+        <Skeleton className="h-8 w-36" />
+      )}
 
       <div className="grid grid-cols-2 gap-6 px-6 py-4">
         {!isLoading ? (
@@ -80,14 +93,45 @@ function AssetDetailsTitleSwitch({
   switch (selectedAsset.type) {
     case AssetType.Asset:
     case AssetType.Location:
-      return selectedAsset.name
+      return (
+        <Typography className="border-b px-6 py-4 align-middle first-letter:uppercase" variant="h3">
+          {selectedAsset.name}
+        </Typography>
+      )
     case AssetType.Component:
       return (
-        <>
-          <span>{selectedAsset.name}</span>
-          <span></span>
-        </>
+        <Typography
+          className="flex items-center gap-3 border-b px-6 py-4 align-middle"
+          variant="h3">
+          <span className="first-letter:uppercase">{selectedAsset.name}</span>
+          <span>
+            <AssetDetailsIconSwitch
+              sensorType={selectedAsset.sensorType!}
+              status={selectedAsset.status!}
+            />
+          </span>
+        </Typography>
       )
+  }
+}
+
+function AssetDetailsIconSwitch({
+  sensorType,
+  status,
+}: {
+  sensorType: TAssetSensorType
+  status: TAssetStatus
+}) {
+  const colors = {
+    "fill-destructive text-destructive": status === AssetStatus.Alert,
+    "fill-success text-success": status === AssetStatus.Operating,
+  }
+
+  switch (sensorType) {
+    case AssetSensorType.Energy:
+      return <ZapIcon className={cn("h-4 w-full", colors)} />
+    case AssetSensorType.Vibration:
+      return <InfoIcon className={cn("h-3 w-full", colors)} />
   }
 }
 
