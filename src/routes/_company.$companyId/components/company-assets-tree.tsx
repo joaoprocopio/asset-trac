@@ -6,7 +6,14 @@ import { Link, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
-import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
+import {
+  AssetNameKey,
+  AssetSensorType,
+  AssetStatus,
+  AssetStatusKey,
+  AssetType,
+} from "~/constants/company-constants"
+import { useSearchParam } from "~/hooks/use-search-param"
 import { cn } from "~/lib/cn"
 import {
   assetsFlatTreeOptions,
@@ -23,15 +30,13 @@ const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
-// TODO: isso aqui devia ser uma rota por si só, com um loader dedicado fazendo prefetch
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
   const params = useParams()
 
-  // TODO: fazer a parte de filtragem da árvore
-  // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
-  // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
+  const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
+  const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
