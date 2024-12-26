@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 
+import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import { AssetType } from "~/constants/company-constants"
 import type { Graph, TGraphNode } from "~/lib/graph"
@@ -31,13 +32,21 @@ export default function AssetDetails() {
     select: getAssetNode(params.assetId!),
   })
 
+  const isLoading = selectedAsset.isPending || selectedAsset.isFetching
+
   return (
     <div>
       <Typography className="border-b px-6 py-4 align-middle first-letter:uppercase" variant="h3">
-        {selectedAsset.data?.name}
+        {isLoading ? <Skeleton className="h-8 w-36" /> : selectedAsset.data?.name}
       </Typography>
 
-      <DetailsView selectedAsset={selectedAsset.data!} />
+      <AssetDetailsLayout>
+        {isLoading ? (
+          <AssetDetailsLoading />
+        ) : (
+          <AssetDetailsSwitch selectedAsset={selectedAsset.data!} />
+        )}
+      </AssetDetailsLayout>
     </div>
   )
 }
@@ -48,7 +57,19 @@ function getAssetNode(assetId: string) {
   }
 }
 
-function DetailsView({ selectedAsset }: { selectedAsset: TGraphNode<TLocationNode | TAssetNode> }) {
+function AssetDetailsLayout({ children }: React.PropsWithChildren) {
+  return <div>{children}</div>
+}
+
+function AssetDetailsLoading() {
+  return <div>TODO: loading</div>
+}
+
+function AssetDetailsSwitch({
+  selectedAsset,
+}: {
+  selectedAsset: TGraphNode<TLocationNode | TAssetNode>
+}) {
   // Não acredito que vale a pena usar os hooks do react query aqui, esse componente é puramente exibicional.
   // Gostaria de deixar ele somente com a responsabilidade de exibir corretamente.
   switch (selectedAsset?.type) {
