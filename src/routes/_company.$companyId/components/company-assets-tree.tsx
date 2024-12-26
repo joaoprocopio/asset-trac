@@ -53,9 +53,9 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
     return (
       <div {...props}>
-        <div className="my-2 space-y-px pr-6">
+        <div className="my-2 space-y-1 pr-6">
           {array(10).map((_, index) => (
-            <Skeleton key={index} className="w-full" style={{ height: NODE_HEIGHT }} />
+            <Skeleton key={index} className="h-8 w-full" style={{ height: NODE_HEIGHT }} />
           ))}
         </div>
       </div>
