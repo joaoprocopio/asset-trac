@@ -41,13 +41,13 @@ export default function AssetDetails() {
         {!isLoading ? selectedAsset.data?.name : <Skeleton className="h-8 w-36" />}
       </Typography>
 
-      <AssetDetailsLayout>
+      <div className="grid grid-cols-2 gap-6 px-6 py-4">
         {!isLoading ? (
           <AssetDetailsSwitch selectedAsset={selectedAsset.data!} />
         ) : (
           <AssetDetailsLoading />
         )}
-      </AssetDetailsLayout>
+      </div>
     </div>
   )
 }
@@ -56,10 +56,6 @@ function getAssetNode(assetId: string) {
   return function <Node>(graph: Graph<Node>) {
     return graph.getNode(assetId)
   }
-}
-
-function AssetDetailsLayout({ children }: React.PropsWithChildren) {
-  return <div className="grid grid-cols-2 gap-6 px-6 py-4">{children}</div>
 }
 
 function AssetDetailsLoading() {
