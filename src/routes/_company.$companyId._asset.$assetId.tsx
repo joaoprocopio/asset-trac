@@ -21,7 +21,7 @@ export default function AssetDetails() {
   })
 
   return (
-    <div className="grid grid-rows-[4rem_1fr]">
+    <>
       <header className="flex items-center border-b bg-background px-6">
         <Typography className="align-middle first-letter:uppercase" variant="h3">
           {selectedAsset.data?.name}
@@ -29,7 +29,7 @@ export default function AssetDetails() {
       </header>
 
       <DetailsView selectedAsset={selectedAsset.data!} />
-    </div>
+    </>
   )
 }
 
