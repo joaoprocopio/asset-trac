@@ -59,7 +59,13 @@ function getAssetNode(assetId: string) {
 }
 
 function AssetDetailsLoading() {
-  return <div>TODO: loading</div>
+  return (
+    <>
+      <Skeleton className="col-span-2 h-12" />
+      <Skeleton className="h-12" />
+      <Skeleton className="h-12" />
+    </>
+  )
 }
 
 function AssetDetailsSwitch({
