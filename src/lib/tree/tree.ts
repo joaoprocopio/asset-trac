@@ -11,9 +11,6 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatTree<Node> {
   const visited = new Set<TGraphNodeId>()
 
   function traverse(nodeId: TGraphNodeId, level: number = 0): void {
-    if (visited.has(nodeId)) {
-      return undefined
-    }
     visited.add(nodeId)
 
     const node = graph.getNode(nodeId)! as TFlatTreeNode<Node>
@@ -44,8 +41,9 @@ export function buildFilteredFlatTree<Node>(
   graph: Graph<Node>,
   predicate: (node: Node) => boolean
 ): TFlatTree<Node> {
+  const filteredNodes = graph.filterNodes(predicate)
   const flatTree: TFlatTreeNode<Node>[] = []
   const visited = new Set<TGraphNodeId>()
 
-  console.log(graph.filterNodes(predicate))
+  console.log(filteredNodes)
 }
