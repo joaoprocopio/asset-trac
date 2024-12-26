@@ -45,22 +45,16 @@ export function CompanyAssetsDetails({
     <div className={cn("grid grid-rows-[4rem_1fr]", className)} {...props}>
       <header className="flex items-center border-b bg-background px-6">
         <Typography className="align-middle first-letter:uppercase" variant="h3">
-          {selectedAsset.data?.name}
+          {selectedAsset.data.name}
         </Typography>
       </header>
 
-      <div className="grid h-fit grid-cols-2 gap-y-6 p-6">
-        <CompanyAssetsDetailsSwitch selectedAsset={selectedAsset.data!} />
-      </div>
+      <DetailsView selectedAsset={selectedAsset.data!} />
     </div>
   )
 }
 
-function CompanyAssetsDetailsSwitch({
-  selectedAsset,
-}: {
-  selectedAsset: TGraphNode<TLocationNode | TAssetNode>
-}) {
+function DetailsView({ selectedAsset }: { selectedAsset: TGraphNode<TLocationNode | TAssetNode> }) {
   // Não acredito que vale a pena usar os hooks do react query aqui, esse componente é puramente exibicional.
   // Gostaria de deixar ele somente com a responsabilidade de exibir corretamente.
   switch (selectedAsset?.type) {

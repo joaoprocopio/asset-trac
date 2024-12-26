@@ -23,11 +23,13 @@ const NODE_PADDING = 4
 const NODE_HEIGHT = 32
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
+// TODO: isso aqui devia ser uma rota por si só, com um loader dedicado fazendo prefetch
 export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
   const params = useParams()
 
+  // TODO: fazer a parte de filtragem da árvore
   // const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   // const [selectedAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
   const [selectedAssetId, setSelectedAssetId] = useSearchParam({ paramKey: AssetIdKey })
