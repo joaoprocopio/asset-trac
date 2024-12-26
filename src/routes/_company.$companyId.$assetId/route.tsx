@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { InboxIcon, RadioIcon, RouterIcon, UploadCloudIcon, XIcon } from "lucide-react"
 import { useParams } from "react-router"
 
 import { Skeleton } from "~/components/skeleton"
@@ -58,7 +59,7 @@ function getAssetNode(assetId: string) {
 }
 
 function AssetDetailsLayout({ children }: React.PropsWithChildren) {
-  return <div className="grid grid-cols-2 gap-y-6 px-6 py-4">{children}</div>
+  return <div className="grid grid-cols-2 gap-6 px-6 py-4">{children}</div>
 }
 
 function AssetDetailsLoading() {
@@ -73,6 +74,7 @@ function AssetDetailsSwitch({
   // Não acredito que vale a pena usar os hooks do react query aqui, esse componente é puramente exibicional.
   // Gostaria de deixar ele somente com a responsabilidade de exibir corretamente.
   switch (selectedAsset.type) {
+    case AssetType.Asset:
     case AssetType.Location:
       return (
         <div className="col-span-2 space-y-0.5">
@@ -82,16 +84,43 @@ function AssetDetailsSwitch({
           </Typography>
         </div>
       )
-    case AssetType.Asset:
+    case AssetType.Component:
       return (
-        <div className="col-span-2 space-y-0.5">
-          <Typography variant="h4">Details not available</Typography>
-          <Typography variant="p" affects="muted">
-            There is no detailed information available for your selection
-          </Typography>
-        </div>
+        <>
+          {Boolean(selectedAsset.status) && (
+            <div className="col-span-2 space-y-0.5">
+              <Typography variant="h5">Status</Typography>
+
+              <Typography affects="muted" className="flex items-center gap-2">
+                <span className="first-letter:uppercase">{selectedAsset.status}</span>
+              </Typography>
+            </div>
+          )}
+
+          {Boolean(selectedAsset.sensorId && selectedAsset.sensorType) && (
+            <div className="space-y-0.5">
+              <Typography variant="h5">Sensor</Typography>
+
+              <Typography affects="muted" className="flex items-center gap-2">
+                <RadioIcon className="inline-block h-5 w-5" />
+                <span>
+                  {selectedAsset.sensorId} ({selectedAsset.sensorType})
+                </span>
+              </Typography>
+            </div>
+          )}
+
+          {Boolean(selectedAsset.gatewayId) && (
+            <div className="space-y-0.5">
+              <Typography variant="h5">Gateway</Typography>
+
+              <Typography affects="muted" className="flex items-center gap-2">
+                <RouterIcon className="inline-block h-4 w-4" />
+                <span>{selectedAsset.gatewayId}</span>
+              </Typography>
+            </div>
+          )}
+        </>
       )
-    // case AssetType.Component:
-    //   return AssetType.Component
   }
 }
