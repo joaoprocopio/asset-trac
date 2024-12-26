@@ -105,29 +105,20 @@ function AssetDetailsTitleSwitch({
           variant="h3">
           <span className="first-letter:uppercase">{selectedAsset.name}</span>
           <span>
-            <AssetDetailsIconSwitch
-              sensorType={selectedAsset.sensorType!}
-              status={selectedAsset.status!}
-            />
+            <AssetDetailsIconSwitch selectedAsset={selectedAsset} />
           </span>
         </Typography>
       )
   }
 }
 
-function AssetDetailsIconSwitch({
-  sensorType,
-  status,
-}: {
-  sensorType: TAssetSensorType
-  status: TAssetStatus
-}) {
+function AssetDetailsIconSwitch({ selectedAsset }: { selectedAsset: TGraphNode<TAssetNode> }) {
   const colors = {
-    "fill-destructive text-destructive": status === AssetStatus.Alert,
-    "fill-success text-success": status === AssetStatus.Operating,
+    "fill-destructive text-destructive": selectedAsset.status === AssetStatus.Alert,
+    "fill-success text-success": selectedAsset.status === AssetStatus.Operating,
   }
 
-  switch (sensorType) {
+  switch (selectedAsset.sensorType) {
     case AssetSensorType.Energy:
       return <ZapIcon className={cn("h-4 w-full", colors)} />
     case AssetSensorType.Vibration:
