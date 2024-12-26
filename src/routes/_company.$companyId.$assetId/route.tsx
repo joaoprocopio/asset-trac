@@ -1,24 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
-import {
-  InboxIcon,
-  InfoIcon,
-  RadioIcon,
-  RouterIcon,
-  UploadCloudIcon,
-  XIcon,
-  ZapIcon,
-} from "lucide-react"
+import { InfoIcon, RadioIcon, RouterIcon, ZapIcon } from "lucide-react"
 import { useParams } from "react-router"
 
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
-import {
-  AssetSensorType,
-  AssetStatus,
-  AssetType,
-  type TAssetSensorType,
-  type TAssetStatus,
-} from "~/constants/company-constants"
+import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
 import { cn } from "~/lib/cn"
 import type { Graph, TGraphNode } from "~/lib/graph"
 import { queryClient } from "~/lib/query/query-client"
