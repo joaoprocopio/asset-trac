@@ -27,6 +27,25 @@ export class Graph<Node> {
     return structuredClone(this.#edges)
   }
 
+  filterNodes(predicate: (node: TGraphNode<Node>) => boolean): TGraphNodeMap<Node> {
+    const filtered: TGraphNodeMap<Node> = new Map()
+    const nodes: TGraphNodeMap<Node> = this.getAllNodes()
+
+    for (const [nodeId, node] of nodes.entries()) {
+      if (!node) {
+        continue
+      }
+
+      if (!predicate(node)) {
+        continue
+      }
+
+      filtered.set(nodeId, node)
+    }
+
+    return filtered
+  }
+
   addRoot(nodeId: TGraphNodeId): void {
     this.#roots.add(nodeId)
   }

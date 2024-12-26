@@ -47,7 +47,7 @@ export default function CompanyDetails() {
       <CardContent className="grid flex-grow grid-cols-2 grid-rows-[4rem_1fr] overflow-hidden p-0">
         <CompanyAssetsFilter className="col-span-2 flex items-center gap-6 border-b px-6" />
 
-        <CompanyAssetsTree className="col-span-1 overflow-y-scroll border-r pl-6" />
+        <CompanyAssetsTree className="col-span-1 border-r" />
 
         <Outlet />
       </CardContent>

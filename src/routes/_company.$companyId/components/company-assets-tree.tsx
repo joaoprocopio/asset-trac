@@ -32,7 +32,7 @@ const NODE_HEIGHT = 34
 const CONTAINER_PADDING = NODE_PADDING * 2
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
-export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
+export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
   const params = useParams()
@@ -65,9 +65,9 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
 
   if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
     return (
-      <div {...props}>
+      <div className={cn("overflow-y-scroll", className)} {...props}>
         <div
-          className="space-y-1 pr-6"
+          className="space-y-1 px-6"
           style={{
             marginTop: CONTAINER_PADDING,
             marginBottom: CONTAINER_PADDING,
@@ -81,7 +81,7 @@ export function CompanyAssetsTree(props: React.HTMLAttributes<HTMLDivElement>) {
   }
 
   return (
-    <div ref={scrollableRef} {...props}>
+    <div ref={scrollableRef} className={cn("overflow-y-scroll px-6", className)} {...props}>
       <div
         className="relative h-full"
         style={{

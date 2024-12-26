@@ -1,8 +1,10 @@
 import axios from "axios"
 
-import { AssetType, type TAssetStatus } from "~/constants/company-constants"
+import type { TAssetStatus } from "~/constants/company-constants"
+import { AssetType } from "~/constants/company-constants"
 import { Graph } from "~/lib/graph"
-import { buildFlatTree, type TFlatTreeNode } from "~/lib/tree"
+import type { TFlatTree } from "~/lib/tree"
+import { buildFilteredFlatTree, buildFlatTree } from "~/lib/tree"
 import type {
   TAssetNode,
   TAssets,
@@ -102,15 +104,44 @@ async function buildCompanyAssetsGraph(
   return graph
 }
 
-async function buildCompanyAssetsFlatTree<Node>(
+async function buildCompanyAssetsFlatTree<Node extends TLocationNode | TAssetNode>(
   graph: Graph<Node>,
   filter?: {
     name?: string
     status?: TAssetStatus
   }
-): Promise<TFlatTreeNode<Node>[]> {
-  // TODO: fazer a filtragem
-  const flatTree = buildFlatTree(graph)
+): Promise<TFlatTree<Node>> {
+  let flatTree: TFlatTree<Node>
+
+  if (filter?.name || filter?.status) {
+    const shouldMatchName = Boolean(filter.name)
+    const shouldMatchStatus = Boolean(filter.status)
+
+    buildFilteredFlatTree(graph, (node) => {
+      const filterCase: number = (shouldMatchName ? 1 : 0) | (shouldMatchStatus ? 2 : 0)
+
+      console.log(filterCase)
+      const nameMatch: boolean = shouldMatchName ? node.name.indexOf(filter.name!) >= 0 : false
+      const statusMatch: boolean =
+        shouldMatchStatus && node.type !== "location" ? node.status === filter.status : false
+
+      switch (filterCase) {
+        case 1:
+          // Somente o filtro de nome
+          return nameMatch
+        case 2:
+          // Somente o filtro de status
+          return statusMatch
+        case 3:
+          return nameMatch && statusMatch
+        default:
+          // Sem filtros ou não filtrável
+          return false
+      }
+    })
+  }
+
+  flatTree = buildFlatTree(graph)
 
   return flatTree
 }
