@@ -38,11 +38,13 @@ export default function AssetDetails() {
 
   return (
     <div>
-      {!isLoading ? (
-        <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
-      ) : (
-        <Skeleton className="h-8 w-36" />
-      )}
+      <div className="border-b px-6 py-4">
+        {!isLoading ? (
+          <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
+        ) : (
+          <Skeleton className="h-8 w-36" />
+        )}
+      </div>
 
       <div className="grid grid-cols-2 gap-6 px-6 py-4">
         {!isLoading ? (
@@ -80,25 +82,21 @@ function AssetDetailsTitleSwitch({
     case AssetType.Asset:
     case AssetType.Location:
       return (
-        <Typography className="border-b px-6 py-4 align-middle first-letter:uppercase" variant="h3">
+        <Typography className="first-letter:uppercase" variant="h3">
           {selectedAsset.name}
         </Typography>
       )
     case AssetType.Component:
       return (
-        <Typography
-          className="flex items-center gap-3 border-b px-6 py-4 align-middle"
-          variant="h3">
+        <Typography className="flex items-center gap-3" variant="h3">
           <span className="first-letter:uppercase">{selectedAsset.name}</span>
-          <span>
-            <AssetDetailsIconSwitch selectedAsset={selectedAsset} />
-          </span>
+          <AssetDetailsTitleIconSwitch selectedAsset={selectedAsset} />
         </Typography>
       )
   }
 }
 
-function AssetDetailsIconSwitch({ selectedAsset }: { selectedAsset: TGraphNode<TAssetNode> }) {
+function AssetDetailsTitleIconSwitch({ selectedAsset }: { selectedAsset: TGraphNode<TAssetNode> }) {
   const colors = {
     "fill-destructive text-destructive": selectedAsset.status === AssetStatus.Alert,
     "fill-success text-success": selectedAsset.status === AssetStatus.Operating,
@@ -106,9 +104,9 @@ function AssetDetailsIconSwitch({ selectedAsset }: { selectedAsset: TGraphNode<T
 
   switch (selectedAsset.sensorType) {
     case AssetSensorType.Energy:
-      return <ZapIcon className={cn("h-4 w-full", colors)} />
+      return <ZapIcon className={cn("size-4", colors)} />
     case AssetSensorType.Vibration:
-      return <InfoIcon className={cn("h-3 w-full", colors)} />
+      return <InfoIcon className={cn("size-3", colors)} />
   }
 }
 
