@@ -2,14 +2,14 @@ import { useQuery } from "@tanstack/react-query"
 import { Outlet, useParams } from "react-router"
 
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/card"
-import { CompanyAssetsFilter } from "~/components/company-assets/company-assets-filter"
-import { CompanyAssetsTree } from "~/components/company-assets/company-assets-tree"
 import { Typography } from "~/components/typography"
 import { queryClient } from "~/lib/query/query-client"
 import { assetsOptions, companiesOptions, locationsOptions } from "~/lib/query/query-options"
 import type { TCompanies } from "~/schemas/company-schemas"
 
 import type { Route } from "./+types/route"
+import { CompanyAssetsFilter } from "./components/company-assets-filter"
+import { CompanyAssetsTree } from "./components/company-assets-tree"
 
 export const clientLoader = async (args: Route.ClientLoaderArgs) => {
   const companyId = args.params.companyId
