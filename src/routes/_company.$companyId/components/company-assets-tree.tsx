@@ -97,11 +97,15 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
           const index = node.name.indexOf(selectedAssetName!)
 
           if (index > -1) {
+            const beforeStr = node.name.substring(0, index)
+            const currStr = node.name.slice(index, index + selectedAssetName!.length)
+            const afterStr = node.name.slice(index + selectedAssetName!.length)
+
             title = (
               <>
-                {node.name.substring(0, index)}
-                <span className="font-bold">{selectedAssetName}</span>
-                {node.name.slice(index + selectedAssetName!.length)}
+                {beforeStr}
+                <span className="font-bold">{currStr}</span>
+                {afterStr}
               </>
             )
           }
