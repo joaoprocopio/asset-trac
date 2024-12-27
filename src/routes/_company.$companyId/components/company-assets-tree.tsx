@@ -92,6 +92,20 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
         {rowVirtualizer.getVirtualItems().map((virtualRow) => {
           const node = assetsFlatTree.data![virtualRow.index]
 
+          let title: React.ReactNode = node.name
+
+          const index = node.name.indexOf(selectedAssetName!)
+
+          if (index > -1) {
+            title = (
+              <>
+                {node.name.substring(0, index)}
+                <span className="font-bold">{selectedAssetName}</span>
+                {node.name.slice(index + selectedAssetName!.length)}
+              </>
+            )
+          }
+
           return (
             <div
               key={virtualRow.index}
@@ -116,7 +130,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                   data-selected={node.id === params?.assetId}>
                   <StartIcon node={node} />
 
-                  <span className="first-letter:uppercase">{node.name}</span>
+                  <span className="first-letter:uppercase">{title}</span>
                 </Link>
 
                 <EndIcon node={node} />
