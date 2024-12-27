@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
+import { Typography } from "~/components/typography"
 import {
   AssetNameKey,
   AssetSensorType,
@@ -89,59 +90,65 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
           marginTop: CONTAINER_PADDING,
           marginBottom: CONTAINER_PADDING,
         }}>
-        {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-          const node = assetsFlatTree.data![virtualRow.index]
+        {assetsFlatTree.data?.length ? (
+          rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const node = assetsFlatTree.data![virtualRow.index]
 
-          let title: React.ReactNode = node.name
+            let title: React.ReactNode = node.name
 
-          const index = node.name.indexOf(selectedAssetName!)
+            const index = node.name.indexOf(selectedAssetName!)
 
-          if (index > -1) {
-            const beforeStr = node.name.substring(0, index)
-            const currStr = node.name.slice(index, index + selectedAssetName!.length)
-            const afterStr = node.name.slice(index + selectedAssetName!.length)
+            if (index > -1) {
+              const beforeStr = node.name.substring(0, index)
+              const currStr = node.name.slice(index, index + selectedAssetName!.length)
+              const afterStr = node.name.slice(index + selectedAssetName!.length)
 
-            title = (
-              <>
-                {beforeStr}
-                <span className="font-bold">{currStr}</span>
-                {afterStr}
-              </>
-            )
-          }
+              title = (
+                <>
+                  {beforeStr}
+                  <span className="font-bold">{currStr}</span>
+                  {afterStr}
+                </>
+              )
+            }
 
-          return (
-            <div
-              key={virtualRow.index}
-              className="absolute left-0 top-0 w-full"
-              style={{
-                height: virtualRow.size,
-                transform: `translateY(${virtualRow.start}px)`,
-              }}>
-              <div className="flex items-center">
-                <Indent node={node} />
+            return (
+              <div
+                key={virtualRow.index}
+                className="absolute left-0 top-0 w-full"
+                style={{
+                  height: virtualRow.size,
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}>
+                <div className="flex items-center">
+                  <Indent node={node} />
 
-                <Link
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "sm",
-                    className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
-                  })}
-                  style={{
-                    height: NODE_HEIGHT,
-                  }}
-                  to={node.id}
-                  data-selected={node.id === params?.assetId}>
-                  <StartIcon node={node} />
+                  <Link
+                    className={buttonVariants({
+                      variant: "ghost",
+                      size: "sm",
+                      className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
+                    })}
+                    style={{
+                      height: NODE_HEIGHT,
+                    }}
+                    to={node.id}
+                    data-selected={node.id === params?.assetId}>
+                    <StartIcon node={node} />
 
-                  <span className="first-letter:uppercase">{title}</span>
-                </Link>
+                    <span className="first-letter:uppercase">{title}</span>
+                  </Link>
 
-                <EndIcon node={node} />
+                  <EndIcon node={node} />
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })
+        ) : (
+          <Typography className="mt-10 pr-6 text-center" variant="h5">
+            No results found for this search
+          </Typography>
+        )}
       </div>
     </div>
   )
