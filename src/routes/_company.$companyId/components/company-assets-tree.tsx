@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import type { VirtualItem } from "@tanstack/react-virtual"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchXIcon, ZapIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
@@ -23,7 +24,7 @@ import {
   assetsOptions,
   locationsOptions,
 } from "~/lib/query/query-options"
-import type { TFlatTreeNode } from "~/lib/tree"
+import type { TFlatTree, TFlatTreeNode } from "~/lib/tree"
 import { array } from "~/lib/utils"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
@@ -36,7 +37,6 @@ const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
-  const location = useLocation()
   const params = useParams()
 
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
@@ -97,74 +97,20 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
           marginBottom: CONTAINER_PADDING,
         }}>
         {assetsFlatTree.data?.length ? (
-          rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const node = assetsFlatTree.data![virtualRow.index]
-
-            let nodeLabel: React.ReactNode = node.name
-
-            if (selectedAssetName?.length) {
-              const matchIndex = node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase())
-
-              if (matchIndex >= 0) {
-                const beforeMatchStr = node.name.substring(0, matchIndex)
-                const matchStr = node.name.substring(
-                  matchIndex,
-                  matchIndex + selectedAssetName.length
-                )
-                const afterMatchStr = node.name.substring(matchIndex + selectedAssetName.length)
-
-                nodeLabel = (
-                  <>
-                    {beforeMatchStr}
-                    <span className="font-bold">{matchStr}</span>
-                    {afterMatchStr}
-                  </>
-                )
-              }
-            }
-
-            return (
-              <div
+          rowVirtualizer
+            .getVirtualItems()
+            .map((virtualRow) => (
+              <VirtualNode
                 key={virtualRow.key}
-                className="absolute left-0 top-0 w-full"
-                style={{
-                  height: PADDED_NODE_HEIGHT,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}>
-                <div className="flex items-center">
-                  <Indent node={node} />
-
-                  <Link
-                    className={buttonVariants({
-                      variant: "ghost",
-                      size: "sm",
-                      className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
-                    })}
-                    style={{
-                      height: NODE_HEIGHT,
-                    }}
-                    to={{
-                      pathname: node.id,
-                      search: location.search,
-                    }}
-                    data-selected={node.id === params?.assetId}>
-                    <StartIcon node={node} />
-
-                    <span>{nodeLabel}</span>
-                  </Link>
-
-                  <EndIcon node={node} />
-                </div>
-              </div>
-            )
-          })
+                virtualRow={virtualRow}
+                flatTree={assetsFlatTree.data}
+              />
+            ))
         ) : (
           <>
             <div className="mt-10 space-y-1.5 text-center">
               <SearchXIcon className="h-14 w-full" />
-
               <Typography variant="h3">No results found for this search</Typography>
-
               <Typography className="mx-auto" affects="muted">
                 There is no result available for this search
               </Typography>
@@ -176,11 +122,81 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
   )
 }
 
-function Indent({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
+function VirtualNode({
+  virtualRow,
+  flatTree,
+  filter,
+}: {
+  virtualRow: VirtualItem
+  flatTree: TFlatTree<TLocationNode | TAssetNode>
+  filter?: { name?: string; status?: TAssetStatus }
+}) {
+  const params = useParams()
+  const location = useLocation()
+
+  const node = flatTree[virtualRow.index]
+
+  let nodeLabel: React.ReactNode = node.name
+
+  if (filter?.name?.length) {
+    const matchIndex = node.name.toLowerCase().indexOf(filter.name.toLowerCase())
+
+    if (matchIndex >= 0) {
+      const beforeMatchStr = node.name.substring(0, matchIndex)
+      const matchStr = node.name.substring(matchIndex, matchIndex + filter.name.length)
+      const afterMatchStr = node.name.substring(matchIndex + filter.name.length)
+
+      nodeLabel = (
+        <>
+          {beforeMatchStr}
+          <span className="font-bold">{matchStr}</span>
+          {afterMatchStr}
+        </>
+      )
+    }
+  }
+
+  return (
+    <div
+      key={virtualRow.key}
+      className="absolute left-0 top-0 w-full"
+      style={{
+        height: PADDED_NODE_HEIGHT,
+        transform: `translateY(${virtualRow.start}px)`,
+      }}>
+      <div className="flex items-center">
+        <VirtualNodeIndent node={node} />
+
+        <Link
+          className={buttonVariants({
+            variant: "ghost",
+            size: "sm",
+            className: "px-0 pr-2.5 font-normal data-[selected=true]:bg-muted",
+          })}
+          style={{
+            height: NODE_HEIGHT,
+          }}
+          to={{
+            pathname: node.id,
+            search: location.search,
+          }}
+          data-selected={node.id === params?.assetId}>
+          <VirtualNodeStartIcon node={node} />
+
+          <span>{nodeLabel}</span>
+        </Link>
+
+        <VirtualNodeEndIcon node={node} />
+      </div>
+    </div>
+  )
+}
+
+function VirtualNodeIndent({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
   return array(node.level).map((_, index) => <div key={index} className="w-8" />)
 }
 
-function StartIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
+function VirtualNodeStartIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
   switch (node.type) {
     case AssetType.Location:
       return (
@@ -203,7 +219,7 @@ function StartIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }
   }
 }
 
-function EndIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
+function VirtualNodeEndIcon({ node }: { node: TFlatTreeNode<TLocationNode | TAssetNode> }) {
   if (node.type !== AssetType.Component) {
     return undefined
   }
