@@ -107,15 +107,13 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
               />
             ))
         ) : (
-          <>
-            <div className="mt-10 space-y-1.5 text-center">
-              <SearchXIcon className="h-14 w-full" />
-              <Typography variant="h3">No results found for this search</Typography>
-              <Typography className="mx-auto" affects="muted">
-                There is no result available for this search
-              </Typography>
-            </div>
-          </>
+          <div className="mt-10 space-y-1.5 text-center">
+            <SearchXIcon className="h-14 w-full" />
+            <Typography variant="h3">No results found for this search</Typography>
+            <Typography className="mx-auto" affects="muted">
+              There is no result available for this search
+            </Typography>
+          </div>
         )}
       </div>
     </div>
