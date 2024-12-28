@@ -155,9 +155,12 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
             )
           })
         ) : (
-          <Typography className="mt-10 pr-6 text-center" variant="h5">
-            No results found for this search
-          </Typography>
+          <div className="mt-10 space-y-0.5 text-center">
+            <Typography variant="h4">No results found for this search</Typography>
+            <Typography variant="p" affects="muted">
+              There is no result available for this search
+            </Typography>
+          </div>
         )}
       </div>
     </div>
