@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
+import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchXIcon, ZapIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
 import { Link, useParams } from "react-router"
 
@@ -155,12 +155,17 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
             )
           })
         ) : (
-          <div className="mt-10 space-y-0.5 text-center">
-            <Typography variant="h4">No results found for this search</Typography>
-            <Typography variant="p" affects="muted">
-              There is no result available for this search
-            </Typography>
-          </div>
+          <>
+            <div className="mt-10 space-y-1.5 text-center">
+              <SearchXIcon className="h-14 w-full" />
+
+              <Typography variant="h3">No results found for this search</Typography>
+
+              <Typography className="mx-auto" affects="muted">
+                There is no result available for this search
+              </Typography>
+            </div>
+          </>
         )}
       </div>
     </div>
