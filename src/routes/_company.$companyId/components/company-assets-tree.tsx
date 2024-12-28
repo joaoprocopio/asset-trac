@@ -64,7 +64,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
     estimateSize: () => PADDED_NODE_HEIGHT,
   })
 
-  if (assetsFlatTree.isPending || assetsFlatTree.isFetching) {
+  if (assetsGraph.isLoading || assetsFlatTree.isLoading) {
     return (
       <div className={cn("overflow-y-scroll", className)} {...props}>
         <div
