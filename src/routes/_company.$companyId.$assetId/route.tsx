@@ -85,15 +85,12 @@ function AssetDetailsTitleSwitch({
   switch (selectedAsset.type) {
     case AssetType.Asset:
     case AssetType.Location:
-      return (
-        <Typography className="first-letter:uppercase" variant="h3">
-          {selectedAsset.name}
-        </Typography>
-      )
+      return <Typography variant="h3">{selectedAsset.name}</Typography>
     case AssetType.Component:
       return (
         <Typography className="flex items-center gap-3" variant="h3">
-          <span className="first-letter:uppercase">{selectedAsset.name}</span>
+          <span>{selectedAsset.name}</span>
+
           <AssetDetailsTitleIconSwitch selectedAsset={selectedAsset} />
         </Typography>
       )

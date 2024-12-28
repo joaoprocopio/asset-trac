@@ -141,7 +141,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                     data-selected={node.id === params?.assetId}>
                     <StartIcon node={node} />
 
-                    <span className="first-letter:uppercase">{nodeLabel}</span>
+                    <span>{nodeLabel}</span>
                   </Link>
 
                   <EndIcon node={node} />

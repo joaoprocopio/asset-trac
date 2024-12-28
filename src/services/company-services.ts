@@ -58,7 +58,7 @@ async function buildCompanyAssetsGraph(
     graph.addNode(nodeId, {
       type: AssetType.Location,
       id: nodeId,
-      name: location.name.toLowerCase(),
+      name: location.name,
       parentId: parentId,
     })
 
@@ -81,7 +81,7 @@ async function buildCompanyAssetsGraph(
     graph.addNode(nodeId, {
       type: asset.sensorId ? AssetType.Component : AssetType.Asset,
       id: nodeId,
-      name: asset.name.toLowerCase(),
+      name: asset.name,
       parentId: parentId,
       sensorType: asset.sensorType,
       status: asset.status,
@@ -120,13 +120,9 @@ async function buildCompanyAssetsFlatTree<Node extends TLocationNode | TAssetNod
     flatTree = buildFilteredFlatTree(graph, (node) => {
       const filterCase: number = (canMatchName ? 1 : 0) | (canMatchStatus ? 2 : 0)
 
-      const nameMatch: boolean = canMatchName
-        ? node.name.indexOf(filter.name!.toLowerCase()) >= 0
-        : false
+      const nameMatch: boolean = canMatchName ? node.name.indexOf(filter.name!) >= 0 : false
       const statusMatch: boolean =
-        canMatchStatus && node.type !== "location"
-          ? node.status === filter.status!.toLowerCase()
-          : false
+        canMatchStatus && node.type !== "location" ? node.status === filter.status! : false
 
       switch (filterCase) {
         default:
