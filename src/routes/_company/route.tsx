@@ -17,7 +17,7 @@ export default function Company() {
   return (
     <div className="h-full">
       <header className="fixed inset-0 z-10 h-16 border-b bg-background">
-        <div className="container mx-auto flex h-full items-center justify-between px-6">
+        <div className="container flex h-full items-center justify-between">
           <NavLink to="/">
             <TractianLogo className="h-4" />
           </NavLink>
@@ -45,7 +45,7 @@ export default function Company() {
       </header>
 
       <main className="h-full pt-16">
-        <div className="container mx-auto h-full px-6 py-8">
+        <div className="container h-full py-8">
           <Outlet />
         </div>
       </main>

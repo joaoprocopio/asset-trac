@@ -71,7 +71,7 @@ export function HydrateFallback() {
   return (
     <div className="h-full">
       <header className="fixed inset-0 z-10 h-16 border-b bg-background">
-        <div className="container mx-auto flex h-full items-center justify-between px-6">
+        <div className="container flex h-full items-center justify-between">
           <Skeleton className="h-4 w-28" />
 
           <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
@@ -85,7 +85,7 @@ export function HydrateFallback() {
       </header>
 
       <main className="h-full pt-16">
-        <div className="container mx-auto h-full px-6 py-8">
+        <div className="container h-full py-8">
           <Card className="h-full">
             <CardHeader className="h-full">
               <Skeleton className="h-full w-full" />
@@ -112,7 +112,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
+    <main className="container py-16">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
