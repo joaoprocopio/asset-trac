@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchXIcon, ZapIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
-import { Link, useParams } from "react-router"
+import { Link, useLocation, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
@@ -36,6 +36,7 @@ const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
+  const location = useLocation()
   const params = useParams()
 
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
@@ -142,7 +143,10 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                     style={{
                       height: NODE_HEIGHT,
                     }}
-                    to={node.id}
+                    to={{
+                      pathname: node.id,
+                      search: location.search,
+                    }}
                     data-selected={node.id === params?.assetId}>
                     <StartIcon node={node} />
 
