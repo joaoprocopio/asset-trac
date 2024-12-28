@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, ZapIcon } from "lucide-react"
-import { useRef } from "react"
+import { useMemo, useRef } from "react"
 import { Link, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
@@ -41,6 +41,14 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   const [selectedAssetStatus] = useSearchParam<TAssetStatus>({ paramKey: AssetStatusKey })
 
+  const filter = useMemo(
+    () => ({
+      name: selectedAssetName,
+      status: selectedAssetStatus,
+    }),
+    [selectedAssetName, selectedAssetStatus]
+  )
+
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
   const assetsGraph = useQuery({
@@ -48,10 +56,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
     enabled: locations.isSuccess && assets.isSuccess,
   })
   const assetsFlatTree = useQuery({
-    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!, {
-      name: selectedAssetName,
-      status: selectedAssetStatus,
-    }),
+    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!, filter),
     enabled: assetsGraph.isSuccess,
     gcTime: 30_000, // 30s
   })
