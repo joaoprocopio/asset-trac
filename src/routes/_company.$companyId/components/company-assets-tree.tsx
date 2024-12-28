@@ -97,7 +97,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
             let nodeLabel: React.ReactNode = node.name
 
             if (selectedAssetName?.length) {
-              const matchIndex = node.name.indexOf(selectedAssetName)
+              const matchIndex = node.name.toLowerCase().indexOf(selectedAssetName.toLowerCase())
 
               if (matchIndex >= 0) {
                 const beforeMatchStr = node.name.substring(0, matchIndex)
