@@ -106,10 +106,7 @@ async function buildCompanyAssetsGraph(
 
 async function buildCompanyAssetsFlatTree<Node extends TLocationNode | TAssetNode>(
   graph: Graph<Node>,
-  filter?: {
-    name?: string
-    status?: TAssetStatus
-  }
+  filter?: { name?: string; status?: TAssetStatus }
 ): Promise<TFlatTree<Node>> {
   let flatTree: TFlatTree<Node>
 

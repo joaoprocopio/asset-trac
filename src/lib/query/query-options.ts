@@ -32,10 +32,7 @@ export const assetsGraphOptions = (companyId: string, locations: TLocations, ass
 export const assetsFlatTreeOptions = <Node extends TLocationNode | TAssetNode>(
   companyId: string,
   graph: Graph<Node>,
-  filter?: {
-    name?: string
-    status?: TAssetStatus
-  }
+  filter?: { name?: string; status?: TAssetStatus }
 ) =>
   queryOptions({
     queryKey: ["company-assets-flat-tree", companyId, filter],

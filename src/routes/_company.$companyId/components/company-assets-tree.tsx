@@ -51,6 +51,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
+
   const assetsGraph = useQuery({
     ...assetsGraphOptions(params.companyId!, locations.data!, assets.data!),
     enabled: locations.isSuccess && assets.isSuccess,
@@ -58,7 +59,6 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
   const assetsFlatTree = useQuery({
     ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!, filter),
     enabled: assetsGraph.isSuccess,
-    gcTime: 30_000, // 30s
   })
 
   const rowVirtualizer = useVirtualizer({
