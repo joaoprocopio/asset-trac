@@ -2,7 +2,7 @@ import { queryOptions } from "@tanstack/react-query"
 
 import type { TAssetStatus } from "~/constants/company-constants"
 import type { Graph } from "~/lib/graph"
-import type { TAssets, TLocations } from "~/schemas/company-schemas"
+import type { TAssetNode, TAssets, TLocationNode, TLocations } from "~/schemas/company-schemas"
 import { CompanyServices } from "~/services/company-services"
 
 export const companiesOptions = () =>
@@ -29,7 +29,7 @@ export const assetsGraphOptions = (companyId: string, locations: TLocations, ass
     queryFn: async () => CompanyServices.buildCompanyAssetsGraph(locations, assets),
   })
 
-export const assetsFlatTreeOptions = <Node>(
+export const assetsFlatTreeOptions = <Node extends TLocationNode | TAssetNode>(
   companyId: string,
   graph: Graph<Node>,
   filter?: {

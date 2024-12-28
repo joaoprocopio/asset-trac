@@ -120,7 +120,9 @@ async function buildCompanyAssetsFlatTree<Node extends TLocationNode | TAssetNod
     flatTree = buildFilteredFlatTree(graph, (node) => {
       const filterCase: number = (canMatchName ? 1 : 0) | (canMatchStatus ? 2 : 0)
 
-      const nameMatch: boolean = canMatchName ? node.name.indexOf(filter.name!) >= 0 : false
+      const nameMatch: boolean = canMatchName
+        ? node.name.toLowerCase().indexOf(filter.name!.toLowerCase()) >= 0
+        : false
       const statusMatch: boolean =
         canMatchStatus && node.type !== "location" ? node.status === filter.status! : false
 
