@@ -104,6 +104,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                 key={virtualRow.key}
                 virtualRow={virtualRow}
                 flatTree={assetsFlatTree.data}
+                filter={filter}
               />
             ))
         ) : (
