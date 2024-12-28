@@ -90,7 +90,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
   return (
     <div ref={scrollableRef} className={cn("overflow-y-scroll px-6", className)} {...props}>
       <div
-        className="relative h-full"
+        className="relative w-full"
         style={{
           height: rowVirtualizer.getTotalSize(),
           marginTop: CONTAINER_PADDING,
@@ -125,7 +125,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
 
             return (
               <div
-                key={virtualRow.index}
+                key={virtualRow.key}
                 className="absolute left-0 top-0 w-full"
                 style={{
                   height: PADDED_NODE_HEIGHT,
