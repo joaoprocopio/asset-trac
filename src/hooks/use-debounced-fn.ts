@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from "react"
 
+// 166ms = 10 frames at 60 Hz
 export const useDebouncedFn = <Fn extends (...args: Parameters<Fn>) => void>(
   fn: Fn,
-  wait = 300
+  wait = 166
 ): ((...args: Parameters<Fn>) => void) => {
   const rafId = useRef(0)
 
