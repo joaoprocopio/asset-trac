@@ -29,7 +29,7 @@ import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
 const OVERSCAN = 5
 const NODE_PADDING = 4
-const NODE_HEIGHT = 34
+const NODE_HEIGHT = 32
 const CONTAINER_PADDING = NODE_PADDING * 2
 const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 
@@ -94,22 +94,27 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
           rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const node = assetsFlatTree.data![virtualRow.index]
 
-            let title: React.ReactNode = node.name
+            let nodeLabel: React.ReactNode = node.name
 
-            const index = node.name.indexOf(selectedAssetName!)
+            if (selectedAssetName?.length) {
+              const matchIndex = node.name.indexOf(selectedAssetName)
 
-            if (index > -1) {
-              const beforeStr = node.name.substring(0, index)
-              const currStr = node.name.slice(index, index + selectedAssetName!.length)
-              const afterStr = node.name.slice(index + selectedAssetName!.length)
+              if (matchIndex >= 0) {
+                const beforeMatchStr = node.name.substring(0, matchIndex)
+                const matchStr = node.name.substring(
+                  matchIndex,
+                  matchIndex + selectedAssetName.length
+                )
+                const afterMatchStr = node.name.substring(matchIndex + selectedAssetName.length)
 
-              title = (
-                <>
-                  {beforeStr}
-                  <span className="font-bold">{currStr}</span>
-                  {afterStr}
-                </>
-              )
+                nodeLabel = (
+                  <>
+                    {beforeMatchStr}
+                    <span className="font-bold">{matchStr}</span>
+                    {afterMatchStr}
+                  </>
+                )
+              }
             }
 
             return (
@@ -117,7 +122,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                 key={virtualRow.index}
                 className="absolute left-0 top-0 w-full"
                 style={{
-                  height: virtualRow.size,
+                  height: PADDED_NODE_HEIGHT,
                   transform: `translateY(${virtualRow.start}px)`,
                 }}>
                 <div className="flex items-center">
@@ -136,7 +141,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                     data-selected={node.id === params?.assetId}>
                     <StartIcon node={node} />
 
-                    <span className="first-letter:uppercase">{title}</span>
+                    <span className="first-letter:uppercase">{nodeLabel}</span>
                   </Link>
 
                   <EndIcon node={node} />
