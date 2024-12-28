@@ -41,15 +41,46 @@
 
 @layer base {
   * {
-    @apply border-border transition-none duration-0;
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
   }
 
   html,
   body {
-    @apply isolate h-full max-h-full min-h-full;
+    @apply h-full max-h-full min-h-full;
   }
 
   body {
-    @apply scroll-smooth bg-muted text-foreground antialiased;
+    @apply isolate bg-muted text-foreground antialiased;
+
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 5px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
   }
 }
+
+/* @layer utilities {
+  .container {
+    @apply mx-auto max-w-[1536px] px-4 xl:px-6 2xl:px-4;
+  }
+} */
