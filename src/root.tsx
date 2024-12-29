@@ -1,7 +1,7 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 
 import tailwindStylesheet from "~/assets/styles/tailwind.css?url"
-import { Card, CardHeader } from "~/components/card"
+import { Card } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
 
 import type { Route } from "./+types/root"
@@ -25,7 +25,7 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "shortcut icon",
     type: "image/svg+xml",
-    href: "/favicon.svg",
+    href: "./favicon.svg",
   },
   {
     as: "style",
@@ -87,9 +87,7 @@ export function HydrateFallback() {
       <main className="h-full pt-16">
         <div className="container h-full py-8">
           <Card className="h-full">
-            <CardHeader className="h-full">
-              <Skeleton className="h-full w-full" />
-            </CardHeader>
+            <Skeleton className="h-full" />
           </Card>
         </div>
       </main>
