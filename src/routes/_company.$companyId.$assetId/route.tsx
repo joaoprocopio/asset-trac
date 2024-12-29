@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
-import { InfoIcon, RadioIcon, RouterIcon, ZapIcon } from "lucide-react"
-import { useParams } from "react-router"
+import { InfoIcon, RadioIcon, RouterIcon, XIcon, ZapIcon } from "lucide-react"
+import { Link, useLocation, useParams } from "react-router"
 
+import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
 import { Typography } from "~/components/typography"
 import { AssetSensorType, AssetStatus, AssetType } from "~/constants/company-constants"
@@ -24,6 +25,7 @@ export const clientLoader = async (args: Route.ClientLoaderArgs) => {
 
 export default function AssetDetails() {
   const params = useParams()
+  const location = useLocation()
 
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
@@ -37,8 +39,8 @@ export default function AssetDetails() {
   if (selectedAsset.isPending || selectedAsset.isFetching) {
     return (
       <div>
-        <div className="border-b px-6 py-4">
-          <Skeleton className="h-8 w-36" />
+        <div className="h-20 border-b px-6 py-4">
+          <Skeleton className="h-full w-full" />
         </div>
 
         <div className="grid grid-cols-2 gap-6 px-6 py-4">
@@ -50,8 +52,21 @@ export default function AssetDetails() {
 
   return (
     <div>
-      <div className="border-b px-6 py-4">
+      <div className="flex h-20 items-center justify-between border-b px-6 py-4">
         <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
+
+        <Link
+          to={{
+            pathname: "..",
+            search: location.search,
+          }}
+          className={buttonVariants({
+            className: "rounded-full",
+            size: "icon",
+            variant: "link",
+          })}>
+          <XIcon />
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-6 px-6 py-4">
