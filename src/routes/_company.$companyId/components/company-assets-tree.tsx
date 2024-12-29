@@ -3,7 +3,7 @@ import type { VirtualItem } from "@tanstack/react-virtual"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchXIcon, ZapIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
-import { Link, useLocation, useParams } from "react-router"
+import { Link, type To, useLocation, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
 import { Skeleton } from "~/components/skeleton"
@@ -24,7 +24,7 @@ import {
   assetsOptions,
   locationsOptions,
 } from "~/lib/query/query-options"
-import type { TFlatTree, TFlatTreeNode } from "~/lib/tree"
+import type { TFlatTreeNode } from "~/lib/tree"
 import { array } from "~/lib/utils"
 import type { TAssetNode, TLocationNode } from "~/schemas/company-schemas"
 
@@ -37,6 +37,7 @@ const PADDED_NODE_HEIGHT = NODE_HEIGHT + NODE_PADDING
 export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const scrollableRef = useRef<HTMLDivElement>(null)
 
+  const location = useLocation()
   const params = useParams()
 
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
@@ -97,16 +98,23 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
           marginBottom: CONTAINER_PADDING,
         }}>
         {assetsFlatTree.data?.length ? (
-          rowVirtualizer
-            .getVirtualItems()
-            .map((virtualRow) => (
+          rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const node = assetsFlatTree.data[virtualRow.index]
+
+            return (
               <VirtualNode
                 key={virtualRow.key}
                 virtualRow={virtualRow}
-                flatTree={assetsFlatTree.data}
+                node={node}
                 filter={filter}
+                to={{
+                  pathname: node.id,
+                  search: location.search,
+                }}
+                isSelected={node.id === params?.assetId}
               />
-            ))
+            )
+          })
         ) : (
           <div className="mt-10 space-y-1.5 text-center">
             <SearchXIcon className="h-14 w-full" />
@@ -123,18 +131,17 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
 
 function VirtualNode({
   virtualRow,
-  flatTree,
+  node,
   filter,
+  to,
+  isSelected,
 }: {
   virtualRow: VirtualItem
-  flatTree: TFlatTree<TLocationNode | TAssetNode>
+  node: TFlatTreeNode<TLocationNode | TAssetNode>
   filter?: { name?: string; status?: TAssetStatus }
+  to: To
+  isSelected: boolean
 }) {
-  const params = useParams()
-  const location = useLocation()
-
-  const node = flatTree[virtualRow.index]
-
   let nodeLabel: React.ReactNode = node.name
 
   if (filter?.name?.length) {
@@ -175,11 +182,8 @@ function VirtualNode({
           style={{
             height: NODE_HEIGHT,
           }}
-          to={{
-            pathname: node.id,
-            search: location.search,
-          }}
-          data-selected={node.id === params?.assetId}>
+          to={to}
+          data-selected={isSelected}>
           <VirtualNodeStartIcon node={node} />
 
           <span>{nodeLabel}</span>

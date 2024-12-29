@@ -68,6 +68,7 @@ export function buildFilteredFlatTree<Node>(
 
     if (graph.hasEdge(nodeId)) {
       const edge = graph.getEdge(nodeId)!
+
       for (const childId of edge.values()) {
         if (
           graph.getNode(childId)?.parentId === nodeId &&
