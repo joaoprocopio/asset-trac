@@ -14,12 +14,12 @@ export function useSearchParam<T extends string>({
 }: TSeachParamProps): [TSeachParam<T>, TSetSearchParam<T>] {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const searchParam: TSeachParam<T> = useMemo(
+  const searchParam = useMemo<TSeachParam<T>>(
     () => searchParams.get(paramKey) ?? undefined,
     [searchParams, paramKey]
   )
 
-  const setSearchParam: TSetSearchParam<T> = useCallback(
+  const setSearchParam = useCallback<TSetSearchParam<T>>(
     (nextValue) => {
       setSearchParams(
         (prevSearchParams) => {
