@@ -1,9 +1,8 @@
-import type { URLSearchParamsInit } from "react-router"
+import { useCallback, useMemo } from "react"
 import { useSearchParams } from "react-router"
 
 export type TSeachParamProps = {
   paramKey: string
-  paramsDefaultInit?: URLSearchParamsInit
 }
 
 export type TSeachParam<T extends string> = T | (string & {}) | undefined
@@ -12,36 +11,41 @@ export type TSetSearchParam = <T extends string>(nextSearchParam: TSeachParam<T>
 
 export function useSearchParam<T extends string>({
   paramKey,
-  paramsDefaultInit,
 }: TSeachParamProps): [TSeachParam<T>, TSetSearchParam] {
-  const [searchParams, setSearchParams] = useSearchParams(paramsDefaultInit)
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const searchParam: TSeachParam<T> = searchParams.get(paramKey) ?? undefined
+  const searchParam: TSeachParam<T> = useMemo(
+    () => searchParams.get(paramKey) ?? undefined,
+    [searchParams, paramKey]
+  )
 
-  const setSearchParam: TSetSearchParam = (nextValue) => {
-    setSearchParams(
-      (prevSearchParams) => {
-        if (!nextValue) {
-          prevSearchParams.delete(paramKey)
+  const setSearchParam: TSetSearchParam = useCallback(
+    (nextValue) => {
+      setSearchParams(
+        (prevSearchParams) => {
+          if (!nextValue) {
+            prevSearchParams.delete(paramKey)
+
+            return prevSearchParams
+          }
+
+          if (!prevSearchParams.has(paramKey)) {
+            prevSearchParams.append(paramKey, nextValue)
+
+            return prevSearchParams
+          }
+
+          prevSearchParams.set(paramKey, nextValue)
 
           return prevSearchParams
+        },
+        {
+          preventScrollReset: true,
         }
-
-        if (!prevSearchParams.has(paramKey)) {
-          prevSearchParams.append(paramKey, nextValue)
-
-          return prevSearchParams
-        }
-
-        prevSearchParams.set(paramKey, nextValue)
-
-        return prevSearchParams
-      },
-      {
-        preventScrollReset: true,
-      }
-    )
-  }
+      )
+    },
+    [setSearchParams, paramKey]
+  )
 
   return [searchParam, setSearchParam]
 }
