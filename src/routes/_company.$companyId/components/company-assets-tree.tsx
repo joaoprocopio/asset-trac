@@ -118,7 +118,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
           })
         ) : (
           <Empty
-            className="mt-10"
+            className="mt-12"
             icon={SearchIcon}
             title="No results found"
             description="There is no result available for this search"
