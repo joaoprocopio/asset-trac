@@ -4,6 +4,7 @@ import { useLocation } from "react-router"
 
 import { Button } from "~/components/button"
 import { Input } from "~/components/input"
+import type { TAssetStatus } from "~/constants/company-constants"
 import { AssetNameKey, AssetStatus, AssetStatusKey } from "~/constants/company-constants"
 import { useDebouncedFn } from "~/hooks/use-debounced-fn"
 import { useSearchParam } from "~/hooks/use-search-param"
@@ -11,17 +12,18 @@ import { useSearchParam } from "~/hooks/use-search-param"
 export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>) {
   const location = useLocation()
 
-  const [assetName, setAssetName] = useSearchParam({ paramKey: AssetNameKey })
-  const [assetStatus, setAssetStatus] = useSearchParam({ paramKey: AssetStatusKey })
+  const [assetName, setAssetName] = useSearchParam<string>({ paramKey: AssetNameKey })
+  const [assetStatus, setAssetStatus] = useSearchParam<TAssetStatus>({
+    paramKey: AssetStatusKey,
+  })
 
-  const [assetNameControlled, setAssetNameControlled] = useState<typeof assetName>(assetName)
-  const [assetStatusControlled, setAssetStatusControlled] =
-    useState<typeof assetStatus>(assetStatus)
+  const [assetNameControlled, setAssetNameControlled] = useState(assetName)
+  const [assetStatusControlled, setAssetStatusControlled] = useState(assetStatus)
 
   const setAssetNameDebounced = useDebouncedFn(setAssetName)
   const setAssetStatusDebounced = useDebouncedFn(setAssetStatus)
 
-  const handleChangeAssetName = (nextAssetQuery: typeof assetName) => {
+  const handleChangeAssetName = (nextAssetQuery: string) => {
     if (!nextAssetQuery?.length) {
       setAssetNameControlled(undefined)
       setAssetNameDebounced(undefined)
@@ -35,7 +37,7 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
     return undefined
   }
 
-  const handleChangeAssetStatus = (nextAssetStatus: typeof assetStatus) => {
+  const handleChangeAssetStatus = (nextAssetStatus: string) => {
     if (assetStatus === nextAssetStatus || assetStatusControlled === nextAssetStatus) {
       setAssetStatusControlled(undefined)
       setAssetStatusDebounced(undefined)

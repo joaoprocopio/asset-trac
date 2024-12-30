@@ -1,21 +1,22 @@
 import type { URLSearchParamsInit } from "react-router"
 import { useSearchParams } from "react-router"
 
-type TSeachParamProps = {
+export type TSeachParamProps = {
   paramKey: string
   paramsDefaultInit?: URLSearchParamsInit
 }
 
-type TSetSearchParam = <TSeachParam extends string>(nextSearchParam: TSeachParam) => void
+export type TSeachParam<T extends string> = T | (string & {}) | undefined
 
-export function useSearchParam<TSeachParam extends string>({
+export type TSetSearchParam = <T extends string>(nextSearchParam: TSeachParam<T>) => void
+
+export function useSearchParam<T extends string>({
   paramKey,
   paramsDefaultInit,
-}: TSeachParamProps): [TSeachParam | undefined, TSetSearchParam] {
+}: TSeachParamProps): [TSeachParam<T>, TSetSearchParam] {
   const [searchParams, setSearchParams] = useSearchParams(paramsDefaultInit)
 
-  const searchParam: TSeachParam | undefined =
-    (searchParams.get(paramKey) as TSeachParam) ?? undefined
+  const searchParam: TSeachParam<T> = searchParams.get(paramKey) ?? undefined
 
   const setSearchParam: TSetSearchParam = (nextValue) => {
     setSearchParams(
