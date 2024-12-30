@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
 import type { VirtualItem } from "@tanstack/react-virtual"
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchXIcon, ZapIcon } from "lucide-react"
+import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchIcon, ZapIcon } from "lucide-react"
 import { useMemo, useRef } from "react"
 import type { To } from "react-router"
 import { Link, useLocation, useParams } from "react-router"
 
 import { buttonVariants } from "~/components/button"
+import { Empty } from "~/components/empty"
 import { Skeleton } from "~/components/skeleton"
-import { Typography } from "~/components/typography"
 import {
   AssetNameKey,
   AssetSensorType,
@@ -117,13 +117,12 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
             )
           })
         ) : (
-          <div className="mt-10 space-y-1.5 text-center">
-            <SearchXIcon className="h-14 w-full" />
-            <Typography variant="h3">No results found for this search</Typography>
-            <Typography className="mx-auto" affects="muted">
-              There is no result available for this search
-            </Typography>
-          </div>
+          <Empty
+            className="mt-10"
+            icon={SearchIcon}
+            title="No results found"
+            description="There is no result available for this search"
+          />
         )}
       </div>
     </div>
