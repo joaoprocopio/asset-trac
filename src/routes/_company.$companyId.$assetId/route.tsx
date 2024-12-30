@@ -52,7 +52,7 @@ export default function AssetDetails() {
 
   return (
     <div>
-      <div className="flex h-20 items-center justify-between border-b px-6 py-4">
+      <div className="flex h-20 items-center justify-between gap-2 border-b px-6 py-4">
         <AssetDetailsTitleSwitch selectedAsset={selectedAsset.data!} />
 
         <Link
@@ -100,14 +100,20 @@ function AssetDetailsTitleSwitch({
   switch (selectedAsset.type) {
     case AssetType.Asset:
     case AssetType.Location:
-      return <Typography variant="h3">{selectedAsset.name}</Typography>
+      return (
+        <Typography variant="h3" className="overflow-hidden text-ellipsis text-nowrap">
+          {selectedAsset.name}
+        </Typography>
+      )
     case AssetType.Component:
       return (
-        <Typography className="flex items-center gap-3" variant="h3">
-          <span>{selectedAsset.name}</span>
+        <div className="flex items-center gap-3 overflow-hidden">
+          <Typography className="overflow-hidden text-ellipsis text-nowrap" variant="h3">
+            {selectedAsset.name}
+          </Typography>
 
           <AssetDetailsTitleIconSwitch selectedAsset={selectedAsset} />
-        </Typography>
+        </div>
       )
   }
 }
@@ -120,9 +126,9 @@ function AssetDetailsTitleIconSwitch({ selectedAsset }: { selectedAsset: TGraphN
 
   switch (selectedAsset.sensorType) {
     case AssetSensorType.Energy:
-      return <ZapIcon className={cn("size-4", colors)} />
+      return <ZapIcon className={cn("h-4 min-h-4 w-4 min-w-4", colors)} />
     case AssetSensorType.Vibration:
-      return <InfoIcon className={cn("size-3", colors)} />
+      return <InfoIcon className={cn("h-3 min-h-3 w-3 min-w-3", colors)} />
   }
 }
 
