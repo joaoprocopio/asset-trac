@@ -7,11 +7,11 @@ export type TSeachParamProps = {
 
 export type TSeachParam<T extends string> = T | (string & {}) | undefined
 
-export type TSetSearchParam = <T extends string>(nextSearchParam: TSeachParam<T>) => void
+export type TSetSearchParam<T extends string> = (nextSearchParam: TSeachParam<T>) => void
 
 export function useSearchParam<T extends string>({
   paramKey,
-}: TSeachParamProps): [TSeachParam<T>, TSetSearchParam] {
+}: TSeachParamProps): [TSeachParam<T>, TSetSearchParam<T>] {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const searchParam: TSeachParam<T> = useMemo(
@@ -19,7 +19,7 @@ export function useSearchParam<T extends string>({
     [searchParams, paramKey]
   )
 
-  const setSearchParam: TSetSearchParam = useCallback(
+  const setSearchParam: TSetSearchParam<T> = useCallback(
     (nextValue) => {
       setSearchParams(
         (prevSearchParams) => {
