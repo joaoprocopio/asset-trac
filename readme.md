@@ -3,6 +3,7 @@
 Seja bem-vindo! Esse é o repositório do Assets Trac.
 
 Visite o site: https://assets-trac.pages.dev/
+Veja o case: https://github.com/tractian/challenges/tree/main/front-end
 
 ## Recursos úteis para desenvolvimento
 
