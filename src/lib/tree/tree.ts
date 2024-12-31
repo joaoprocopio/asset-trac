@@ -17,7 +17,12 @@ export function buildFlatTree<Node>(graph: Graph<Node>): TFlatTree<Node> {
 
     visited.add(nodeId)
 
-    const node = graph.getNode(nodeId)! as TFlatTreeNode<Node>
+    const node = graph.getNode(nodeId) as TFlatTreeNode<Node> | undefined
+
+    if (!node) {
+      return undefined
+    }
+
     node.level = level
     flatTree.push(node)
 
@@ -55,47 +60,63 @@ export function buildFilteredFlatTree<Node>(
 ): TFlatTree<Node> {
   const filteredNodes = graph.filterNodes(predicate)
   const flatTree: TFlatTree<Node> = []
-  const visited = new Set<TGraphNodeId>()
-  const requiredParents = new Set<TGraphNodeId>()
+  const visited: Set<TGraphNodeId> = new Set()
+  const requiredParents: Set<TGraphNodeId> = new Set()
 
   for (const node of filteredNodes.values()) {
-    let currentId = node?.parentId ?? null
-    while (currentId) {
-      requiredParents.add(currentId)
-      currentId = graph.getNode(currentId)?.parentId ?? null
+    let currNodeId = node?.parentId
+
+    while (currNodeId) {
+      requiredParents.add(currNodeId)
+      currNodeId = graph.getNode(currNodeId)?.parentId
     }
   }
 
   function traverse(nodeId: TGraphNodeId, level: number = 0): void {
-    if (visited.has(nodeId)) return
+    if (visited.has(nodeId)) {
+      return undefined
+    }
+
     visited.add(nodeId)
 
-    const node = graph.getNode(nodeId) as TFlatTreeNode<Node>
-    if (!node) return
+    const node = graph.getNode(nodeId) as TFlatTreeNode<Node> | undefined
+
+    if (!node) {
+      return undefined
+    }
 
     if (filteredNodes.has(nodeId) || requiredParents.has(nodeId)) {
       node.level = level
       flatTree.push(node)
     }
 
-    if (graph.hasEdge(nodeId)) {
-      const edge = graph.getEdge(nodeId)!
+    if (!graph.hasEdge(nodeId)) {
+      return undefined
+    }
 
-      for (const childId of edge.values()) {
-        if (
-          graph.getNode(childId)?.parentId === nodeId &&
-          (filteredNodes.has(childId) || requiredParents.has(childId))
-        ) {
-          traverse(childId, level + 1)
-        }
+    const edge = graph.getEdge(nodeId)!
+
+    for (const edgeNodeId of edge.values()) {
+      if (!(filteredNodes.has(edgeNodeId) || requiredParents.has(edgeNodeId))) {
+        continue
       }
+
+      const edgeNode = graph.getNode(edgeNodeId)
+
+      if (edgeNode?.parentId !== nodeId) {
+        continue
+      }
+
+      traverse(edgeNodeId, level + 1)
     }
   }
 
   for (const root of graph.getAllRoots()) {
-    if (filteredNodes.has(root) || requiredParents.has(root)) {
-      traverse(root)
+    if (!(filteredNodes.has(root) || requiredParents.has(root))) {
+      continue
     }
+
+    traverse(root)
   }
 
   return flatTree
