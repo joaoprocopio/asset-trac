@@ -5,7 +5,7 @@ export type TSeachParamProps = {
   paramKey: string
 }
 
-export type TSeachParam<T extends string> = T | (string & {}) | undefined
+export type TSeachParam<T extends string> = T | undefined
 
 export type TSetSearchParam<T extends string> = (nextSearchParam: TSeachParam<T>) => void
 
@@ -15,7 +15,7 @@ export function useSearchParam<T extends string>({
   const [searchParams, setSearchParams] = useSearchParams()
 
   const searchParam = useMemo<TSeachParam<T>>(
-    () => searchParams.get(paramKey) ?? undefined,
+    () => (searchParams.get(paramKey) as T) ?? undefined,
     [searchParams, paramKey]
   )
 

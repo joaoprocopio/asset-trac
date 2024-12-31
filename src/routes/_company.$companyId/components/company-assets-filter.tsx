@@ -37,7 +37,7 @@ export function CompanyAssetsFilter(props: React.HTMLAttributes<HTMLDivElement>)
     return undefined
   }
 
-  const handleChangeAssetStatus = (nextAssetStatus: string) => {
+  const handleChangeAssetStatus = (nextAssetStatus: TAssetStatus) => {
     if (assetStatus === nextAssetStatus || assetStatusControlled === nextAssetStatus) {
       setAssetStatusControlled(undefined)
       setAssetStatusDebounced(undefined)

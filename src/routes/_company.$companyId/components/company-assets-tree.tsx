@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import type { VirtualItem } from "@tanstack/react-virtual"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { BoxIcon, CodepenIcon, InfoIcon, MapPinIcon, SearchIcon, ZapIcon } from "lucide-react"
-import { useMemo, useRef } from "react"
+import { useRef } from "react"
 import type { To } from "react-router"
 import { Link, useLocation, useParams } from "react-router"
 
@@ -44,14 +44,6 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
   const [selectedAssetName] = useSearchParam({ paramKey: AssetNameKey })
   const [selectedAssetStatus] = useSearchParam<TAssetStatus>({ paramKey: AssetStatusKey })
 
-  const filter = useMemo(
-    () => ({
-      name: selectedAssetName,
-      status: selectedAssetStatus,
-    }),
-    [selectedAssetName, selectedAssetStatus]
-  )
-
   const locations = useQuery(locationsOptions(params.companyId!))
   const assets = useQuery(assetsOptions(params.companyId!))
 
@@ -60,7 +52,10 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
     enabled: locations.isSuccess && assets.isSuccess,
   })
   const assetsFlatTree = useQuery({
-    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!, filter),
+    ...assetsFlatTreeOptions(params.companyId!, assetsGraph.data!, {
+      name: selectedAssetName,
+      status: selectedAssetStatus,
+    }),
     enabled: assetsGraph.isSuccess,
   })
 
@@ -107,7 +102,7 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
                 key={virtualRow.key}
                 virtualRow={virtualRow}
                 node={node}
-                filter={filter}
+                filteredNodeName={selectedAssetName}
                 to={{
                   pathname: node.id,
                   search: location.search,
@@ -132,25 +127,25 @@ export function CompanyAssetsTree({ className, ...props }: React.HTMLAttributes<
 function VirtualNode({
   virtualRow,
   node,
-  filter,
+  filteredNodeName,
   to,
   isSelected,
 }: {
   virtualRow: VirtualItem
   node: TFlatTreeNode<TLocationNode | TAssetNode>
-  filter?: { name?: string; status?: TAssetStatus }
+  filteredNodeName?: string
   to: To
   isSelected: boolean
 }) {
   let nodeLabel: React.ReactNode = node.name
 
-  if (filter?.name?.length) {
-    const matchIndex = node.name.toLowerCase().indexOf(filter.name.toLowerCase())
+  if (filteredNodeName?.length) {
+    const matchIndex = node.name.toLowerCase().indexOf(filteredNodeName.toLowerCase())
 
     if (matchIndex >= 0) {
       const beforeMatchStr = node.name.substring(0, matchIndex)
-      const matchStr = node.name.substring(matchIndex, matchIndex + filter.name.length)
-      const afterMatchStr = node.name.substring(matchIndex + filter.name.length)
+      const matchStr = node.name.substring(matchIndex, matchIndex + filteredNodeName.length)
+      const afterMatchStr = node.name.substring(matchIndex + filteredNodeName.length)
 
       nodeLabel = (
         <>
