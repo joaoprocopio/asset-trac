@@ -126,9 +126,9 @@ function AssetDetailsTitleIconSwitch({ selectedAsset }: { selectedAsset: TGraphN
 
   switch (selectedAsset.sensorType) {
     case AssetSensorType.Energy:
-      return <ZapIcon className={cn("h-4 min-h-4 w-4 min-w-4", colors)} />
+      return <ZapIcon className={cn("size-4", colors)} />
     case AssetSensorType.Vibration:
-      return <InfoIcon className={cn("h-3 min-h-3 w-3 min-w-3", colors)} />
+      return <InfoIcon className={cn("size-3", colors)} />
   }
 }
 
