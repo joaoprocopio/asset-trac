@@ -15,23 +15,10 @@ O ambiente de produção está na [CloudFlare Pages](https://pages.cloudflare.co
 Para que você possa rodar a aplicação em sua máquina, use os seguintes comandos:
 
 ```sh
-npm install
-npm run dev
+npm i -g 'pnpm@9.15.1'
+pnpm install
+pnpm dev
 ```
-
-## Showcase da aplicação
-
-### Jaguar Unit
-
-[![](https://markdown-videos-api.jorgenkh.no/youtube/JqM08jiyGeg)](https://youtu.be/JqM08jiyGeg)
-
-### Tobias Unit
-
-[![](https://markdown-videos-api.jorgenkh.no/youtube/VnxO0roXtVc)](https://youtu.be/VnxO0roXtVc)
-
-### Apex Unit
-
-[![](https://markdown-videos-api.jorgenkh.no/youtube/gK1s5N8ON3E)](https://youtu.be/gK1s5N8ON3E)
 
 ## Quais pontos eu melhoraria se eu tivesse mais tempo?
 
@@ -52,29 +39,6 @@ Mas, mesmo sabendo disso, vou deixar anotado alguns pontos que eu trabalharia no
 
 ### Pontos de usabilidade
 
-- Toda vez que você faz uma busca de ativos, o caminho completo desse ativo é exibido. Mas existe um problema nisso, para um Ativo com muitos irmãos, ou em outras palavras um ativo com outros ativos no mesmo nível, os ativos do mesmo nível mesmo sem fazerem parte da busca continuam sendo exibidos.
-
-Por exemplo ao entrar em Apex Unit e pesquisar por `location 2`, todos os irmãos de `location 2` serão exibidos.
-
-```
-- ROOT
-  |
-  ├── Location 1 [Location]
-  |     |
-  |     ├── Location 182 [Sub-Location]
-  |     |     |
-  |     |     ├── Location 2 [Sub-Location]
-  |     |     |
-  |     |     ├── Location 3 [Sub-Location]
-  |     |     |
-  |     |     ├── Location 4 [Sub-Location]
-  |     |     |
-  |
-  ├── Location 183 [Location]
-```
-
-- Upload de imagem, hoje a mesma imagem que você fazer upload, vai ser exibida para todo e qual Ativo, Componente ou Localização.
-
 - Hoje os nós da árvore que tem filhos não podem ser expandidos/minimizados, o que é uma feature extremamente interessante, já que existem ativos que tem muitos filhos.
 
 - A filtragem poderia ser [Dropdown Menu](https://www.radix-ui.com/primitives/docs/components/dropdown-menu) separado, com um ícone de filtragem, tendo dois botões que somente tem um título, não deixa muito claro para o usuário final que tipo de ação isso irá executar.
@@ -86,7 +50,5 @@ Por exemplo ao entrar em Apex Unit e pesquisar por `location 2`, todos os irmão
 - O componente `CompanyAssetsTree` é cheio de responsabilidades e bem complexo para se manter, talvez quebrar ele em peças menores ajude ele a se tornar mais fácil de ser trabalhado.
 
 ### Pontos sobre performance
-
-- Existe bastante espaço para otimização dentro do Grafo que é utilizado para fazer a representação da árvore, principalmente no que tange a filtragem de nós e remontagem da árvore.
 
 - O primeiro loading já exibe a árvore com todos os nós existentes, isso aumenta a quantidade de objetos a serem inseridos em memória e serem renderizados e calculados inicialmente, seria muito bom se a árvore fosse renderizada somente pelas raízes inicialmente, e somente construindo as sub-árvores ao clicar em um botão de expandir, por exemplo.
