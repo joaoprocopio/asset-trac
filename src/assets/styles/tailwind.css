@@ -4,37 +4,37 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 1 0 0;
+    --foreground: 0.23 0 0;
 
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted: 0.96 0 0;
+    --muted-foreground: 0.48 0 0;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
+    --popover: 1 0 0;
+    --popover-foreground: 0.23 0 0;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card: 1 0 0;
+    --card-foreground: 0.23 0 0;
 
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
+    --border: 0.89 0 0;
+    --input: 0.89 0 0;
 
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 0.27 0 0;
+    --primary-foreground: 0.98 0 0;
 
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 0.96 0 0;
+    --secondary-foreground: 0.27 0 0;
 
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 0.96 0 0;
+    --accent-foreground: 0.27 0 0;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0.64 0.156 29.234;
+    --destructive-foreground: 0.98 0 0;
 
-    --success: 142.1 76.2% 36.3%;
-    --success-foreground: 355.7 100% 97.3%;
+    --success: 0.54 0.139 148.115;
+    --success-foreground: 0.96 0.015 0;
 
-    --ring: 0 0% 3.9%;
+    --ring: 0.23 0 0;
     --radius: 0.5rem;
   }
 }
