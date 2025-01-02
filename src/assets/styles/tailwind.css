@@ -4,20 +4,29 @@
 
 @layer base {
   :root {
-    --accent-foreground: 21.03% 0.0059 285.88;
-    --accent: 96.76% 0.0013 286.38;
-    --background: 100% 0 106.37;
-    --border: 91.97% 0.004 286.32;
-    --card-foreground: 14.05% 0.0044 285.82;
-    --card: 100% 0 106.37;
-    --destructive-foreground: 98.48% 0 0;
-    --destructive: 57.71% 0.2151 27.32;
-    --foreground: 14.05% 0.0044 285.82;
-    --input: 91.97% 0.004 286.32;
-    --muted-foreground: 55.19% 0.0137 285.94;
-    --muted: 55.19% 0.0137 285.94;
-    --popover-foreground: 14.05% 0.0044 285.82;
-    --popover: 100% 0 106.37;
+    --accent-foreground: 240 5.9% 10%;
+    --accent: 240 4.8% 95.9%;
+    --background: 0 0% 100%;
+    --border: 240 5.9% 90%;
+    --card-foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 72.22% 50.59%;
+    --foreground: 240 10% 3.9%;
+    --input: 240 5.9% 90%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 240 4.8% 95.9%;
+    --popover-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --primary-foreground: 0 0% 98%;
+    --primary: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --ring: 240 5% 64.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 240 4.8% 95.9%;
+    --radius: 0.5rem;
+    --success: 0.54 0.139 148.115;
+    --success-foreground: 0.96 0.015 0;
     /* TODO */
     --primary-100: 93.87% 0.0215 238.68;
     --primary-200: 89.24% 0.0365 238.37;
@@ -33,12 +42,6 @@
     --primary-foreground: 100% 0 106.37;
     --primary: 65.53% 0.1172 238.37;
     /* END TODO */
-    --radius: 0.5rem;
-    --ring: 71.19% 0.0129 286.07;
-    --secondary-foreground: 21.03% 0.0059 285.88;
-    --secondary: 96.76% 0.0013 286.38;
-    --success: 62.73% 0.17 149.2;
-    --success-foreground: 96.99% 0.0149 12.4;
   }
 }
 
@@ -47,17 +50,13 @@
     @apply border-border;
   }
 
-  html {
-    @apply scroll-smooth;
-  }
-
   html,
   body {
     @apply h-full max-h-full min-h-full;
   }
 
   body {
-    @apply isolate bg-background text-foreground antialiased;
+    @apply isolate overscroll-none scroll-smooth bg-background text-foreground antialiased;
 
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
