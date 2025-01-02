@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    --radius: 0.5rem;
+
     --background: 1 0 0;
     --foreground: 0.23 0 0;
 
@@ -19,8 +21,19 @@
     --border: 0.89 0 0;
     --input: 0.89 0 0;
 
-    --primary: 0.27 0 0;
-    --primary-foreground: 0.98 0 0;
+    --primary: 65.53% 0.1172 238.37;
+    --primary-foreground: 98.51 0 0;
+    --primary-50: 97.12% 0.0113 240.08;
+    --primary-100: 93.87% 0.0215 238.68;
+    --primary-200: 89.24% 0.0365 238.37;
+    --primary-300: 82.58% 0.0609 238.37;
+    --primary-400: 74.12% 0.0899 238.37;
+    --primary-500: 65.53% 0.1172 238.37;
+    --primary-600: 59.07% 0.1329 238.37;
+    --primary-700: 51.25% 0.1329 238.37;
+    --primary-800: 46.93% 0.1329 238.37;
+    --primary-900: 43.79% 0.1172 238.37;
+    --primary-950: 33.94% 0.0899 238.37;
 
     --secondary: 0.96 0 0;
     --secondary-foreground: 0.27 0 0;
@@ -35,7 +48,6 @@
     --success-foreground: 0.96 0.015 0;
 
     --ring: 0.23 0 0;
-    --radius: 0.5rem;
   }
 }
 
@@ -54,7 +66,7 @@
   }
 
   body {
-    @apply isolate bg-muted text-foreground antialiased;
+    @apply isolate bg-background text-foreground antialiased;
 
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;

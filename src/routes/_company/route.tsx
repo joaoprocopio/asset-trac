@@ -19,7 +19,7 @@ export default function Company() {
       <header className="fixed inset-0 z-10 h-16 border-b bg-background">
         <div className="container flex h-full items-center justify-between">
           <NavLink to="/">
-            <TractianLogo className="h-4" />
+            <TractianLogo className="h-4 text-primary" />
           </NavLink>
 
           <div className="grid grid-cols-[repeat(3,8rem)] gap-4">
