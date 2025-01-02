@@ -4,50 +4,41 @@
 
 @layer base {
   :root {
-    --radius: 0.5rem;
-
-    --background: 1 0 0;
-    --foreground: 0.23 0 0;
-
-    --muted: 0.96 0 0;
-    --muted-foreground: 0.48 0 0;
-
-    --popover: 1 0 0;
-    --popover-foreground: 0.23 0 0;
-
-    --card: 1 0 0;
-    --card-foreground: 0.23 0 0;
-
-    --border: 0.89 0 0;
-    --input: 0.89 0 0;
-
-    --primary: 65.53% 0.1172 238.37;
-    --primary-foreground: 98.51 0 0;
-    --primary-50: 97.12% 0.0113 240.08;
+    --accent-foreground: 21.03% 0.0059 285.88;
+    --accent: 96.76% 0.0013 286.38;
+    --background: 100% 0 106.37;
+    --border: 91.97% 0.004 286.32;
+    --card-foreground: 14.05% 0.0044 285.82;
+    --card: 100% 0 106.37;
+    --destructive-foreground: 98.48% 0 0;
+    --destructive: 57.71% 0.2151 27.32;
+    --foreground: 14.05% 0.0044 285.82;
+    --input: 91.97% 0.004 286.32;
+    --muted-foreground: 55.19% 0.0137 285.94;
+    --muted: 55.19% 0.0137 285.94;
+    --popover-foreground: 14.05% 0.0044 285.82;
+    --popover: 100% 0 106.37;
+    /* TODO */
     --primary-100: 93.87% 0.0215 238.68;
     --primary-200: 89.24% 0.0365 238.37;
     --primary-300: 82.58% 0.0609 238.37;
     --primary-400: 74.12% 0.0899 238.37;
+    --primary-50: 97.12% 0.0113 240.08;
     --primary-500: 65.53% 0.1172 238.37;
     --primary-600: 59.07% 0.1329 238.37;
     --primary-700: 51.25% 0.1329 238.37;
     --primary-800: 46.93% 0.1329 238.37;
     --primary-900: 43.79% 0.1172 238.37;
     --primary-950: 33.94% 0.0899 238.37;
-
-    --secondary: 0.96 0 0;
-    --secondary-foreground: 0.27 0 0;
-
-    --accent: 0.96 0 0;
-    --accent-foreground: 0.27 0 0;
-
-    --destructive: 0.64 0.156 29.234;
-    --destructive-foreground: 0.98 0 0;
-
-    --success: 0.54 0.139 148.115;
-    --success-foreground: 0.96 0.015 0;
-
-    --ring: 0.23 0 0;
+    --primary-foreground: 100% 0 106.37;
+    --primary: 65.53% 0.1172 238.37;
+    /* END TODO */
+    --radius: 0.5rem;
+    --ring: 71.19% 0.0129 286.07;
+    --secondary-foreground: 21.03% 0.0059 285.88;
+    --secondary: 96.76% 0.0013 286.38;
+    --success: 62.73% 0.17 149.2;
+    --success-foreground: 96.99% 0.0149 12.4;
   }
 }
 
