@@ -32,7 +32,7 @@ export default function Company() {
                     buttonVariants({
                       className: "gap-2",
                       size: "sm",
-                      variant: linkProps.isActive ? "default" : "secondary",
+                      variant: linkProps.isActive ? "default" : "outline",
                     })
                   }>
                   <Package2Icon className="size-4" />
