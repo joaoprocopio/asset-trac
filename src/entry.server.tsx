@@ -14,6 +14,7 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   loadContext: AppLoadContext
 ) {
   return new Promise((resolve, reject) => {

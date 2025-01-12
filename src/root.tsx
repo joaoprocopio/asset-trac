@@ -1,8 +1,11 @@
+import { QueryClientProvider } from "@tanstack/react-query"
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 
 import tailwindStylesheet from "~/assets/styles/tailwind.css?url"
 import { Card } from "~/components/card"
 import { Skeleton } from "~/components/skeleton"
+import { ReactQueryDevtools } from "~/lib/devtools/react-query"
+import { queryClient } from "~/lib/query/query-client"
 
 import type { Route } from "./+types/root"
 
@@ -64,7 +67,12 @@ export function Layout({ children }: React.PropsWithChildren) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  )
 }
 
 export function HydrateFallback() {
